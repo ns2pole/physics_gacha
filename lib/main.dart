@@ -16,15 +16,7 @@ Future<void> _initializeFirebase() async {
   if (kIsWeb) return;
 
   try {
-    if (defaultTargetPlatform == TargetPlatform.android &&
-        DefaultFirebaseOptions.android.apiKey.startsWith('YOUR_')) {
-      debugPrint(
-        '[Firebase] Android 未設定のためスキップ。google-services.json 追加後に設定を埋める。',
-      );
-      return;
-    }
-
-    // Prefer native plist / google-services.json when dart options are placeholders.
+    // Placeholders → native google-services.json / GoogleService-Info.plist.
     if (DefaultFirebaseOptions.hasPlaceholders) {
       await Firebase.initializeApp();
     } else {

@@ -49,7 +49,15 @@ flutter run --dart-define=AI_CHAT_ENDPOINT=https://asia-northeast1-physicsgacha.
 
 ## Android を足すとき
 
-1. Firebase に Android アプリ `com.joyphysics.physics_gacha` を追加
-2. `google-services.json` を `android/app/` に置く
-3. `lib/firebase_options.dart` の `android` を実値に置き換える
-4. App Check で Play Integrity（本番）/ Debug（開発）を登録
+1. Firebase Console → `physicsgacha` → アプリを追加 → **Android**
+2. パッケージ名: `com.joyphysics.physics_gacha`（一字一句このまま）
+3. `google-services.json` をダウンロードして `android/app/google-services.json` に置く
+4. App Check → その Android アプリ → 開発は **Debug**、本番は **Play Integrity**
+5. デバッグ起動後、ログの Debug token を App Check に登録
+
+```bash
+flutter run -d <android-device> \
+  --dart-define=AI_CHAT_ENDPOINT=https://asia-northeast1-physicsgacha.cloudfunctions.net/aiChat
+```
+
+`google-services.json` は git に含めない（`.example` のみ）。
