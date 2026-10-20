@@ -5,9 +5,14 @@ import '../logic/problem_pool.dart';
 import '../models/learning_record.dart';
 import '../models/physics_domain.dart';
 import '../models/physics_problem.dart';
+import '../services/auth/cloud_sign_in_flow.dart';
+import '../services/auth/cloud_sync_coordinator.dart';
+import '../services/auth/cloud_sync_preference_service.dart';
+import '../services/auth/firebase_auth_service.dart';
 import '../state/gacha_session.dart';
 import '../state/gacha_store.dart';
 import '../integrations/ai_chat/physics_ai_chat_launcher.dart';
+import 'account_deletion_flow.dart';
 import 'ac_resistor_figure.dart';
 import 'background_image.dart';
 import 'compressed_spring_figure.dart';
@@ -52,6 +57,7 @@ class GachaPage extends StatefulWidget {
 
 class _GachaPageState extends State<GachaPage> {
   final _store = GachaStore();
+  late final _sync = CloudSyncCoordinator(store: _store);
   final _expression = ExpressionEditor();
   GachaSession? _session;
   _Phase _phase = _Phase.closed;
@@ -63,14 +69,33 @@ class _GachaPageState extends State<GachaPage> {
   bool _showAnswer = false;
   bool _showHint = false;
   bool? _alreadyRecorded;
+  bool _syncBusy = false;
 
   @override
   void initState() {
     super.initState();
-    _load();
+    _bootstrap();
   }
 
-  Future<void> _load() async {
+  Future<void> _bootstrap() async {
+    await CloudSyncPreferenceService.refreshForUser(FirebaseAuthService.userId);
+    await _sync.refreshAuthAndMaybeSwitch();
+    if (FirebaseAuthService.isAuthenticated &&
+        await CloudSyncPreferenceService.isEnabledForCurrentUser()) {
+      try {
+        final merged = await _sync.pullMergeAndSave();
+        if (merged != null) {
+          await _applySnapshot(merged);
+          return;
+        }
+      } catch (e) {
+        debugPrint('Initial cloud pull failed: $e');
+      }
+    }
+    await _loadLocal();
+  }
+
+  Future<void> _loadLocal() async {
     final snapshot = await _store.load();
     final session = GachaSession(
       enabled: snapshot?.enabled,
@@ -85,10 +110,21 @@ class _GachaPageState extends State<GachaPage> {
     setState(() => _session = session);
   }
 
+  Future<void> _applySnapshot(GachaSnapshot snapshot) async {
+    final session = _sync.sessionFromSnapshot(snapshot);
+    session.ensureCurrent();
+    if (!mounted) return;
+    setState(() {
+      _session = session;
+      _resetAttempt();
+    });
+  }
+
   Future<void> _save() async {
     final session = _session;
     if (session == null) return;
     await _store.save(session);
+    await _sync.pushAfterLocalSave();
   }
 
   void _resetAttempt() {
@@ -139,6 +175,170 @@ class _GachaPageState extends State<GachaPage> {
 
   void _toggleHint() {
     setState(() => _showHint = !_showHint);
+  }
+
+  Widget _buildAccountAction() {
+    const iconColor = Color(0xFF1565C0);
+    if (!FirebaseAuthService.isAuthenticated) {
+      return IconButton(
+        tooltip: 'クラウドにログイン',
+        onPressed: _syncBusy ? null : _onCloudSignIn,
+        icon: const Icon(Icons.cloud_outlined, color: iconColor, size: 28),
+      );
+    }
+
+    final email = FirebaseAuthService.userEmail;
+    final name = FirebaseAuthService.displayName;
+    final accountInfo = (email != null && email.isNotEmpty)
+        ? email
+        : (name != null && name.isNotEmpty ? name : 'ログイン中');
+    final syncOn = CloudSyncPreferenceService.enabledListenable.value;
+
+    return PopupMenuButton<String>(
+      tooltip: 'アカウント',
+      icon: const Icon(Icons.account_circle, color: iconColor, size: 28),
+      onSelected: _onAccountMenuSelected,
+      itemBuilder: (context) => [
+        PopupMenuItem(
+          enabled: false,
+          child: Text(
+            accountInfo,
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+        ),
+        PopupMenuItem(
+          value: 'toggleSync',
+          child: Row(
+            children: [
+              Icon(
+                syncOn ? Icons.cloud_done : Icons.cloud_off,
+                size: 20,
+                color: iconColor,
+              ),
+              const SizedBox(width: 8),
+              Text(syncOn ? 'クラウド同期: オン' : 'クラウド同期: オフ'),
+            ],
+          ),
+        ),
+        if (syncOn)
+          const PopupMenuItem(
+            value: 'manualSync',
+            child: Row(
+              children: [
+                Icon(Icons.sync, size: 20),
+                SizedBox(width: 8),
+                Text('今すぐ同期'),
+              ],
+            ),
+          ),
+        const PopupMenuDivider(),
+        const PopupMenuItem(
+          value: 'deleteAccount',
+          child: Row(
+            children: [
+              Icon(Icons.delete_forever, size: 20, color: Colors.red),
+              SizedBox(width: 8),
+              Text('アカウント削除', style: TextStyle(color: Colors.red)),
+            ],
+          ),
+        ),
+        const PopupMenuItem(
+          value: 'logout',
+          child: Row(
+            children: [
+              Icon(Icons.logout, size: 20),
+              SizedBox(width: 8),
+              Text('ログアウト'),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Future<void> _onCloudSignIn() async {
+    setState(() => _syncBusy = true);
+    try {
+      final signedIn = await CloudSignInFlow.signIn(
+        context,
+        coordinator: _sync,
+      );
+      if (!signedIn || !mounted) return;
+      final snapshot = await _store.load();
+      if (snapshot != null) {
+        await _applySnapshot(snapshot);
+      } else {
+        setState(() {});
+      }
+    } finally {
+      if (mounted) setState(() => _syncBusy = false);
+    }
+  }
+
+  Future<void> _onAccountMenuSelected(String value) async {
+    switch (value) {
+      case 'toggleSync':
+        final uid = FirebaseAuthService.userId;
+        if (uid == null) return;
+        final next = !CloudSyncPreferenceService.enabledListenable.value;
+        setState(() => _syncBusy = true);
+        try {
+          await _sync.setSyncEnabled(next);
+          if (next) {
+            final snapshot = await _store.load();
+            if (snapshot != null) await _applySnapshot(snapshot);
+          }
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(next ? 'クラウド同期をオンにしました。' : 'クラウド同期をオフにしました。'),
+              ),
+            );
+          }
+        } finally {
+          if (mounted) setState(() => _syncBusy = false);
+        }
+      case 'manualSync':
+        setState(() => _syncBusy = true);
+        try {
+          final merged = await _sync.pullMergeAndSave();
+          if (merged != null) await _applySnapshot(merged);
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('同期しました。')),
+            );
+          }
+        } catch (e) {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('同期に失敗しました: $e'),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
+        } finally {
+          if (mounted) setState(() => _syncBusy = false);
+        }
+      case 'deleteAccount':
+        final deleted = await AccountDeletionFlow.show(context);
+        if (deleted && mounted) {
+          await _loadLocal();
+          setState(() {});
+        }
+      case 'logout':
+        await FirebaseAuthService.signOut();
+        await CloudSyncPreferenceService.refreshForUser(null);
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('ログアウトしました。'),
+              backgroundColor: Colors.green,
+            ),
+          );
+          setState(() {});
+        }
+    }
   }
 
   void _confirm(PhysicsProblem problem) {
@@ -196,6 +396,7 @@ class _GachaPageState extends State<GachaPage> {
           style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
         ),
         actions: [
+          _buildAccountAction(),
           if (session != null)
             Padding(
               padding: const EdgeInsets.only(right: 16),
@@ -219,16 +420,6 @@ class _GachaPageState extends State<GachaPage> {
                 ),
               ),
             ),
-          // 歯車の設定は一旦なし。モードは変えられない。
-          // IconButton(
-          //   tooltip: '自動正誤登録の設定',
-          //   onPressed: () => _editRecordMode(session),
-          //   icon: const Icon(
-          //     Icons.settings,
-          //     size: 30,
-          //     color: Color(0xFF8B7355),
-          //   ),
-          // ),
         ],
       ),
       body: Stack(

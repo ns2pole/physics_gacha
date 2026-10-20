@@ -1,9 +1,10 @@
 import * as admin from "firebase-admin";
 import {defineSecret} from "firebase-functions/params";
 import {onRequest, Request} from "firebase-functions/v2/https";
+import {deleteFirebaseUserAccount} from "./accountDeletion";
 import {resolveUsageIdentity} from "./auth";
 import {generateAiChatReply} from "./geminiClient";
-import {assertPost, HttpError, sendJson} from "./http";
+import {assertPost, HttpError, readBearerToken, sendJson} from "./http";
 import {
   consumeUsage,
   RateLimitExceededError,
@@ -71,6 +72,39 @@ export const aiChat = onRequest({
   }
 });
 
+export const deleteMyAccount = onRequest({
+  cors: true,
+  region: "asia-northeast1",
+}, async (request, response) => {
+  try {
+    assertPost(request);
+    await assertAppCheckAuthorized(request);
+
+    const uid = await requireFirebaseUid(request);
+    await deleteFirebaseUserAccount(admin.firestore(), uid);
+
+    sendJson(response, 200, {ok: true});
+  } catch (error) {
+    if (error instanceof HttpError) {
+      sendJson(response, error.status, {
+        error: {
+          code: error.code,
+          message: error.message,
+        },
+      });
+      return;
+    }
+
+    console.error(error);
+    sendJson(response, 500, {
+      error: {
+        code: "internal",
+        message: "Account deletion failed.",
+      },
+    });
+  }
+});
+
 async function assertAppCheckAuthorized(request: Request): Promise<void> {
   const token = request.header("X-Firebase-AppCheck");
   if (token == null || token.length === 0) {
@@ -81,6 +115,20 @@ async function assertAppCheckAuthorized(request: Request): Promise<void> {
     await admin.appCheck().verifyToken(token);
   } catch {
     throw new HttpError(401, "app_check_failed", "App Check verification failed.");
+  }
+}
+
+async function requireFirebaseUid(request: Request): Promise<string> {
+  const token = readBearerToken(request);
+  if (token == null) {
+    throw new HttpError(401, "auth_required", "Firebase authentication is required.");
+  }
+
+  try {
+    const decoded = await admin.auth().verifyIdToken(token);
+    return decoded.uid;
+  } catch {
+    throw new HttpError(401, "auth_failed", "Firebase authentication failed.");
   }
 }
 

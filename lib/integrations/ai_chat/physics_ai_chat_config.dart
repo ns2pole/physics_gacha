@@ -18,4 +18,27 @@ class PhysicsAiChatConfig {
       installationIdStorageKey: installationIdStorageKey,
     );
   }
+
+  static Uri? accountDeletionEndpointFromEnvironment() {
+    const deletionValue = String.fromEnvironment(
+      'ACCOUNT_DELETION_ENDPOINT',
+      defaultValue: '',
+    );
+    if (deletionValue.trim().isNotEmpty) {
+      return Uri.parse(deletionValue.trim());
+    }
+    return _deriveSiblingEndpoint(
+      apiConfigFromEnvironment().endpoint,
+      'deleteMyAccount',
+    );
+  }
+
+  static Uri? _deriveSiblingEndpoint(Uri? endpoint, String functionName) {
+    if (endpoint == null) return null;
+    final segments = endpoint.pathSegments;
+    if (segments.isEmpty || segments.last != 'aiChat') return null;
+    return endpoint.replace(
+      pathSegments: [...segments.take(segments.length - 1), functionName],
+    );
+  }
 }

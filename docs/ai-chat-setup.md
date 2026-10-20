@@ -41,6 +41,8 @@ flutter run --dart-define=AI_CHAT_ENDPOINT=https://asia-northeast1-physicsgacha.
 
 `AI_CHAT_ENDPOINT` を付けないと Stub クライアントになり、ネット通信はしない。
 
+ログイン／クラウド同期の Console 手順は [`cloud-sync-setup.md`](cloud-sync-setup.md)。
+
 ## App Check Debug トークン（開発時）
 
 1. デバッグビルドでアプリを起動する
