@@ -1,39 +1,37 @@
 import 'package:ai_chat_kit/ai_chat_kit.dart';
 import 'package:flutter/widgets.dart';
 
+import '../../l10n/app_localizations.dart';
+import '../../utils/l10n_utils.dart';
 import 'physics_ai_chat_client_factory.dart';
 
-/// 日本語文言・App Check ヘッダ・スターターチップ。課金 UI は出さない。
+/// Localized AI chrome strings. Billing UI is not shown.
 class PhysicsAiChatPorts implements AiChatHostPorts {
   const PhysicsAiChatPorts();
 
-  static const AiChatStrings japaneseStrings = AiChatStrings(
-    greeting: 'この問題について聞いてみてください。',
-    placeholder: '聞きたいことを書いてください',
-    send: '送信',
-    moreDetail: 'もう少し詳しく',
-    genericError: 'AIの応答に失敗しました。もう一度試してください。',
-    starterChoiceHint: 'ヒントを教えて',
-    starterChoiceApproach: '方針だけ教えて',
-    starterChoiceFirstStep: '最初の一手だけ教えて',
-    freeMonthlyLimitReached: _freeMonthlyLimitReached,
-    paidPassLimitReached: _paidPassLimitReached,
-    voiceListeningHint: '聞いています…',
-    voiceSendModeAuto: '音声を自動送信',
-    voiceSendModeManual: '送信前に編集',
-    voiceSendModeAutoLabel: '自動送信',
-    voiceSendModeManualLabel: '手動',
-    voicePermissionDenied: '音声入力にはマイクの許可が必要です。',
-  );
-
-  static String _freeMonthlyLimitReached(int limit) =>
-      '今月の無料利用（$limit回）に達しました。';
-
-  static String _paidPassLimitReached(int limit) =>
-      'AIパスの利用上限（$limit回）に達しました。';
+  static AiChatStrings stringsFor(AppLocalizations l10n) {
+    return AiChatStrings(
+      greeting: l10n.aiGreeting,
+      placeholder: l10n.aiPlaceholder,
+      send: l10n.aiSend,
+      moreDetail: l10n.aiMoreDetail,
+      genericError: l10n.aiGenericError,
+      starterChoiceHint: l10n.aiStarterHint,
+      starterChoiceApproach: l10n.aiStarterApproach,
+      starterChoiceFirstStep: l10n.aiStarterFirstStep,
+      freeMonthlyLimitReached: l10n.aiFreeLimitReached,
+      paidPassLimitReached: l10n.aiPaidLimitReached,
+      voiceListeningHint: l10n.aiVoiceListening,
+      voiceSendModeAuto: l10n.aiVoiceSendAuto,
+      voiceSendModeManual: l10n.aiVoiceSendManual,
+      voiceSendModeAutoLabel: l10n.aiVoiceSendAutoLabel,
+      voiceSendModeManualLabel: l10n.aiVoiceSendManualLabel,
+      voicePermissionDenied: l10n.aiVoicePermissionDenied,
+    );
+  }
 
   @override
-  AiChatStrings get strings => japaneseStrings;
+  AiChatStrings get strings => stringsFor(appL10nWithoutContext());
 
   @override
   Future<Map<String, String>> authHeaders() =>
@@ -41,18 +39,19 @@ class PhysicsAiChatPorts implements AiChatHostPorts {
 
   @override
   List<AiChatQuickReply>? starterQuickReplies(String? contentId) {
+    final s = strings;
     return [
       AiChatQuickReply(
-        label: strings.starterChoiceHint,
-        sendText: strings.starterChoiceHint,
+        label: s.starterChoiceHint,
+        sendText: s.starterChoiceHint,
       ),
       AiChatQuickReply(
-        label: strings.starterChoiceApproach,
-        sendText: strings.starterChoiceApproach,
+        label: s.starterChoiceApproach,
+        sendText: s.starterChoiceApproach,
       ),
       AiChatQuickReply(
-        label: strings.starterChoiceFirstStep,
-        sendText: strings.starterChoiceFirstStep,
+        label: s.starterChoiceFirstStep,
+        sendText: s.starterChoiceFirstStep,
       ),
     ];
   }

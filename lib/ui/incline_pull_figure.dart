@@ -2,27 +2,76 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import '../utils/figure_clock.dart';
+import '../utils/figure_labels.dart';
+
 /// 30° のあらい斜面を、斜面に沿った糸で引き上げる図。
-class InclinePullFigure extends StatelessWidget {
+/// 一定の速さで上がって止まり、はじめへ戻る。
+class InclinePullFigure extends StatefulWidget {
   const InclinePullFigure({super.key});
 
   @override
+  State<InclinePullFigure> createState() => _InclinePullFigureState();
+}
+
+class _InclinePullFigureState extends State<InclinePullFigure>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _clock;
+
+  @override
+  void initState() {
+    super.initState();
+    _clock = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 2600),
+    );
+    if (figureClockRuns) _clock.repeat();
+  }
+
+  @override
+  void dispose() {
+    _clock.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return const SizedBox(
-      height: 180,
-      width: 280,
-      child: CustomPaint(painter: _InclinePullPainter()),
+    final labels = FigureLabels.of(context);
+    return SizedBox(
+      height: 164,
+      width: 220,
+      child: AnimatedBuilder(
+        animation: _clock,
+        builder: (context, _) {
+          return CustomPaint(
+            painter: _InclinePullPainter(
+              smallMass: labels.smallMass,
+              string: labels.string,
+              travel: playPauseProgress(_clock.value),
+            ),
+          );
+        },
+      ),
     );
   }
 }
 
 class _InclinePullPainter extends CustomPainter {
-  const _InclinePullPainter();
+  const _InclinePullPainter({
+    required this.smallMass,
+    required this.string,
+    required this.travel,
+  });
+
+  final String smallMass;
+  final String string;
+  final double travel;
 
   static const _ink = Color(0xFF37474F);
 
   @override
   void paint(Canvas canvas, Size size) {
+    canvas.translate(-28, 0);
     final line = Paint()
       ..color = _ink
       ..strokeWidth = 1.5
@@ -52,7 +101,7 @@ class _InclinePullPainter extends CustomPainter {
     final mark = origin + Offset(math.cos(angle / 2), math.sin(angle / 2)) * 58;
     _label(canvas, '30°', mark + const Offset(6, -12));
 
-    const blockDistance = 112.0;
+    final blockDistance = 70.0 + 90.0 * travel;
     final block = origin + along * blockDistance;
     canvas.save();
     canvas.translate(block.dx, block.dy);
@@ -61,8 +110,8 @@ class _InclinePullPainter extends CustomPainter {
     canvas.drawLine(const Offset(18, -17), const Offset(72, -17), line);
     canvas.restore();
 
-    _label(canvas, '小物体', block + outward * 48);
-    _label(canvas, '糸', block + along * 48 + outward * 34);
+    _label(canvas, smallMass, block + outward * 48);
+    _label(canvas, string, block + along * 48 + outward * 34);
   }
 
   void _dashed(Canvas canvas, Offset from, Offset to, Paint paint) {
@@ -88,9 +137,15 @@ class _InclinePullPainter extends CustomPainter {
       ),
       textDirection: TextDirection.ltr,
     )..layout();
-    painter.paint(canvas, center - Offset(painter.width / 2, painter.height / 2));
+    painter.paint(
+      canvas,
+      center - Offset(painter.width / 2, painter.height / 2),
+    );
   }
 
   @override
-  bool shouldRepaint(covariant _InclinePullPainter oldDelegate) => false;
+  bool shouldRepaint(covariant _InclinePullPainter oldDelegate) =>
+      oldDelegate.smallMass != smallMass ||
+      oldDelegate.string != string ||
+      oldDelegate.travel != travel;
 }

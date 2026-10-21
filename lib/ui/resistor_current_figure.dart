@@ -7,8 +7,8 @@ class ResistorCurrentFigure extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const SizedBox(
-      height: 148,
-      width: 300,
+      height: 130,
+      width: 248,
       child: CustomPaint(painter: _ResistorCurrentPainter()),
     );
   }
@@ -19,6 +19,7 @@ class _ResistorCurrentPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    canvas.translate(-24, -8);
     const ink = Color(0xFF37474F);
     final wire = Paint()
       ..color = ink

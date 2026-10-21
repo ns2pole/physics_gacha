@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>サポート — 物理ガチャ</title>
+  <style>
+    :root {
+      --ink: #1a1a1a;
+      --muted: #555;
+      --line: #e5e5e5;
+      --bg: #fafafa;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
+      color: var(--ink);
+      background: var(--bg);
+      line-height: 1.75;
+    }
+    .wrap {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+    h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin: 0 0 8px;
+    }
+    .meta {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 32px;
+    }
+    h2 {
+      font-size: 1.15rem;
+      margin: 36px 0 12px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--line);
+    }
+    p, li { font-size: 1rem; }
+    ul { padding-left: 1.25em; }
+    li { margin: 6px 0; }
+    a { color: #0b57d0; }
+    .copy-hint {
+      background: #fff;
+      border: 1px dashed #bbb;
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-bottom: 28px;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+    #notion-paste {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 28px 28px 36px;
+    }
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    button {
+      appearance: none;
+      border: 1px solid #ccc;
+      background: #fff;
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-size: 0.95rem;
+      cursor: pointer;
+    }
+    button:hover { background: #f0f0f0; }
+    button.primary {
+      background: #1a1a1a;
+      color: #fff;
+      border-color: #1a1a1a;
+    }
+    button.primary:hover { background: #333; }
+    #toast {
+      display: none;
+      margin-left: 8px;
+      color: #0a7a2f;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="copy-hint">
+      Notion に貼る用です。「テキストをコピー」を押して Notion のページに貼り付け、公開URLを App Store / Google Play のサポートURLに設定してください。プライバシーポリシーの公開URLが決まったら、本文の「プライバシー」にそのURLを足してから貼ってください。
+    </div>
+    <div class="btn-row">
+      <button class="primary" type="button" id="copy-btn">テキストをコピー</button>
+      <span id="toast">コピーしました</span>
+    </div>
+
+    <article id="notion-paste">
+      <h1>物理ガチャ サポート</h1>
+      <p class="meta">最終更新: 2026年10月21日</p>
+
+      <p>
+        「物理ガチャ」は、高校物理の小問を一問ずつ解くアプリです。
+        問題文には単元名を出しません。状況を見て、どの法則を使うかを自分で選びます。アカウント登録なしで使えます。
+      </p>
+
+      <h2>できること</h2>
+      <ul>
+        <li>ガチャを回して、問題を一問出す</li>
+        <li>ヒント、方針、最初の一手、解説を見る</li>
+        <li>電卓で数値と単位を入れて答える</li>
+        <li>学習履歴をつけ、正解が続いた問題を出題から外す</li>
+        <li>ログインして、履歴とガチャ設定をクラウドに保存する</li>
+        <li>開いている問題について AI に聞く</li>
+      </ul>
+
+      <h2>クラウド同期について</h2>
+      <ul>
+        <li>ログインしなくても使えます。ガチャ設定と学習記録は、その端末に保存されます。</li>
+        <li>クラウド同期をオンにすると、同じ設定と学習記録をクラウドにも保存します。iPhone は Apple アカウント、Android は Google アカウントでログインします。</li>
+        <li>クラウド同期をオフにしているあいだ、設定と学習記録は端末の外へ送りません。すでにクラウドにあるデータは、消すまで残ります。</li>
+      </ul>
+
+      <h2>よくある質問</h2>
+      <p><strong>Q. アカウント登録は必要ですか？</strong><br />
+      A. 不要です。問題を解く、ヒントを見る、履歴を端末に残す、まではログインなしで使えます。別の端末と揃えるときだけ、クラウド同期のためにログインします。</p>
+
+      <p><strong>Q. 学習記録には何が残りますか？</strong><br />
+      A. 各問題について、直近3回までの状態です。空、解決済み、理解済み、失敗のいずれかです。解答として入力した数や式は保存しません。</p>
+
+      <p><strong>Q. アカウントやクラウドのデータを消したいです。</strong><br />
+      A. アプリ内の「アカウント削除」から、アカウントとクラウド上のガチャ設定・学習記録を削除できます。アプリから消えないときは、下記のメールへご連絡ください。ログインに使った Apple または Google のメールアドレスを書いてください。確認のうえ、合理的な期間内に削除します。アカウントは残して、クラウド上の設定と学習記録だけ消す依頼も、同じメールで受け付けます。</p>
+
+      <p><strong>Q. アプリがうまく動きません。</strong><br />
+      A. 下記のメールへ、お使いの端末（例: iPhone 15 / iOS 18）と、起きている症状を書いてご連絡ください。</p>
+
+      <h2>プライバシー</h2>
+      <p>個人情報の取り扱いについては、プライバシーポリシーをご覧ください。</p>
+
+      <h2>お問い合わせ</h2>
+      <p>
+        運営者: 中村俊介<br />
+        メール: <a href="mailto:spaceofstar2@gmail.com">spaceofstar2@gmail.com</a>
+      </p>
+      <p>返信には数日いただく場合があります。あらかじめご了承ください。</p>
+    </article>
+  </div>
+
+  <script>
+    document.getElementById("copy-btn").addEventListener("click", async () => {
+      const el = document.getElementById("notion-paste");
+      const text = el.innerText.trim();
+      try {
+        await navigator.clipboard.writeText(text);
+      } catch {
+        const range = document.createRange();
+        range.selectNodeContents(el);
+        const sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+        document.execCommand("copy");
+        sel.removeAllRanges();
+      }
+      const toast = document.getElementById("toast");
+      toast.style.display = "inline";
+      setTimeout(() => { toast.style.display = "none"; }, 2000);
+    });
+  </script>
+</body>
+</html>

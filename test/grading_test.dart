@@ -2,10 +2,19 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:physics_gacha/logic/grading.dart';
 
 void main() {
-  test('記号の並びは空白や読点を無視して比べる', () {
-    expect(orderMatches('オイエアウ', 'オ イ エ ア ウ'), isTrue);
-    expect(orderMatches('オイエアウ', 'オ、イ、エ、ア、ウ'), isTrue);
-    expect(orderMatches('オイエアウ', 'アイウエオ'), isFalse);
+  test('並びは空白や読点を無視して比べる', () {
+    expect(
+      orderMatches('X線、紫外線、可視光、赤外線、電波', 'X線 紫外線 可視光 赤外線 電波'),
+      isTrue,
+    );
+    expect(
+      orderMatches('X線、紫外線、可視光、赤外線、電波', 'X線、紫外線、可視光、赤外線、電波'),
+      isTrue,
+    );
+    expect(
+      orderMatches('X線、紫外線、可視光、赤外線、電波', '紫外線、X線、可視光、赤外線、電波'),
+      isFalse,
+    );
   });
 
   test('数値と単位の両方が合って初めて正解', () {

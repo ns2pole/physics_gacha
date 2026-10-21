@@ -9,7 +9,7 @@ class SeriesCircuitFigure extends StatelessWidget {
   Widget build(BuildContext context) {
     return const SizedBox(
       height: 136,
-      width: 300,
+      width: 280,
       child: CustomPaint(painter: _SeriesCircuitPainter()),
     );
   }
@@ -20,6 +20,7 @@ class _SeriesCircuitPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    canvas.translate(-10, 0);
     const ink = Color(0xFF37474F);
     final wire = Paint()
       ..color = ink

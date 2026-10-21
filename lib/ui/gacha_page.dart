@@ -14,25 +14,43 @@ import '../state/gacha_store.dart';
 import '../integrations/ai_chat/physics_ai_chat_launcher.dart';
 import 'account_deletion_flow.dart';
 import 'ac_resistor_figure.dart';
+import 'battery_resistor_figure.dart';
+import 'beats_figure.dart';
+import 'bridge_voltage_drop_figure.dart';
 import 'background_image.dart';
 import 'compressed_spring_figure.dart';
+import 'connected_vessels_figure.dart';
 import 'expression_editor.dart';
 import 'math_expression_view.dart';
 import 'unit_expression_view.dart';
 import 'filter_bar.dart';
 import 'fixed_end_reflection_figure.dart';
+import 'gas_cylinder_figure.dart';
 import 'incline_pull_figure.dart';
+import 'kepler_orbits_figure.dart';
 import 'free_end_reflection_figure.dart';
 import 'numeric_keypad.dart';
 import 'problem_list_page.dart';
 import 'open_pipe_figure.dart';
 import 'resistor_current_figure.dart';
 import 'series_circuit_figure.dart';
+import 'parallel_current_figure.dart';
+import 'series_current_figure.dart';
+import 'simple_pendulum_figure.dart';
 import 'sliding_comparison_figure.dart';
 import 'spring_pulleys_figure.dart';
 import 'stacked_blocks_figure.dart';
+import 'store_shot_tour.dart';
 import 'symbol_keypad.dart';
 import 'unit_keypad.dart';
+import 'vertical_spring_oscillation_figure.dart';
+import '../l10n/app_localizations.dart';
+import '../utils/l10n_utils.dart';
+
+bool _isDimensionlessChoice(String? choice, AppLocalizations l10n) {
+  if (choice == null || choice.isEmpty) return true;
+  return choice == '無次元' || choice == l10n.dimensionless || choice == '1';
+}
 
 enum _Phase { closed, value, unit, judged }
 
@@ -55,14 +73,14 @@ class GachaPage extends StatefulWidget {
   State<GachaPage> createState() => _GachaPageState();
 }
 
-class _GachaPageState extends State<GachaPage> {
+class _GachaPageState extends State<GachaPage> with TickerProviderStateMixin {
   final _store = GachaStore();
   late final _sync = CloudSyncCoordinator(store: _store);
   final _expression = ExpressionEditor();
   GachaSession? _session;
   _Phase _phase = _Phase.closed;
   String _unitText = '';
-  String _symbolOrder = '';
+  List<String> _symbolOrder = [];
   String? _choice;
   AnswerGrade? _grade;
   String _submittedAnswer = '';
@@ -70,11 +88,101 @@ class _GachaPageState extends State<GachaPage> {
   bool _showHint = false;
   bool? _alreadyRecorded;
   bool _syncBusy = false;
+  bool _storeShotStarted = false;
+  AnimationController? _roll;
+  List<PhysicsProblem> _rollFrames = [];
+
+  bool get _rolling => _roll != null;
+
+  bool get _rollsVisually {
+    if (storeShotsEnabled) return false;
+    return !WidgetsBinding.instance.runtimeType.toString().contains(
+      'TestWidgetsFlutterBinding',
+    );
+  }
 
   @override
   void initState() {
     super.initState();
     _bootstrap();
+  }
+
+  @override
+  void dispose() {
+    _roll?.dispose();
+    super.dispose();
+  }
+
+  void _maybeStartStoreShotTour() {
+    if (!storeShotsEnabled || _storeShotStarted || _session == null) return;
+    _storeShotStarted = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (!mounted) return;
+      await StoreShotTour(
+        openCalculator: () {
+          if (!mounted) return;
+          setState(() {
+            _showAnswer = false;
+            _showHint = false;
+            _phase = _Phase.value;
+          });
+        },
+        closeCalculator: () {
+          if (!mounted) return;
+          setState(() => _phase = _Phase.closed);
+        },
+        showHint: () {
+          if (!mounted) return;
+          setState(() {
+            _showHint = true;
+            _showAnswer = false;
+            _phase = _Phase.closed;
+          });
+        },
+        showAnswer: () {
+          if (!mounted) return;
+          setState(() {
+            _showAnswer = true;
+            _showHint = false;
+            _phase = _Phase.closed;
+          });
+        },
+        pushProblemList: () {
+          final session = _session;
+          if (session == null || !mounted) return;
+          Navigator.of(context).push(
+            MaterialPageRoute<void>(
+              builder: (context) => ProblemListPage(
+                session: session,
+                onHistoryChanged: () {
+                  setState(() {});
+                  _save();
+                },
+              ),
+            ),
+          );
+        },
+        popToRoot: () {
+          if (!mounted) return;
+          Navigator.of(context).popUntil((route) => route.isFirst);
+          setState(() {
+            _showAnswer = false;
+            _showHint = false;
+            _phase = _Phase.closed;
+          });
+        },
+        openAi: () {
+          final problem = _session?.current;
+          if (problem == null || !mounted) return;
+          PhysicsAiChatLauncher.open(
+            context: context,
+            problem: problem,
+            hintShown: false,
+            answerShown: false,
+          );
+        },
+      ).run();
+    });
   }
 
   Future<void> _bootstrap() async {
@@ -86,6 +194,7 @@ class _GachaPageState extends State<GachaPage> {
         final merged = await _sync.pullMergeAndSave();
         if (merged != null) {
           await _applySnapshot(merged);
+          _maybeStartStoreShotTour();
           return;
         }
       } catch (e) {
@@ -108,6 +217,7 @@ class _GachaPageState extends State<GachaPage> {
     session.ensureCurrent();
     if (!mounted) return;
     setState(() => _session = session);
+    _maybeStartStoreShotTour();
   }
 
   Future<void> _applySnapshot(GachaSnapshot snapshot) async {
@@ -118,6 +228,7 @@ class _GachaPageState extends State<GachaPage> {
       _session = session;
       _resetAttempt();
     });
+    _maybeStartStoreShotTour();
   }
 
   Future<void> _save() async {
@@ -131,7 +242,7 @@ class _GachaPageState extends State<GachaPage> {
     _phase = _Phase.closed;
     _expression.clear();
     _unitText = '';
-    _symbolOrder = '';
+    _symbolOrder = [];
     _choice = null;
     _grade = null;
     _submittedAnswer = '';
@@ -142,15 +253,72 @@ class _GachaPageState extends State<GachaPage> {
 
   void _redraw() {
     final session = _session;
-    if (session == null) return;
+    if (session == null || _rolling) return;
     session.redraw();
-    setState(_resetAttempt);
+    _resetAttempt();
     _save();
+    final chosen = session.current;
+    if (_rollsVisually &&
+        chosen != null &&
+        session.eligible.length >= 2) {
+      _prepareRoll(session, chosen);
+    }
+    setState(() {});
+    _roll?.forward().whenComplete(() {
+      if (!mounted) return;
+      _stopRoll();
+      setState(() {});
+    });
+  }
+
+  void _stopRoll() {
+    _roll?.dispose();
+    _roll = null;
+    _rollFrames = [];
+  }
+
+  void _prepareRoll(GachaSession session, PhysicsProblem chosen) {
+    final others = [
+      for (final problem in session.eligible)
+        if (problem.id != chosen.id) problem,
+    ];
+    if (others.isEmpty) return;
+    final frames = <PhysicsProblem>[];
+    PhysicsProblem? previous;
+    for (var i = 0; i < 16; i++) {
+      var next = others[session.random.nextInt(others.length)];
+      if (others.length > 1 && previous != null) {
+        while (next.id == previous.id) {
+          next = others[session.random.nextInt(others.length)];
+        }
+      }
+      frames.add(next);
+      previous = next;
+    }
+    frames.add(chosen);
+    _rollFrames = frames;
+    _roll = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1100),
+    )..addListener(() {
+        if (mounted) setState(() {});
+      });
+  }
+
+  PhysicsProblem? _visibleProblem(GachaSession session) {
+    if (_rolling && _rollFrames.isNotEmpty) {
+      final t = Curves.easeOutCubic.transform(_roll!.value);
+      final last = _rollFrames.length - 1;
+      final index = (t * last).floor().clamp(0, last);
+      return _rollFrames[index];
+    }
+    return session.current;
   }
 
   void _changeFilter(void Function(GachaSession session) change) {
     final session = _session;
     if (session == null) return;
+    _stopRoll();
     final previous = session.current?.id;
     change(session);
     if (session.current?.id != previous) _resetAttempt();
@@ -181,7 +349,7 @@ class _GachaPageState extends State<GachaPage> {
     const iconColor = Color(0xFF1565C0);
     if (!FirebaseAuthService.isAuthenticated) {
       return IconButton(
-        tooltip: 'クラウドにログイン',
+        tooltip: AppLocalizations.of(context)!.cloudLogin,
         onPressed: _syncBusy ? null : _onCloudSignIn,
         icon: const Icon(Icons.cloud_outlined, color: iconColor, size: 28),
       );
@@ -191,11 +359,13 @@ class _GachaPageState extends State<GachaPage> {
     final name = FirebaseAuthService.displayName;
     final accountInfo = (email != null && email.isNotEmpty)
         ? email
-        : (name != null && name.isNotEmpty ? name : 'ログイン中');
+        : (name != null && name.isNotEmpty
+              ? name
+              : AppLocalizations.of(context)!.signedIn);
     final syncOn = CloudSyncPreferenceService.enabledListenable.value;
 
     return PopupMenuButton<String>(
-      tooltip: 'アカウント',
+      tooltip: AppLocalizations.of(context)!.account,
       icon: const Icon(Icons.account_circle, color: iconColor, size: 28),
       onSelected: _onAccountMenuSelected,
       itemBuilder: (context) => [
@@ -216,39 +386,46 @@ class _GachaPageState extends State<GachaPage> {
                 color: iconColor,
               ),
               const SizedBox(width: 8),
-              Text(syncOn ? 'クラウド同期: オン' : 'クラウド同期: オフ'),
+              Text(
+                syncOn
+                    ? AppLocalizations.of(context)!.cloudSyncOn
+                    : AppLocalizations.of(context)!.cloudSyncOff,
+              ),
             ],
           ),
         ),
         if (syncOn)
-          const PopupMenuItem(
+          PopupMenuItem(
             value: 'manualSync',
             child: Row(
               children: [
-                Icon(Icons.sync, size: 20),
-                SizedBox(width: 8),
-                Text('今すぐ同期'),
+                const Icon(Icons.sync, size: 20),
+                const SizedBox(width: 8),
+                Text(AppLocalizations.of(context)!.syncNow),
               ],
             ),
           ),
         const PopupMenuDivider(),
-        const PopupMenuItem(
+        PopupMenuItem(
           value: 'deleteAccount',
           child: Row(
             children: [
-              Icon(Icons.delete_forever, size: 20, color: Colors.red),
-              SizedBox(width: 8),
-              Text('アカウント削除', style: TextStyle(color: Colors.red)),
+              const Icon(Icons.delete_forever, size: 20, color: Colors.red),
+              const SizedBox(width: 8),
+              Text(
+                AppLocalizations.of(context)!.deleteAccount,
+                style: const TextStyle(color: Colors.red),
+              ),
             ],
           ),
         ),
-        const PopupMenuItem(
+        PopupMenuItem(
           value: 'logout',
           child: Row(
             children: [
-              Icon(Icons.logout, size: 20),
-              SizedBox(width: 8),
-              Text('ログアウト'),
+              const Icon(Icons.logout, size: 20),
+              const SizedBox(width: 8),
+              Text(AppLocalizations.of(context)!.signOut),
             ],
           ),
         ),
@@ -291,7 +468,11 @@ class _GachaPageState extends State<GachaPage> {
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(next ? 'クラウド同期をオンにしました。' : 'クラウド同期をオフにしました。'),
+                content: Text(
+                  next
+                      ? AppLocalizations.of(context)!.cloudSyncEnabled
+                      : AppLocalizations.of(context)!.cloudSyncDisabled,
+                ),
               ),
             );
           }
@@ -305,14 +486,14 @@ class _GachaPageState extends State<GachaPage> {
           if (merged != null) await _applySnapshot(merged);
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('同期しました。')),
+              SnackBar(content: Text(AppLocalizations.of(context)!.synced)),
             );
           }
         } catch (e) {
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text('同期に失敗しました: $e'),
+                content: Text(AppLocalizations.of(context)!.syncFailed('$e')),
                 backgroundColor: Colors.red,
               ),
             );
@@ -331,8 +512,8 @@ class _GachaPageState extends State<GachaPage> {
         await CloudSyncPreferenceService.refreshForUser(null);
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('ログアウトしました。'),
+            SnackBar(
+              content: Text(AppLocalizations.of(context)!.signedOut),
               backgroundColor: Colors.green,
             ),
           );
@@ -346,23 +527,30 @@ class _GachaPageState extends State<GachaPage> {
     if (session == null) return;
     final AnswerGrade grade;
     final String submitted;
+    final l10n = AppLocalizations.of(context)!;
     if (problem.isSymbolOrder) {
-      final passed = orderMatches(problem.symbolOrder, _symbolOrder);
+      final expected = problem.getLocalizedSymbolOrder(context);
+      submitted = formatSymbolOrder(_symbolOrder, context);
+      final passed = orderMatches(expected, submitted);
       grade = AnswerGrade(valueCorrect: passed, unitCorrect: true);
-      submitted = _symbolOrder.split('').join(' ');
     } else {
-      final userUnit = problem.unitInputKind == UnitInputKind.choices
-          ? (_choice == '無次元' ? '' : (_choice ?? ''))
-          : _unitText;
+      final userUnit = switch (problem.unitInputKind) {
+        UnitInputKind.omitted => problem.answerUnit,
+        UnitInputKind.choices =>
+          _isDimensionlessChoice(_choice, l10n) ? '' : (_choice ?? ''),
+        UnitInputKind.base => _unitText,
+      };
       grade = gradeAnswer(
         expectedValue: problem.answerValue,
         expectedUnit: problem.answerUnit,
         userExpression: _expression.text,
         userUnit: userUnit,
       );
-      final submittedUnit = problem.unitInputKind == UnitInputKind.choices
-          ? (_choice ?? '')
-          : _unitText;
+      final submittedUnit = switch (problem.unitInputKind) {
+        UnitInputKind.omitted => problem.getLocalizedAnswerUnitLabel(context),
+        UnitInputKind.choices => _choice ?? '',
+        UnitInputKind.base => _unitText,
+      };
       submitted = _formatSubmitted(_expression.text, submittedUnit);
     }
     final recorded = session.record(problem, grade.passed, _alreadyRecorded);
@@ -390,10 +578,10 @@ class _GachaPageState extends State<GachaPage> {
         foregroundColor: const Color(0xFF1565C0),
         centerTitle: true,
         automaticallyImplyLeading: false,
-        title: const Text(
-          '物理ガチャ',
+        title: Text(
+          AppLocalizations.of(context)!.appTitle,
           textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+          style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
         ),
         actions: [
           _buildAccountAction(),
@@ -413,9 +601,12 @@ class _GachaPageState extends State<GachaPage> {
                     visualDensity: VisualDensity.compact,
                   ),
                   onPressed: () => _openProblemList(session),
-                  child: const Text(
-                    '問題一覧',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  child: Text(
+                    AppLocalizations.of(context)!.problemList,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
                   ),
                 ),
               ),
@@ -433,6 +624,8 @@ class _GachaPageState extends State<GachaPage> {
                 ? const Center(child: CircularProgressIndicator())
                 : _GachaBody(
                     session: session,
+                    displayProblem: _visibleProblem(session),
+                    rolling: _rolling,
                     phase: _phase,
                     expression: _expression,
                     unitText: _unitText,
@@ -442,7 +635,9 @@ class _GachaPageState extends State<GachaPage> {
                     submittedAnswer: _submittedAnswer,
                     showAnswer: _showAnswer,
                     showHint: _showHint,
-                    onRedraw: session.eligible.isEmpty ? null : _redraw,
+                    onRedraw: session.eligible.isEmpty || _rolling
+                        ? null
+                        : _redraw,
                     onDomain: (domain, selected) {
                       _changeFilter((session) {
                         final next = {...session.enabled};
@@ -469,7 +664,8 @@ class _GachaPageState extends State<GachaPage> {
                     onNextToUnit: () => setState(() => _phase = _Phase.unit),
                     onUnitText: (text) => setState(() => _unitText = text),
                     onChoice: (choice) => setState(() => _choice = choice),
-                    onSymbolOrder: (order) => setState(() => _symbolOrder = order),
+                    onSymbolOrder: (order) =>
+                        setState(() => _symbolOrder = order),
                     onBackToValue: () => setState(() => _phase = _Phase.value),
                     onConfirm: session.current == null
                         ? null
@@ -514,6 +710,8 @@ class _GachaPageState extends State<GachaPage> {
   // }
 
   Future<void> _openProblemList(GachaSession session) async {
+    _stopRoll();
+    setState(() {});
     final previous = session.current?.id;
     await Navigator.of(context).push(
       MaterialPageRoute<void>(
@@ -534,6 +732,8 @@ class _GachaPageState extends State<GachaPage> {
 class _GachaBody extends StatelessWidget {
   const _GachaBody({
     required this.session,
+    required this.displayProblem,
+    required this.rolling,
     required this.phase,
     required this.expression,
     required this.unitText,
@@ -560,11 +760,13 @@ class _GachaBody extends StatelessWidget {
   });
 
   final GachaSession session;
+  final PhysicsProblem? displayProblem;
+  final bool rolling;
   final _Phase phase;
   final ExpressionEditor expression;
   final String unitText;
   final String? choice;
-  final String symbolOrder;
+  final List<String> symbolOrder;
   final AnswerGrade? grade;
   final String submittedAnswer;
   final bool showAnswer;
@@ -580,7 +782,7 @@ class _GachaBody extends StatelessWidget {
   final VoidCallback onNextToUnit;
   final ValueChanged<String> onUnitText;
   final ValueChanged<String> onChoice;
-  final ValueChanged<String> onSymbolOrder;
+  final ValueChanged<List<String>> onSymbolOrder;
   final VoidCallback onBackToValue;
   final VoidCallback? onConfirm;
 
@@ -588,8 +790,8 @@ class _GachaBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final problem = session.current;
-    final judged = problem != null && grade != null;
+    final problem = displayProblem;
+    final judged = problem != null && grade != null && !rolling;
     return CustomScrollView(
       slivers: [
         SliverPadding(
@@ -612,12 +814,15 @@ class _GachaBody extends StatelessWidget {
               ),
               const SizedBox(height: 10),
               if (problem == null)
-                const Text('出題できる問題がありません。単元をオンにするか、除外を緩めてください。')
+                Text(AppLocalizations.of(context)!.noProblemsAvailable)
               else ...[
-                _ProblemCard(
-                  key: ValueKey(problem.id),
-                  problem: problem,
-                  showHint: showHint,
+                AnimatedSwitcher(
+                  duration: Duration(milliseconds: rolling ? 70 : 0),
+                  child: _ProblemCard(
+                    key: ValueKey(problem.id),
+                    problem: problem,
+                    showHint: showHint && !rolling,
+                  ),
                 ),
                 const SizedBox(height: 8),
                 Center(
@@ -628,7 +833,9 @@ class _GachaBody extends StatelessWidget {
                     runSpacing: 4,
                     children: [
                       IconButton(
-                        tooltip: _keypadOpen ? '電卓を閉じる' : '電卓',
+                        tooltip: _keypadOpen
+                            ? AppLocalizations.of(context)!.closeCalculator
+                            : AppLocalizations.of(context)!.calculator,
                         style: IconButton.styleFrom(
                           backgroundColor: Colors.white,
                           foregroundColor: _keypadOpen
@@ -638,26 +845,34 @@ class _GachaBody extends StatelessWidget {
                             color: _keypadOpen ? Colors.teal : _actionBlue,
                           ),
                         ),
-                        onPressed: onCalculator,
+                        onPressed: rolling ? null : onCalculator,
                         icon: Icon(
                           Icons.calculate_outlined,
                           color: _keypadOpen ? Colors.teal : _actionBlue,
                         ),
                       ),
                       ElevatedButton(
-                        onPressed: onHint,
+                        onPressed: rolling ? null : onHint,
                         style: _problemActionStyle,
-                        child: Text(showHint ? 'ヒントを隠す' : 'ヒント'),
+                        child: Text(
+                          showHint
+                              ? AppLocalizations.of(context)!.hideHint
+                              : AppLocalizations.of(context)!.hint,
+                        ),
                       ),
                       ElevatedButton(
-                        onPressed: onAnswer,
+                        onPressed: rolling ? null : onAnswer,
                         style: _problemActionStyle,
-                        child: Text(showAnswer ? '答えを隠す' : '答えを見る'),
+                        child: Text(
+                          showAnswer
+                              ? AppLocalizations.of(context)!.hideAnswer
+                              : AppLocalizations.of(context)!.showAnswer,
+                        ),
                       ),
                       ElevatedButton(
-                        onPressed: onAi,
+                        onPressed: rolling ? null : onAi,
                         style: _problemActionStyle,
-                        child: const Text('AIに聞く'),
+                        child: Text(AppLocalizations.of(context)!.askAi),
                       ),
                     ],
                   ),
@@ -670,10 +885,12 @@ class _GachaBody extends StatelessWidget {
                   const SizedBox(height: 8),
                   if (problem.isSymbolOrder)
                     SymbolKeypad(
-                      choices: problem.symbolChoices,
+                      choices: problem.getLocalizedSymbolChoices(context),
                       entered: symbolOrder,
                       onEntered: onSymbolOrder,
-                      onConfirm: symbolOrder.length == problem.symbolChoices.length
+                      onConfirm:
+                          symbolOrder.length ==
+                              problem.getLocalizedSymbolChoices(context).length
                           ? onConfirm
                           : null,
                     )
@@ -681,9 +898,12 @@ class _GachaBody extends StatelessWidget {
                     NumericKeypad(
                       editor: expression,
                       onChanged: onExpressionChanged,
+                      nextLabel: problem.unitObvious
+                          ? AppLocalizations.of(context)!.confirm
+                          : AppLocalizations.of(context)!.toUnits,
                       onNext: expression.text.trim().isEmpty
                           ? null
-                          : onNextToUnit,
+                          : (problem.unitObvious ? onConfirm : onNextToUnit),
                     ),
                 ],
                 if (phase == _Phase.unit) ...[
@@ -740,6 +960,34 @@ Widget _problemFigure(
     ProblemFigure.compressedSpring => const CompressedSpringFigure(),
     ProblemFigure.acResistor => const AcResistorFigure(),
     ProblemFigure.inclinePull => const InclinePullFigure(),
+    ProblemFigure.batteryResistor => const BatteryResistorFigure(),
+    ProblemFigure.seriesCurrent => const SeriesCurrentFigure(),
+    ProblemFigure.parallelCurrent => const ParallelCurrentFigure(),
+    ProblemFigure.bridgeVoltageDrop => const BridgeVoltageDropFigure(),
+    ProblemFigure.isothermalGas => const GasCylinderFigure(
+      process: GasCylinderProcess.isothermal,
+    ),
+    ProblemFigure.isobaricGas => const GasCylinderFigure(
+      process: GasCylinderProcess.isobaric,
+    ),
+    ProblemFigure.isochoricGas => const GasCylinderFigure(
+      process: GasCylinderProcess.isochoric,
+    ),
+    ProblemFigure.adiabaticGas => const GasCylinderFigure(
+      process: GasCylinderProcess.adiabatic,
+    ),
+    ProblemFigure.connectedVessels => const ConnectedVesselsFigure(),
+    ProblemFigure.diatomicVessels => const ConnectedVesselsFigure(
+      leftInside: '2.0 mol',
+      leftBelow: '300 K',
+      rightInside: '1.0 mol',
+      rightBelow: '900 K',
+    ),
+    ProblemFigure.verticalSpringOscillation =>
+      const VerticalSpringOscillationFigure(),
+    ProblemFigure.simplePendulum => const SimplePendulumFigure(),
+    ProblemFigure.keplerOrbits => const KeplerOrbitsFigure(),
+    ProblemFigure.beats => const BeatsFigure(),
   };
 }
 
@@ -791,8 +1039,8 @@ class _ProblemCardState extends State<_ProblemCard>
   @override
   Widget build(BuildContext context) {
     final problem = widget.problem;
-    return Card(
-      margin: EdgeInsets.zero,
+    return DomainTintCard(
+      domains: problem.domains,
       child: AnimatedBuilder(
         animation: _reveal,
         builder: (context, _) {
@@ -814,7 +1062,7 @@ class _ProblemCardState extends State<_ProblemCard>
                   const SizedBox(height: 6),
                 ],
                 Text(
-                  problem.statement,
+                  problem.getLocalizedStatement(context),
                   style: const TextStyle(fontSize: 16, height: 1.6),
                 ),
                 if (open)
@@ -824,7 +1072,7 @@ class _ProblemCardState extends State<_ProblemCard>
                       heightFactor: progress,
                       child: Padding(
                         padding: const EdgeInsets.only(top: 12),
-                        child: _hintBody(problem),
+                        child: _hintBody(context, problem),
                       ),
                     ),
                   ),
@@ -838,17 +1086,18 @@ class _ProblemCardState extends State<_ProblemCard>
 }
 
 /// 問題ごとのヒント。文章が基本で、種類によっては図のアニメも同時に進む。
-Widget _hintBody(PhysicsProblem problem) {
+Widget _hintBody(BuildContext context, PhysicsProblem problem) {
+  final hint = problem.getLocalizedHint(context);
   return switch (problem.hintReveal) {
     HintReveal.message ||
-    HintReveal.groupUpperBlocks => _HintMessage(text: problem.hint),
+    HintReveal.groupUpperBlocks => _HintMessage(text: hint),
     HintReveal.freeEndReflection => _reflectionHint(
       const FreeEndReflectionFigure(),
-      problem.hint,
+      hint,
     ),
     HintReveal.fixedEndReflection => _reflectionHint(
       const FixedEndReflectionFigure(),
-      problem.hint,
+      hint,
     ),
   };
 }
@@ -901,13 +1150,15 @@ class _AnswerCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _AnswerLine(
-              text: '答え　${problem.answerDisplay} ${problem.answerUnitLabel}'
-                  .trim(),
+              text: AppLocalizations.of(context)!.answerWithValue(
+                '${problem.getLocalizedAnswerDisplay(context)} ${problem.getLocalizedAnswerUnitLabel(context)}'
+                    .trim(),
+              ),
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 8),
             Text(
-              problem.explanation,
+              problem.getLocalizedExplanation(context),
               style: const TextStyle(fontSize: 16, height: 1.5),
             ),
           ],
@@ -939,7 +1190,7 @@ class _Verdict extends StatelessWidget {
   Widget build(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width;
     final markSize = width * (grade.passed ? 0.75 : 0.5);
-    final correction = _correction();
+    final correction = _correction(context);
     return Center(
       child: SizedBox(
         width: markSize,
@@ -979,10 +1230,10 @@ class _Verdict extends StatelessWidget {
   }
 
   /// 間違えた部分だけを、送った解答と同じ大きさの赤文字にする。
-  String? _correction() {
+  String? _correction(BuildContext context) {
     if (grade.passed) return null;
-    final value = problem.answerDisplay;
-    final unit = problem.answerUnitLabel;
+    final value = problem.getLocalizedAnswerDisplay(context);
+    final unit = problem.getLocalizedAnswerUnitLabel(context);
     if (!grade.valueCorrect && !grade.unitCorrect) return '$value $unit'.trim();
     if (!grade.valueCorrect) return value;
     return unit;
@@ -1139,9 +1390,9 @@ class _GachaButton extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 16),
-                const Text(
-                  'ガチャを回す',
-                  style: TextStyle(
+                Text(
+                  AppLocalizations.of(context)!.spinGacha,
+                  style: const TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,

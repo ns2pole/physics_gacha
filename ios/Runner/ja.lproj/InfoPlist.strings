@@ -1,0 +1,3 @@
+CFBundleDisplayName = "物理ガチャ";
+NSMicrophoneUsageDescription = "AIチャットの音声入力に使います。";
+NSSpeechRecognitionUsageDescription = "AIチャットの音声入力に使います。";

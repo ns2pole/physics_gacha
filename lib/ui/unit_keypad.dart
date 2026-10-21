@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../l10n/app_localizations.dart';
+
 import '../models/physics_problem.dart';
 import 'calculator_frame.dart';
 import 'math_expression_view.dart';
@@ -31,7 +33,7 @@ class UnitKeypad extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final preview = _preview;
+    final preview = _preview(context);
     return CalculatorFrame(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -70,7 +72,7 @@ class UnitKeypad extends StatelessWidget {
                       ),
                     ),
                     onPressed: onBack,
-                    child: const Text('数値へ戻る'),
+                    child: Text(AppLocalizations.of(context)!.backToNumbers),
                   ),
                 ),
               ),
@@ -94,7 +96,7 @@ class UnitKeypad extends StatelessWidget {
                       ),
                     ),
                     onPressed: onConfirm,
-                    child: const Text('確定'),
+                    child: Text(AppLocalizations.of(context)!.confirm),
                   ),
                 ),
               ),
@@ -105,13 +107,14 @@ class UnitKeypad extends StatelessWidget {
     );
   }
 
-  ({String unit, String hint}) get _preview {
+  ({String unit, String hint}) _preview(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     if (problem.unitInputKind == UnitInputKind.choices) {
       final selected = selectedChoice;
-      if (selected == null) return (unit: '', hint: '単位を選ぶ');
+      if (selected == null) return (unit: '', hint: l10n.selectUnit);
       return (unit: selected, hint: '');
     }
-    if (text.isEmpty) return (unit: '', hint: 'kg m s^-1 のように組み立てる');
+    if (text.isEmpty) return (unit: '', hint: l10n.assembleUnitHint);
     return (unit: text, hint: '');
   }
 }

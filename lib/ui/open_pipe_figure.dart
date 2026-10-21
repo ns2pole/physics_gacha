@@ -2,6 +2,8 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import '../utils/figure_labels.dart';
+
 /// 両端が開いた管と、腹が 3 個の定在波。腹だけが上下する。
 class OpenPipeFigure extends StatefulWidget {
   const OpenPipeFigure({super.key});
@@ -35,14 +37,19 @@ class _OpenPipeFigureState extends State<OpenPipeFigure>
 
   @override
   Widget build(BuildContext context) {
+    final labels = FigureLabels.of(context);
     return SizedBox(
-      height: 156,
-      width: 280,
+      height: 152,
+      width: 230,
       child: AnimatedBuilder(
         animation: _controller,
         builder: (context, _) {
           return CustomPaint(
-            painter: _OpenPipePainter(phase: _controller.value * 2 * math.pi),
+            painter: _OpenPipePainter(
+              phase: _controller.value * 2 * math.pi,
+              antinode: labels.antinode,
+              openPipe: labels.openPipe,
+            ),
           );
         },
       ),
@@ -51,12 +58,19 @@ class _OpenPipeFigureState extends State<OpenPipeFigure>
 }
 
 class _OpenPipePainter extends CustomPainter {
-  const _OpenPipePainter({required this.phase});
+  const _OpenPipePainter({
+    required this.phase,
+    required this.antinode,
+    required this.openPipe,
+  });
 
   final double phase;
+  final String antinode;
+  final String openPipe;
 
   @override
   void paint(Canvas canvas, Size size) {
+    canvas.translate(-25, -4);
     const ink = Color(0xFF37474F);
     const waveColor = Color(0xFF1565C0);
     final wall = Paint()
@@ -95,12 +109,12 @@ class _OpenPipePainter extends CustomPainter {
         ..style = PaintingStyle.stroke,
     );
 
-    _label(canvas, '腹', const Offset(left, top - 14), waveColor);
-    _label(canvas, '腹', Offset((left + right) / 2, bottom + 14), waveColor);
-    _label(canvas, '腹', const Offset(right, top - 14), waveColor);
+    _label(canvas, antinode, const Offset(left, top - 14), waveColor);
+    _label(canvas, antinode, Offset((left + right) / 2, bottom + 14), waveColor);
+    _label(canvas, antinode, const Offset(right, top - 14), waveColor);
     _label(
       canvas,
-      '開管',
+      openPipe,
       Offset((left + right) / 2, bottom + 40),
       ink,
       weight: FontWeight.w500,
@@ -145,5 +159,8 @@ class _OpenPipePainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _OpenPipePainter oldDelegate) => oldDelegate.phase != phase;
+  bool shouldRepaint(covariant _OpenPipePainter oldDelegate) =>
+      oldDelegate.phase != phase ||
+      oldDelegate.antinode != antinode ||
+      oldDelegate.openPipe != openPipe;
 }

@@ -1,3 +1,7 @@
+import 'package:flutter/widgets.dart';
+
+import '../l10n/app_localizations.dart';
+
 /// 1枠の状態。左が古い3枠で1問の履歴になる。
 enum SlotStatus { empty, solved, understood, failed }
 
@@ -8,29 +12,38 @@ enum AutoRecordMode { both, correctOnly, off }
 enum ExclusionMode { none, latest1, latest2, latest3 }
 
 extension SlotStatusLabel on SlotStatus {
-  String get label => switch (this) {
-    SlotStatus.empty => '空',
-    SlotStatus.solved => '解決済み',
-    SlotStatus.understood => '理解済み',
-    SlotStatus.failed => '失敗',
-  };
+  String label(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return switch (this) {
+      SlotStatus.empty => l10n.slotEmpty,
+      SlotStatus.solved => l10n.slotSolved,
+      SlotStatus.understood => l10n.slotUnderstood,
+      SlotStatus.failed => l10n.slotFailed,
+    };
+  }
 }
 
 extension AutoRecordModeLabel on AutoRecordMode {
-  String get label => switch (this) {
-    AutoRecordMode.both => '一致で正解、不一致でバツを自動登録',
-    AutoRecordMode.correctOnly => '一致のときだけ正解を自動登録',
-    AutoRecordMode.off => '自動履歴登録をしない',
-  };
+  String label(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return switch (this) {
+      AutoRecordMode.both => l10n.autoRecordBoth,
+      AutoRecordMode.correctOnly => l10n.autoRecordCorrectOnly,
+      AutoRecordMode.off => l10n.autoRecordOff,
+    };
+  }
 }
 
 extension ExclusionModeLabel on ExclusionMode {
-  String get label => switch (this) {
-    ExclusionMode.none => '除外なし',
-    ExclusionMode.latest1 => '最新1回が緑なら除く',
-    ExclusionMode.latest2 => '最新2回が緑なら除く',
-    ExclusionMode.latest3 => '最新3回が緑なら除く',
-  };
+  String label(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return switch (this) {
+      ExclusionMode.none => l10n.exclusionModeNone,
+      ExclusionMode.latest1 => l10n.exclusionModeLatest1,
+      ExclusionMode.latest2 => l10n.exclusionModeLatest2,
+      ExclusionMode.latest3 => l10n.exclusionModeLatest3,
+    };
+  }
 
   int get neededGreens => switch (this) {
     ExclusionMode.none => 0,

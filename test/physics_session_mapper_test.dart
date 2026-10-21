@@ -1,27 +1,83 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:physics_gacha/data/sample_problems.dart';
 import 'package:physics_gacha/integrations/ai_chat/physics_session_mapper.dart';
+import 'package:physics_gacha/l10n/app_localizations.dart';
 import 'package:physics_gacha/models/physics_domain.dart';
 import 'package:physics_gacha/models/physics_problem.dart';
 
 void main() {
-  test('statement / theme / explanation を載せ、flags を渡す', () {
-    final problem = sampleProblems.firstWhere((p) => p.id == 'sample-mechanics');
-    final payload = PhysicsSessionMapper.fromProblem(
-      problem: problem,
-      hintShown: true,
-      answerShown: false,
-    );
+  testWidgets('statement / theme / explanation を載せ、flags を渡す', (tester) async {
+    final problem =
+        sampleProblems.firstWhere((p) => p.id == 'sample-mechanics');
 
-    expect(payload.contentId, 'sample-mechanics');
-    expect(payload.title, 'AIに聞く');
-    expect(payload.questionText, problem.statement.trim());
-    expect(payload.category, '運動方程式（ニュートン第2法則）');
-    expect(payload.referenceAnswer, '40');
-    expect(payload.referenceSolution, problem.explanation.trim());
-    expect(payload.hintShown, isTrue);
-    expect(payload.answerShown, isFalse);
-    expect(payload.level, isNull);
+    await tester.pumpWidget(
+      MaterialApp(
+        locale: const Locale('ja'),
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: Builder(
+          builder: (context) {
+            final payload = PhysicsSessionMapper.fromProblem(
+              context: context,
+              problem: problem,
+              hintShown: true,
+              answerShown: false,
+            );
+
+            expect(payload.contentId, 'sample-mechanics');
+            expect(payload.title, 'AIに聞く');
+            expect(payload.questionText, problem.statement.trim());
+            expect(payload.category, '運動方程式（ニュートン第2法則）');
+            expect(payload.referenceAnswer, '40');
+            expect(payload.referenceSolution, problem.explanation.trim());
+            expect(payload.hintShown, isTrue);
+            expect(payload.answerShown, isFalse);
+            expect(payload.level, isNull);
+            return const SizedBox.shrink();
+          },
+        ),
+      ),
+    );
+  });
+
+  testWidgets('英語では theme / statement が英語になる', (tester) async {
+    final problem =
+        sampleProblems.firstWhere((p) => p.id == 'sample-mechanics');
+
+    await tester.pumpWidget(
+      MaterialApp(
+        locale: const Locale('en'),
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: Builder(
+          builder: (context) {
+            final payload = PhysicsSessionMapper.fromProblem(
+              context: context,
+              problem: problem,
+              hintShown: false,
+              answerShown: false,
+            );
+
+            expect(payload.title, 'Ask AI');
+            expect(payload.category, "Newton's second law (equation of motion)");
+            expect(payload.questionText.contains('external force'), isTrue);
+            return const SizedBox.shrink();
+          },
+        ),
+      ),
+    );
   });
 
   test('空の explanation は referenceSolution を省略する', () {

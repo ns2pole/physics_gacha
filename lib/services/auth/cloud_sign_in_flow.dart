@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import '../../l10n/app_localizations.dart';
 import 'cloud_sync_coordinator.dart';
 import 'cloud_sync_preference_service.dart';
 import 'firebase_auth_service.dart';
@@ -43,10 +44,11 @@ class CloudSignInFlow {
       }
 
       if (!context.mounted) return true;
+      final l10n = AppLocalizations.of(context)!;
       final method = usesAppleSignIn ? 'Apple' : 'Google';
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('$methodでログインしました。クラウド同期をオンにしました。'),
+          content: Text(l10n.signedInWithMethod(method)),
           backgroundColor: Colors.green,
           duration: const Duration(seconds: 2),
         ),
@@ -54,12 +56,13 @@ class CloudSignInFlow {
       return true;
     } catch (e) {
       if (!context.mounted) return false;
+      final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
             usesAppleSignIn
-                ? 'Appleでのログインに失敗しました。'
-                : 'Googleでのログインに失敗しました: $e',
+                ? l10n.appleSignInFailed
+                : l10n.googleSignInFailed('$e'),
           ),
           backgroundColor: Colors.red,
           duration: const Duration(seconds: 3),
@@ -70,22 +73,25 @@ class CloudSignInFlow {
   }
 
   static Future<bool> _confirmCloudSignIn(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
-          title: const Text('クラウドと同期'),
-          content: const Text(
-            'ログインすると、学習履歴とガチャ設定をクラウドに保存・復元できます。',
-          ),
+          title: Text(l10n.cloudSyncTitle),
+          content: Text(l10n.cloudSyncBody),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(false),
-              child: const Text('戻る'),
+              child: Text(l10n.back),
             ),
             FilledButton(
               onPressed: () => Navigator.of(dialogContext).pop(true),
-              child: Text(usesAppleSignIn ? 'Appleで続行' : 'Googleで続行'),
+              child: Text(
+                usesAppleSignIn
+                    ? l10n.continueWithApple
+                    : l10n.continueWithGoogle,
+              ),
             ),
           ],
         );

@@ -2,9 +2,13 @@ import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'firebase_options.dart';
+import 'l10n/app_localizations.dart';
 import 'ui/gacha_page.dart';
+import 'ui/store_shot_tour.dart';
+import 'utils/locale_utils.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,7 +30,7 @@ Future<void> _initializeFirebase() async {
     }
     await _activateFirebaseAppCheck();
   } catch (error, stack) {
-    debugPrint('[Firebase] 初期化に失敗: $error');
+    debugPrint('[Firebase] init failed: $error');
     debugPrint('$stack');
   }
 }
@@ -46,8 +50,20 @@ class PhysicsGachaApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final forcedLocale = storeShotLocale();
     return MaterialApp(
-      title: '物理ガチャ',
+      debugShowCheckedModeBanner: !storeShotsEnabled,
+      onGenerateTitle: (context) => AppLocalizations.of(context)!.appTitle,
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: AppLocalizations.supportedLocales,
+      locale: forcedLocale,
+      localeResolutionCallback:
+          forcedLocale == null ? resolveAppLocale : null,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF1565C0)),
         useMaterial3: true,

@@ -1,0 +1,187 @@
+{
+  "@@locale": "en",
+  "appTitle": "Physics Gacha",
+  "problemList": "Problem list",
+  "spinGacha": "Spin",
+  "hint": "Hint",
+  "hideHint": "Hide hint",
+  "showAnswer": "Show answer",
+  "hideAnswer": "Hide answer",
+  "askAi": "Ask AI",
+  "calculator": "Calculator",
+  "closeCalculator": "Close calculator",
+  "answerLabel": "Answer",
+  "answerWithValue": "Answer  {value}",
+  "@answerWithValue": {
+    "placeholders": {
+      "value": {"type": "String"}
+    }
+  },
+  "approach": "Approach",
+  "firstStep": "First step",
+  "explanation": "Solution",
+  "detail": "Details",
+  "noMatchingProblems": "No matching problems",
+  "noProblemsAvailable": "No problems available. Turn a topic on or ease the exclusion filter.",
+  "filterSettings": "Filter",
+  "exclusionNone": "No exclusion",
+  "exclusionNoneWithTotal": "No exclusion · {total} total",
+  "@exclusionNoneWithTotal": {
+    "placeholders": {
+      "total": {"type": "int"}
+    }
+  },
+  "exclusionLatestPrefix": "If the latest {count}",
+  "@exclusionLatestPrefix": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "exclusionThenRemoveFromGacha": "are green, exclude from gacha",
+  "exclusionThenExcludeProblems": "exclude those problems",
+  "totalProblems": "{total} total",
+  "@totalProblems": {
+    "placeholders": {
+      "total": {"type": "int"}
+    }
+  },
+  "remainingProblems": "({remaining} left / {total})",
+  "@remainingProblems": {
+    "placeholders": {
+      "remaining": {"type": "int"},
+      "total": {"type": "int"}
+    }
+  },
+  "domainMechanics": "Mechanics",
+  "domainThermodynamics": "Thermo",
+  "domainWaves": "Waves",
+  "domainElectromagnetism": "EM",
+  "domainAtom": "Atomic",
+  "slotEmpty": "Empty",
+  "slotSolved": "Solved",
+  "slotUnderstood": "Understood",
+  "slotFailed": "Missed",
+  "autoRecordBoth": "Auto-mark correct on match, miss on mismatch",
+  "autoRecordCorrectOnly": "Auto-mark only when correct",
+  "autoRecordOff": "Do not auto-record history",
+  "exclusionModeNone": "No exclusion",
+  "exclusionModeLatest1": "Exclude if latest 1 is green",
+  "exclusionModeLatest2": "Exclude if latest 2 are green",
+  "exclusionModeLatest3": "Exclude if latest 3 are green",
+  "dimensionless": "Dimensionless",
+  "toUnits": "Units",
+  "backToNumbers": "Back to numbers",
+  "confirm": "OK",
+  "selectUnit": "Choose a unit",
+  "assembleUnitHint": "Build like kg m s^-1",
+  "symbolOrderHint": "Shortest wavelength first, left to right",
+  "cloudLogin": "Sign in to cloud",
+  "account": "Account",
+  "signedIn": "Signed in",
+  "cloudSyncOn": "Cloud sync: On",
+  "cloudSyncOff": "Cloud sync: Off",
+  "syncNow": "Sync now",
+  "deleteAccount": "Delete account",
+  "signOut": "Sign out",
+  "cloudSyncEnabled": "Cloud sync turned on.",
+  "cloudSyncDisabled": "Cloud sync turned off.",
+  "synced": "Synced.",
+  "syncFailed": "Sync failed: {error}",
+  "@syncFailed": {
+    "placeholders": {
+      "error": {"type": "String"}
+    }
+  },
+  "signedOut": "Signed out.",
+  "cloudSyncTitle": "Sync with cloud",
+  "cloudSyncBody": "Sign in to save and restore your learning history and gacha settings in the cloud.",
+  "back": "Back",
+  "continueWithApple": "Continue with Apple",
+  "continueWithGoogle": "Continue with Google",
+  "signedInWithMethod": "Signed in with {method}. Cloud sync turned on.",
+  "@signedInWithMethod": {
+    "placeholders": {
+      "method": {"type": "String"}
+    }
+  },
+  "appleSignInFailed": "Apple sign-in failed.",
+  "googleSignInFailed": "Google sign-in failed: {error}",
+  "@googleSignInFailed": {
+    "placeholders": {
+      "error": {"type": "String"}
+    }
+  },
+  "deleteAccountTitle": "Delete account",
+  "deleteAccountBody": "This deletes your account and cloud learning history and gacha settings. This cannot be undone.",
+  "cancel": "Cancel",
+  "delete": "Delete",
+  "deletingAccount": "Deleting account…",
+  "accountDeleted": "Account deleted.",
+  "deleteFailedTitle": "Deletion failed",
+  "close": "Close",
+  "reauthGoogle": "To continue deleting your account, sign in again with Google.",
+  "reauthApple": "To continue deleting your account, sign in again with Apple.",
+  "reauthenticating": "Reauthenticating…",
+  "reauthUnavailableTitle": "Cannot reauthenticate",
+  "reauthUnavailableBody": "Could not confirm how you signed in. Sign out, then sign in again.",
+  "reauthFailed": "Reauthentication failed: {error}",
+  "@reauthFailed": {
+    "placeholders": {
+      "error": {"type": "String"}
+    }
+  },
+  "identityConfirmTitle": "Confirm identity",
+  "continueAction": "Continue",
+  "accountDeletionEndpointMissing": "Account deletion endpoint is not configured.",
+  "accountDeletionAuthMissing": "Could not confirm sign-in state.",
+  "accountDeletionFailed": "Account deletion failed.",
+  "accountDeletionTimeout": "The request timed out. Please try again later.",
+  "accountDeletionRequiresLogin": "You must be signed in to delete your account.",
+  "reauthCancelled": "Reauthentication was cancelled.",
+  "aiGreeting": "Ask anything about this problem.",
+  "aiPlaceholder": "Type your question",
+  "aiSend": "Send",
+  "aiMoreDetail": "More detail",
+  "aiGenericError": "The AI response failed. Please try again.",
+  "aiStarterHint": "Give me a hint",
+  "aiStarterApproach": "Tell me only the approach",
+  "aiStarterFirstStep": "Tell me only the first step",
+  "aiFreeLimitReached": "You have reached this month's free limit ({limit}).",
+  "@aiFreeLimitReached": {
+    "placeholders": {
+      "limit": {"type": "int"}
+    }
+  },
+  "aiPaidLimitReached": "You have reached the AI pass limit ({limit}).",
+  "@aiPaidLimitReached": {
+    "placeholders": {
+      "limit": {"type": "int"}
+    }
+  },
+  "aiVoiceListening": "Listening…",
+  "aiVoiceSendAuto": "Send voice automatically",
+  "aiVoiceSendManual": "Edit before sending",
+  "aiVoiceSendAutoLabel": "Auto-send",
+  "aiVoiceSendManualLabel": "Manual",
+  "aiVoicePermissionDenied": "Microphone permission is required for voice input.",
+  "figureObjectA": "Block A",
+  "figureObjectB": "Block B",
+  "figureObjectC": "Block C",
+  "figureExternalForce": "Force",
+  "figureInitialSpeed": "Initial speed",
+  "figureAntinode": "Antinode",
+  "figureNode": "Node",
+  "figureWall": "Wall",
+  "figureOpenPipe": "Open pipe",
+  "figureSpring": "Spring",
+  "figureSmallMass": "Mass",
+  "figureString": "String",
+  "figureBefore": "Before",
+  "figureAfter": "After",
+  "figureIsothermal": "Isothermal",
+  "figureIsobaric": "Isobaric",
+  "figureIsochoric": "Isochoric",
+  "figureAdiabatic": "Adiabatic compression",
+  "figureSun": "Sun",
+  "hintUnavailableEn": "Hint is not available in English yet."
+}

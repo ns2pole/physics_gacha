@@ -1,0 +1,187 @@
+{
+  "@@locale": "ja",
+  "appTitle": "物理ガチャ",
+  "problemList": "問題一覧",
+  "spinGacha": "ガチャを回す",
+  "hint": "ヒント",
+  "hideHint": "ヒントを隠す",
+  "showAnswer": "答えを見る",
+  "hideAnswer": "答えを隠す",
+  "askAi": "AIに聞く",
+  "calculator": "電卓",
+  "closeCalculator": "電卓を閉じる",
+  "answerLabel": "答え",
+  "answerWithValue": "答え　{value}",
+  "@answerWithValue": {
+    "placeholders": {
+      "value": {"type": "String"}
+    }
+  },
+  "approach": "方針",
+  "firstStep": "最初の一手",
+  "explanation": "解説",
+  "detail": "詳細",
+  "noMatchingProblems": "該当する問題がありません",
+  "noProblemsAvailable": "出題できる問題がありません。単元をオンにするか、除外を緩めてください。",
+  "filterSettings": "フィルタ設定",
+  "exclusionNone": "除外なし",
+  "exclusionNoneWithTotal": "除外なし 全{total}問",
+  "@exclusionNoneWithTotal": {
+    "placeholders": {
+      "total": {"type": "int"}
+    }
+  },
+  "exclusionLatestPrefix": "最新{count}回が",
+  "@exclusionLatestPrefix": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "exclusionThenRemoveFromGacha": "ならガチャから外す",
+  "exclusionThenExcludeProblems": "の問題を除く",
+  "totalProblems": "全{total}問",
+  "@totalProblems": {
+    "placeholders": {
+      "total": {"type": "int"}
+    }
+  },
+  "remainingProblems": "(残 {remaining}問/{total}問)",
+  "@remainingProblems": {
+    "placeholders": {
+      "remaining": {"type": "int"},
+      "total": {"type": "int"}
+    }
+  },
+  "domainMechanics": "力学",
+  "domainThermodynamics": "熱力学",
+  "domainWaves": "波動",
+  "domainElectromagnetism": "電磁気学",
+  "domainAtom": "原子",
+  "slotEmpty": "空",
+  "slotSolved": "解決済み",
+  "slotUnderstood": "理解済み",
+  "slotFailed": "失敗",
+  "autoRecordBoth": "一致で正解、不一致でバツを自動登録",
+  "autoRecordCorrectOnly": "一致のときだけ正解を自動登録",
+  "autoRecordOff": "自動履歴登録をしない",
+  "exclusionModeNone": "除外なし",
+  "exclusionModeLatest1": "最新1回が緑なら除く",
+  "exclusionModeLatest2": "最新2回が緑なら除く",
+  "exclusionModeLatest3": "最新3回が緑なら除く",
+  "dimensionless": "無次元",
+  "toUnits": "単位へ",
+  "backToNumbers": "数値へ戻る",
+  "confirm": "確定",
+  "selectUnit": "単位を選ぶ",
+  "assembleUnitHint": "kg m s^-1 のように組み立てる",
+  "symbolOrderHint": "短い順に左から",
+  "cloudLogin": "クラウドにログイン",
+  "account": "アカウント",
+  "signedIn": "ログイン中",
+  "cloudSyncOn": "クラウド同期: オン",
+  "cloudSyncOff": "クラウド同期: オフ",
+  "syncNow": "今すぐ同期",
+  "deleteAccount": "アカウント削除",
+  "signOut": "ログアウト",
+  "cloudSyncEnabled": "クラウド同期をオンにしました。",
+  "cloudSyncDisabled": "クラウド同期をオフにしました。",
+  "synced": "同期しました。",
+  "syncFailed": "同期に失敗しました: {error}",
+  "@syncFailed": {
+    "placeholders": {
+      "error": {"type": "String"}
+    }
+  },
+  "signedOut": "ログアウトしました。",
+  "cloudSyncTitle": "クラウドと同期",
+  "cloudSyncBody": "ログインすると、学習履歴とガチャ設定をクラウドに保存・復元できます。",
+  "back": "戻る",
+  "continueWithApple": "Appleで続行",
+  "continueWithGoogle": "Googleで続行",
+  "signedInWithMethod": "{method}でログインしました。クラウド同期をオンにしました。",
+  "@signedInWithMethod": {
+    "placeholders": {
+      "method": {"type": "String"}
+    }
+  },
+  "appleSignInFailed": "Appleでのログインに失敗しました。",
+  "googleSignInFailed": "Googleでのログインに失敗しました: {error}",
+  "@googleSignInFailed": {
+    "placeholders": {
+      "error": {"type": "String"}
+    }
+  },
+  "deleteAccountTitle": "アカウントを削除",
+  "deleteAccountBody": "アカウントとクラウド上の学習履歴・ガチャ設定を削除します。この操作は取り消せません。",
+  "cancel": "キャンセル",
+  "delete": "削除する",
+  "deletingAccount": "アカウントを削除しています…",
+  "accountDeleted": "アカウントを削除しました。",
+  "deleteFailedTitle": "削除に失敗しました",
+  "close": "閉じる",
+  "reauthGoogle": "アカウント削除を続けるには、Googleで再度認証してください。",
+  "reauthApple": "アカウント削除を続けるには、Appleアカウントで再度認証してください。",
+  "reauthenticating": "再認証しています…",
+  "reauthUnavailableTitle": "再認証できません",
+  "reauthUnavailableBody": "ログイン方法を確認できませんでした。一度ログアウトしてから、もう一度ログインしてください。",
+  "reauthFailed": "再認証に失敗しました: {error}",
+  "@reauthFailed": {
+    "placeholders": {
+      "error": {"type": "String"}
+    }
+  },
+  "identityConfirmTitle": "本人確認",
+  "continueAction": "続行",
+  "accountDeletionEndpointMissing": "アカウント削除の接続先が設定されていません。",
+  "accountDeletionAuthMissing": "ログイン状態を確認できませんでした。",
+  "accountDeletionFailed": "アカウント削除に失敗しました。",
+  "accountDeletionTimeout": "通信に時間がかかっています。しばらくしてからもう一度お試しください。",
+  "accountDeletionRequiresLogin": "アカウント削除にはログインが必要です。",
+  "reauthCancelled": "再認証がキャンセルされました。",
+  "aiGreeting": "この問題について聞いてみてください。",
+  "aiPlaceholder": "聞きたいことを書いてください",
+  "aiSend": "送信",
+  "aiMoreDetail": "もう少し詳しく",
+  "aiGenericError": "AIの応答に失敗しました。もう一度試してください。",
+  "aiStarterHint": "ヒントを教えて",
+  "aiStarterApproach": "方針だけ教えて",
+  "aiStarterFirstStep": "最初の一手だけ教えて",
+  "aiFreeLimitReached": "今月の無料利用（{limit}回）に達しました。",
+  "@aiFreeLimitReached": {
+    "placeholders": {
+      "limit": {"type": "int"}
+    }
+  },
+  "aiPaidLimitReached": "AIパスの利用上限（{limit}回）に達しました。",
+  "@aiPaidLimitReached": {
+    "placeholders": {
+      "limit": {"type": "int"}
+    }
+  },
+  "aiVoiceListening": "聞いています…",
+  "aiVoiceSendAuto": "音声を自動送信",
+  "aiVoiceSendManual": "送信前に編集",
+  "aiVoiceSendAutoLabel": "自動送信",
+  "aiVoiceSendManualLabel": "手動",
+  "aiVoicePermissionDenied": "音声入力にはマイクの許可が必要です。",
+  "figureObjectA": "物体A",
+  "figureObjectB": "物体B",
+  "figureObjectC": "物体C",
+  "figureExternalForce": "外力",
+  "figureInitialSpeed": "初速",
+  "figureAntinode": "腹",
+  "figureNode": "節",
+  "figureWall": "壁",
+  "figureOpenPipe": "開管",
+  "figureSpring": "ばね",
+  "figureSmallMass": "小物体",
+  "figureString": "糸",
+  "figureBefore": "はじめ",
+  "figureAfter": "あと",
+  "figureIsothermal": "等温",
+  "figureIsobaric": "等圧",
+  "figureIsochoric": "等積",
+  "figureAdiabatic": "断熱圧縮",
+  "figureSun": "太陽",
+  "hintUnavailableEn": "英語のヒントはまだありません。"
+}

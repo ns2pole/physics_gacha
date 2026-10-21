@@ -33,7 +33,14 @@ class ParsedUnit {
 }
 
 class Dimensions {
-  const Dimensions({this.kg = 0, this.m = 0, this.s = 0, this.a = 0});
+  const Dimensions({
+    this.kg = 0,
+    this.m = 0,
+    this.s = 0,
+    this.a = 0,
+    this.kelvin = 0,
+    this.mol = 0,
+  });
 
   static const zero = Dimensions();
 
@@ -41,12 +48,16 @@ class Dimensions {
   final int m;
   final int s;
   final int a;
+  final int kelvin;
+  final int mol;
 
   Dimensions add(Dimensions other) => Dimensions(
     kg: kg + other.kg,
     m: m + other.m,
     s: s + other.s,
     a: a + other.a,
+    kelvin: kelvin + other.kelvin,
+    mol: mol + other.mol,
   );
 
   Dimensions subtract(Dimensions other) => Dimensions(
@@ -54,6 +65,8 @@ class Dimensions {
     m: m - other.m,
     s: s - other.s,
     a: a - other.a,
+    kelvin: kelvin - other.kelvin,
+    mol: mol - other.mol,
   );
 
   Dimensions times(int factor) => Dimensions(
@@ -61,6 +74,8 @@ class Dimensions {
     m: m * factor,
     s: s * factor,
     a: a * factor,
+    kelvin: kelvin * factor,
+    mol: mol * factor,
   );
 
   @override
@@ -69,10 +84,12 @@ class Dimensions {
       kg == other.kg &&
       m == other.m &&
       s == other.s &&
-      a == other.a;
+      a == other.a &&
+      kelvin == other.kelvin &&
+      mol == other.mol;
 
   @override
-  int get hashCode => Object.hash(kg, m, s, a);
+  int get hashCode => Object.hash(kg, m, s, a, kelvin, mol);
 }
 
 class _NamedUnit {
@@ -93,6 +110,10 @@ const _named = <String, _NamedUnit>{
   'Hz': _NamedUnit(1, Dimensions(s: -1)),
   'V': _NamedUnit(1, Dimensions(kg: 1, m: 2, s: -3, a: -1)),
   'C': _NamedUnit(1, Dimensions(s: 1, a: 1)),
+  'K': _NamedUnit(1, Dimensions(kelvin: 1)),
+  'mol': _NamedUnit(1, Dimensions(mol: 1)),
+  '年': _NamedUnit(365.25 * 24 * 3600, Dimensions(s: 1)),
+  'yr': _NamedUnit(365.25 * 24 * 3600, Dimensions(s: 1)),
 };
 
 const _prefixes = <String, double>{
@@ -109,7 +130,7 @@ const _prefixes = <String, double>{
 
 ParsedUnit? parseUnit(String source) {
   final text = source.trim();
-  if (text.isEmpty || text == '無次元' || text == '1') {
+  if (text.isEmpty || text == '無次元' || text == 'Dimensionless' || text == '1') {
     return ParsedUnit.dimensionless;
   }
   final sides = text.split('/');
@@ -165,7 +186,7 @@ ParsedUnit? _parseProduct(String source) {
 }
 
 ParsedUnit? _parseToken(String token) {
-  final match = RegExp(r'^([A-Za-zµ]+|Ω)(?:\^(-?\d+))?$').firstMatch(token);
+  final match = RegExp(r'^([A-Za-zµ]+|Ω|年)(?:\^(-?\d+))?$').firstMatch(token);
   if (match == null) return null;
   final symbol = match.group(1)!;
   final exponent = int.tryParse(match.group(2) ?? '1');

@@ -1,3 +1,5 @@
+import '../l10n/app_localizations.dart';
+
 import 'package:flutter/material.dart';
 
 import 'calculator_frame.dart';
@@ -17,11 +19,13 @@ class NumericKeypad extends StatelessWidget {
     required this.editor,
     required this.onChanged,
     required this.onNext,
+    this.nextLabel,
   });
 
   final ExpressionEditor editor;
   final VoidCallback onChanged;
   final VoidCallback? onNext;
+  final String? nextLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -97,7 +101,11 @@ class NumericKeypad extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.all(2),
                     child: _KeyButton(
-                      keyData: _Key('単位へ', onNext, filled: true),
+                      keyData: _Key(
+                        nextLabel ?? AppLocalizations.of(context)!.toUnits,
+                        onNext,
+                        filled: true,
+                      ),
                       onChanged: onChanged,
                     ),
                   ),

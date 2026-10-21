@@ -11,6 +11,20 @@ enum ProblemFigure {
   compressedSpring,
   acResistor,
   inclinePull,
+  batteryResistor,
+  seriesCurrent,
+  parallelCurrent,
+  bridgeVoltageDrop,
+  isothermalGas,
+  isobaricGas,
+  isochoricGas,
+  adiabaticGas,
+  connectedVessels,
+  diatomicVessels,
+  verticalSpringOscillation,
+  simplePendulum,
+  keplerOrbits,
+  beats,
 }
 
 /// ヒントボタンで、灰色の問題カードの中に足すもの。
@@ -31,7 +45,7 @@ enum HintReveal {
 }
 
 /// 単位の入れ方。解答の書き方で切り替える。
-enum UnitInputKind { base, choices }
+enum UnitInputKind { base, choices, omitted }
 
 class PhysicsProblem {
   const PhysicsProblem({
@@ -51,6 +65,7 @@ class PhysicsProblem {
     this.hintReveal = HintReveal.message,
     this.symbolChoices = const [],
     this.symbolOrder = '',
+    this.unitObvious = false,
   });
 
   final String id;
@@ -83,17 +98,21 @@ class PhysicsProblem {
   final String firstStep;
   final String explanation;
 
-  /// 記号を左から並べる問題の候補。空なら数値問題。
+  /// 左から並べる問題の候補。空なら数値問題。
   final List<String> symbolChoices;
 
-  /// 正しい並び。空白は入れない。
+  /// 正しい並び。[answerDisplay] と同じでよい。空白・読点は採点時に無視する。
   final String symbolOrder;
+
+  /// 単位が問題文から自明なとき、数値だけで確定する。
+  final bool unitObvious;
 
   bool get isSymbolOrder => symbolChoices.isNotEmpty;
 
   bool get isDimensionless => answerUnit.trim().isEmpty;
 
   UnitInputKind get unitInputKind {
+    if (unitObvious) return UnitInputKind.omitted;
     final unit = answerUnit.trim();
     if (unit.contains(' ') || unit.contains('^') || unit.contains('/')) {
       return UnitInputKind.base;

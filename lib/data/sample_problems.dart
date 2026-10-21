@@ -1,7 +1,7 @@
 import '../models/physics_domain.dart';
 import '../models/physics_problem.dart';
 
-/// 動きを確認するための仮の15問。本番の問題はあとから足す。
+/// 出題する問題。表示番号は並びの順。
 const sampleProblems = <PhysicsProblem>[
   PhysicsProblem(
     id: 'sample-mechanics',
@@ -223,20 +223,18 @@ const sampleProblems = <PhysicsProblem>[
     theme: '電磁波の波長の順',
     domains: {PhysicsDomain.waves},
     statement:
-        '（ア）赤外線、（イ）紫外線、（ウ）電波、（エ）可視光、（オ）X線について、'
-        '波長の短い順に左から記号を並べよ。',
+        '赤外線、紫外線、電波、可視光、X線について、'
+        '波長の短い順に左から並べよ。',
     answerValue: 0,
     answerUnit: '',
-    answerDisplay: 'オ イ エ ア ウ',
+    answerDisplay: 'X線、紫外線、可視光、赤外線、電波',
     unitChoices: [],
-    symbolChoices: ['ア', 'イ', 'ウ', 'エ', 'オ'],
-    symbolOrder: 'オイエアウ',
+    symbolChoices: ['赤外線', '紫外線', '電波', '可視光', 'X線'],
+    symbolOrder: 'X線、紫外線、可視光、赤外線、電波',
     hint: '目に見える光を真ん中に置く。X線はそれより短く、電波はもっとも長い。',
     approach: '電磁波を、波長の短いものから長いものへ並べる。',
-    firstStep: 'いちばん波長が短いのはX線で、（オ）である。',
-    explanation:
-        '波長の短い順は、X線、紫外線、可視光、赤外線、電波である。'
-        '記号ではオ イ エ ア ウ。',
+    firstStep: 'いちばん波長が短いのはX線である。',
+    explanation: '波長の短い順は、X線、紫外線、可視光、赤外線、電波である。',
   ),
   PhysicsProblem(
     id: 'sample-spring-pulleys',
@@ -338,5 +336,307 @@ const sampleProblems = <PhysicsProblem>[
         'mg sin 30° = 10 × 9.8 × 1/2 = 49 N。'
         'N = 10 × 9.8 × 0.865 = 84.77 N。f = 0.50 × 84.77 = 42.385 N。'
         'T = 49 + 42.385 = 91.385 N。',
+  ),
+  PhysicsProblem(
+    id: 'a3ed863f-73f0-4ba2-977a-268f464df3ad',
+    theme: '電気抵抗の定義（オームの法則）',
+    domains: {PhysicsDomain.electromagnetism},
+    figure: ProblemFigure.batteryResistor,
+    statement:
+        '図のように、9.0 V の電池に 18 Ω の抵抗をつないだ。'
+        '抵抗に流れる電流の大きさを答えよ。',
+    answerValue: 0.5,
+    answerUnit: 'A',
+    answerDisplay: '0.50',
+    unitChoices: ['A', 'V', 'W', 'C'],
+    hint: '抵抗は一つで、両端の電圧と抵抗値が出ている。電流は、その二つで決まる。',
+    approach: 'オームの法則 V = RI を使う。',
+    firstStep: '9.0 = 18 I である。',
+    explanation:
+        'オームの法則は V = RI である。'
+        '抵抗は一つで、電池の電圧がそのまま両端にかかるので、9.0 = 18 I。'
+        'I = 9.0 / 18 = 0.50 A。',
+  ),
+  PhysicsProblem(
+    id: 'b6cb0c9c-869b-44b0-a121-e28b7bca1597',
+    theme: '合成抵抗',
+    domains: {PhysicsDomain.electromagnetism},
+    figure: ProblemFigure.seriesCurrent,
+    statement:
+        '図のように、8.0 V の電池に 2.0 Ω の抵抗と 6.0 Ω の抵抗を直列につないだ。'
+        '回路に流れる電流の大きさを答えよ。',
+    answerValue: 1,
+    answerUnit: 'A',
+    answerDisplay: '1.0',
+    unitChoices: ['A', 'V', 'W', 'C'],
+    hint: '二つの抵抗が一本の通り道になっている。電流は、まとめた抵抗と電池の電圧で決まる。',
+    approach: '直列の合成抵抗を求め、オームの法則 V = RI を使う。',
+    firstStep: '合成抵抗は R = 2.0 + 6.0 = 8.0 Ω である。',
+    explanation:
+        '直列の合成抵抗は、各抵抗の和である。'
+        'R = 2.0 + 6.0 = 8.0 Ω。'
+        'オームの法則は V = RI なので、8.0 = 8.0 I。'
+        'I = 8.0 / 8.0 = 1.0 A。',
+  ),
+  PhysicsProblem(
+    id: '4f9096d1-35ee-49ee-b4c9-48041c56cdee',
+    theme: '並列の合成抵抗',
+    domains: {PhysicsDomain.electromagnetism},
+    figure: ProblemFigure.parallelCurrent,
+    statement:
+        '図のように、6.0 V の電池に 3.0 Ω の抵抗と 6.0 Ω の抵抗を並列につないだ。'
+        '電流が分岐する手前の導線に流れる電流の大きさを答えよ。',
+    answerValue: 3,
+    answerUnit: 'A',
+    answerDisplay: '3.0',
+    unitChoices: ['A', 'V', 'W', 'C'],
+    hint: '二つの抵抗は、どちらも電池の電圧をそのまま受けている。分岐の手前の電流は、その二つの通り道をまとめた抵抗で決まる。',
+    approach: '並列の合成抵抗を求め、オームの法則 V = RI を使う。',
+    firstStep: '1/R = 1/3.0 + 1/6.0 である。',
+    explanation:
+        '並列の合成抵抗は 1/R = 1/R1 + 1/R2 である。'
+        '1/R = 1/3.0 + 1/6.0 = 2/6.0 + 1/6.0 = 1/2.0。R = 2.0 Ω。'
+        '分岐の手前では、この合成抵抗に電池の電圧がかかる。'
+        'オームの法則は V = RI なので、6.0 = 2.0 I。'
+        'I = 6.0 / 2.0 = 3.0 A。',
+  ),
+  PhysicsProblem(
+    id: '5adf49b5-0a92-439b-9f65-88ad58a94bc3',
+    theme: 'ブリッジ形回路の電圧降下',
+    domains: {PhysicsDomain.electromagnetism},
+    figure: ProblemFigure.bridgeVoltageDrop,
+    statement:
+        '図のように、左上の抵抗での電圧降下の大きさを答えよ。',
+    answerValue: 2,
+    answerUnit: 'V',
+    answerDisplay: '2.0',
+    unitChoices: ['V', 'A', 'W', 'C'],
+    hint: '左上と左下は一本の通り道で、その両端は電池である。電流はその通り道で決まり、電圧降下は左上だけを見る。',
+    approach: 'オームの法則 V = RI を使う。',
+    firstStep: '左の通り道では 6.0 = (4.0 + 8.0) I である。',
+    explanation:
+        'オームの法則は V = RI である。'
+        '左上の 4.0 Ω と左下の 8.0 Ω は直列で、両端の電圧は電池の 6.0 V なので、'
+        '6.0 = (4.0 + 8.0) I。'
+        'I = 6.0 / 12 = 0.50 A。左上の電圧降下は V = 4.0 × 0.50 = 2.0 V。',
+  ),
+  PhysicsProblem(
+    id: '059e9128-3c09-4e75-9a6b-8c401a807e7c',
+    theme: '等温変化（ボイルの法則）',
+    domains: {PhysicsDomain.thermodynamics},
+    figure: ProblemFigure.isothermalGas,
+    statement:
+        '図のように、温度を 300 K に保ったまま、圧力 2.0×10⁵ Pa、体積 4.0×10⁻³ m³ の'
+        '理想気体の体積を 8.0×10⁻³ m³ にした。このときの圧力を答えよ。',
+    answerValue: 1.0e5,
+    answerUnit: 'Pa',
+    answerDisplay: '1.0×10^5',
+    unitChoices: ['Pa', 'J', 'N', 'W'],
+    hint: '温度が変わっていない。圧力と体積の積が保たれる。',
+    approach: 'ボイルの法則 PV = 一定 を使う。',
+    firstStep: '2.0×10⁵ × 4.0×10⁻³ = P × 8.0×10⁻³ である。',
+    explanation:
+        '等温変化ではボイルの法則 PV = 一定である。'
+        '2.0×10⁵ × 4.0×10⁻³ = P × 8.0×10⁻³。'
+        'P = 2.0×10⁵ × 4.0×10⁻³ / 8.0×10⁻³ = 1.0×10⁵ Pa。',
+  ),
+  PhysicsProblem(
+    id: '62dce096-726f-4a28-8139-de3eff094793',
+    theme: '等圧変化（シャルルの法則）',
+    domains: {PhysicsDomain.thermodynamics},
+    figure: ProblemFigure.isobaricGas,
+    statement:
+        '図のように、圧力を 1.0×10⁵ Pa に保ったまま、温度 300 K、体積 2.0×10⁻³ m³ の'
+        '理想気体を 450 K にした。このときの体積を答えよ。',
+    answerValue: 3.0e-3,
+    answerUnit: 'm^3',
+    answerDisplay: '3.0×10^-3',
+    unitChoices: [],
+    hint: '圧力が変わっていない。体積と絶対温度の比が保たれる。',
+    approach: 'シャルルの法則 V/T = 一定 を使う。',
+    firstStep: '2.0×10⁻³ / 300 = V / 450 である。',
+    explanation:
+        '等圧変化ではシャルルの法則 V/T = 一定である。'
+        '2.0×10⁻³ / 300 = V / 450。'
+        'V = 2.0×10⁻³ × 450 / 300 = 3.0×10⁻³ m³。',
+  ),
+  PhysicsProblem(
+    id: 'bf43572d-42ac-4b81-9dce-85c4a71ee6d7',
+    theme: '等積変化',
+    domains: {PhysicsDomain.thermodynamics},
+    figure: ProblemFigure.isochoricGas,
+    statement:
+        '図のように、体積を 2.0×10⁻³ m³ に保ったまま、温度 300 K、圧力 1.5×10⁵ Pa の'
+        '理想気体を 600 K にした。このときの圧力を答えよ。',
+    answerValue: 3.0e5,
+    answerUnit: 'Pa',
+    answerDisplay: '3.0×10^5',
+    unitChoices: ['Pa', 'J', 'N', 'W'],
+    hint: '体積が変わっていない。圧力と絶対温度の比が保たれる。',
+    approach: 'ゲイリュサックの法則 P/T = 一定 を使う。',
+    firstStep: '1.5×10⁵ / 300 = P / 600 である。',
+    explanation:
+        '等積変化ではゲイリュサックの法則 P/T = 一定である。'
+        '1.5×10⁵ / 300 = P / 600。'
+        'P = 1.5×10⁵ × 600 / 300 = 3.0×10⁵ Pa。',
+  ),
+  PhysicsProblem(
+    id: '2eef6ac4-67da-439f-b4fa-d6436a743eb8',
+    theme: '断熱変化（ポアソンの式）',
+    domains: {PhysicsDomain.thermodynamics},
+    figure: ProblemFigure.adiabaticGas,
+    statement:
+        '図のように、外部と熱の出入りがないように、圧力 1.0×10⁵ Pa、体積 8.0×10⁻³ m³ の'
+        '単原子理想気体を、体積 1.0×10⁻³ m³ まで圧縮した。このときの圧力を答えよ。\n'
+        '※γ = 5/3 とする。',
+    answerValue: 3.2e6,
+    answerUnit: 'Pa',
+    answerDisplay: '3.2×10^6',
+    unitChoices: ['Pa', 'J', 'N', 'W'],
+    hint: '外部との熱の出入りがない。圧力と体積は、温度が一定のときの積とは違う形で結ばれる。',
+    approach: 'ポアソンの式 P V^γ = 一定 を使う。',
+    firstStep: '1.0×10⁵ × (8.0×10⁻³)^{5/3} = P × (1.0×10⁻³)^{5/3} である。',
+    explanation:
+        '断熱変化ではポアソンの式 P V^γ = 一定である。γ = 5/3。'
+        '1.0×10⁵ × (8.0×10⁻³)^{5/3} = P × (1.0×10⁻³)^{5/3}。'
+        '体積の比は 8.0×10⁻³ / 1.0×10⁻³ = 8.0。'
+        '8.0^{5/3} = (8.0^{1/3})^5 = 2.0^5 = 32。'
+        'P = 1.0×10⁵ × 32 = 3.2×10⁶ Pa。',
+  ),
+  PhysicsProblem(
+    id: '6dbf478a-bb30-40a4-bacb-c7c1ddd5b550',
+    theme: '気体の内部エネルギー',
+    domains: {PhysicsDomain.thermodynamics},
+    figure: ProblemFigure.connectedVessels,
+    statement:
+        '図のように、コックで仕切られた二つの容器に単原子分子の理想気体が入っている。'
+        'コックを開いて十分に時間がたったとき、気体の圧力を答えよ。\n'
+        '※容器の外への熱の出入りはなく、容器の体積は変わらないものとする。',
+    answerValue: 1.6e5,
+    answerUnit: 'Pa',
+    answerDisplay: '1.6×10^5',
+    unitChoices: ['Pa', 'J', 'N', 'W'],
+    hint: 'コックを開くあいだ、気体はつりあっていない。外への仕事も熱の出入りもない。',
+    approach: '単原子理想気体の内部エネルギー U = (3/2) pV が、全体で保存されることを使う。',
+    firstStep: '(3/2)×2.0×10⁵×3.0×10⁻³ + (3/2)×1.0×10⁵×2.0×10⁻³ = (3/2) P × 5.0×10⁻³ である。',
+    explanation:
+        '単原子理想気体の内部エネルギーは U = (3/2) nRT = (3/2) pV である。'
+        'コックを開くあいだ、外への熱の出入りはなく、容器の体積は変わらないので外への仕事もない。'
+        'したがって内部エネルギーの和は変わらない。'
+        '(3/2)×2.0×10⁵×3.0×10⁻³ + (3/2)×1.0×10⁵×2.0×10⁻³ = (3/2) P × 5.0×10⁻³。'
+        '2.0×10⁵×3.0×10⁻³ + 1.0×10⁵×2.0×10⁻³ = P × 5.0×10⁻³。'
+        '6.0×10² + 2.0×10² = 5.0×10⁻³ P。'
+        'P = 8.0×10² / 5.0×10⁻³ = 1.6×10⁵ Pa。',
+  ),
+  PhysicsProblem(
+    id: 'c6d333a8-fdff-45e6-ae3d-d576394a8f58',
+    theme: '2原子理想気体のモル比熱',
+    domains: {PhysicsDomain.thermodynamics},
+    figure: ProblemFigure.diatomicVessels,
+    statement:
+        '図のように、コックで仕切られた二つの容器に2原子分子の理想気体が入っている。'
+        'コックを開いて十分に時間がたったとき、気体の温度を答えよ。\n'
+        '※容器の外への熱の出入りはなく、容器の体積は変わらないものとする。',
+    answerValue: 500,
+    answerUnit: 'K',
+    answerDisplay: '500',
+    unitChoices: ['K', 'Pa', 'J', 'mol'],
+    hint: 'コックを開くあいだ、気体はつりあっていない。外への仕事も熱の出入りもなく、物質の量は保たれる。',
+    approach: '2原子理想気体の内部エネルギー U = (5/2) nRT が、全体で保存されることを使う。',
+    firstStep: '(5/2)×2.0×R×300 + (5/2)×1.0×R×900 = (5/2)×(2.0+1.0)×R×T である。',
+    explanation:
+        '2原子理想気体の定積モル比熱は C_V = (5/2) R なので、内部エネルギーは U = n C_V T = (5/2) nRT である。'
+        'コックを開くあいだ、外への熱の出入りはなく、容器の体積は変わらないので外への仕事もない。'
+        'したがって内部エネルギーの和は変わらない。物質量の和も変わらない。'
+        '(5/2)×2.0×R×300 + (5/2)×1.0×R×900 = (5/2)×(2.0+1.0)×R×T。'
+        '2.0×300 + 1.0×900 = 3.0 T。'
+        '600 + 900 = 3.0 T。'
+        'T = 1500 / 3.0 = 500 K。',
+  ),
+  PhysicsProblem(
+    id: '680f161b-8039-4d8b-97ac-54d641bf875e',
+    theme: '鉛直ばねの単振動の周期',
+    domains: {PhysicsDomain.mechanics},
+    figure: ProblemFigure.verticalSpringOscillation,
+    statement:
+        '図のように天井からばねにおもりをつるし、静かに手をはなしたところ、'
+        'おもりは鉛直方向に振動した。この振動の周期を答えよ。\n'
+        '※π = 3.14 とする。',
+    answerValue: 3.14,
+    answerUnit: 's',
+    answerDisplay: '3.14',
+    unitChoices: ['s', 'Hz', 'm', 'N'],
+    hint: 'おもりには重力もばねの力もはたらく。釣り合いの位置からのずれだけを見る。',
+    approach: '運動方程式を釣り合いの位置のまわりで書き、周期 T = 2π √(m/k) を使う。',
+    firstStep: 'T = 2π √(1.0 / 4.0) である。',
+    explanation:
+        '鉛直下向きを正とする。自然長からののびを x とすると、運動方程式は mẍ = mg − kx。'
+        '釣り合いでは 0 = mg − kδ なので、δ = mg/k。'
+        'y = x − δ とおくと ẍ = ÿ より mÿ = −ky。ÿ = −(k/m) y。'
+        '角振動数は ω = √(k/m) なので、周期は T = 2π/ω = 2π √(m/k)。'
+        'T = 2 × 3.14 × √(1.0/4.0) = 6.28 × 0.50 = 3.14 s。',
+  ),
+  PhysicsProblem(
+    id: '63f5a83f-3152-4583-8c46-67bc2e33d8bc',
+    theme: '単振り子の周期',
+    domains: {PhysicsDomain.mechanics},
+    figure: ProblemFigure.simplePendulum,
+    statement:
+        '図のように糸の先に小物体をつけ、鉛直面内で小さく振った。'
+        'この振動の周期を答えよ。\n'
+        '※重力加速度の大きさを 9.8 m/s²、π = 3.14 とする。',
+    answerValue: 3.14,
+    answerUnit: 's',
+    answerDisplay: '3.14',
+    unitChoices: ['s', 'Hz', 'm', 'N'],
+    hint: '振れが小さい。糸に沿った向きではなく、弧に沿ったずれを見る。',
+    approach: '運動方程式を微小な角で近似し、周期 T = 2π √(L/g) を使う。',
+    firstStep: 'T = 2π √(2.45 / 9.8) である。',
+    explanation:
+        '鉛直面内の振れ角を θ とする。接線方向の運動方程式は m L θ̈ = −mg sin θ。'
+        '振れが小さいので sin θ ≈ θ。θ̈ = −(g/L) θ。'
+        '角振動数は ω = √(g/L) なので、周期は T = 2π/ω = 2π √(L/g)。'
+        'T = 2 × 3.14 × √(2.45/9.8) = 6.28 × √0.25 = 6.28 × 0.50 = 3.14 s。',
+  ),
+  PhysicsProblem(
+    id: '11cf8d71-4c2b-45ed-bb3e-3718131609c2',
+    theme: 'ケプラー第3法則',
+    domains: {PhysicsDomain.mechanics},
+    figure: ProblemFigure.keplerOrbits,
+    statement:
+        '図のように太陽のまわりをまわる二つの天体がある。'
+        '太陽からの距離が 4.0×10⁸ km の天体の公転周期を答えよ。',
+    answerValue: 8,
+    answerUnit: '年',
+    answerDisplay: '8',
+    unitChoices: [],
+    unitObvious: true,
+    hint: '二つの軌道の、太陽からの距離と、一方の周期が出ている。',
+    approach: 'ケプラー第3法則 T² ∝ a³ を使う。',
+    firstStep: '(T / 1)² = (4.0×10⁸ / 1.0×10⁸)³ である。',
+    explanation:
+        'ケプラー第3法則は T² / a³ = 一定である。'
+        '(T / 1)² = (4.0×10⁸ / 1.0×10⁸)³ = 4.0³ = 64。'
+        'T = 8 年。',
+  ),
+  PhysicsProblem(
+    id: '94b33f1d-6d59-425c-9481-9b73a8686890',
+    theme: 'うなり',
+    domains: {PhysicsDomain.waves},
+    figure: ProblemFigure.beats,
+    statement:
+        '図のように、左右の音叉を同時に鳴らしたところ、そのあいだで'
+        '音の強さが強くなったり弱くなったりを繰り返した。'
+        'この繰り返しの周期を答えよ。',
+    answerValue: 0.5,
+    answerUnit: 's',
+    answerDisplay: '0.5',
+    unitChoices: ['s', 'Hz', 'm', 'N'],
+    hint: '二つの音叉の振動数がわずかに違っている。音の強さが繰り返す間隔は、その差で決まる。',
+    approach: 'うなりの周期 T = 1/|f1 − f2| を使う。',
+    firstStep: 'T = 1/|442 − 440| である。',
+    explanation:
+        'うなりの回数は |f1 − f2| である。周期はその逆数なので T = 1/|f1 − f2|。'
+        'T = 1/|442 − 440| = 1/2 = 0.5 s。',
   ),
 ];

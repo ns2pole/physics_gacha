@@ -1,13 +1,21 @@
 import 'package:flutter/material.dart';
 
+import '../logic/problem_pool.dart';
 import '../models/learning_record.dart';
+import '../l10n/app_localizations.dart';
+import '../utils/l10n_utils.dart';
+import '../models/physics_domain.dart';
 import '../models/physics_problem.dart';
 import '../state/gacha_session.dart';
 import 'background_image.dart';
+import 'filter_bar.dart';
+import 'fixed_end_reflection_figure.dart';
+import 'free_end_reflection_figure.dart';
 import 'history_slots.dart';
 import 'problem_detail_page.dart';
+import 'problem_figure_view.dart';
 
-/// 全問題と、その3枠の履歴。単元では絞らない。除外された問題だけ隠す。
+/// 全問題と、その3枠の履歴。単元と除外で絞る。
 class ProblemListPage extends StatefulWidget {
   const ProblemListPage({
     super.key,
@@ -27,6 +35,13 @@ class ProblemListPage extends StatefulWidget {
 class _ProblemListPageState extends State<ProblemListPage> {
   void _setExclusion(ExclusionMode mode) {
     setState(() => widget.session.setExclusion(mode));
+    widget.onHistoryChanged();
+  }
+
+  void _setDomain(PhysicsDomain domain, bool selected) {
+    final next = {...widget.session.enabled};
+    selected ? next.add(domain) : next.remove(domain);
+    setState(() => widget.session.setEnabled(next));
     widget.onHistoryChanged();
   }
 
@@ -57,13 +72,16 @@ class _ProblemListPageState extends State<ProblemListPage> {
     final session = widget.session;
     final problems = session.problems;
     final visible = <({int number, PhysicsProblem problem})>[];
+    var domainTotal = 0;
     for (var i = 0; i < problems.length; i++) {
       final problem = problems[i];
+      if (!acceptsDomains(problem, session.enabled)) continue;
+      domainTotal += 1;
       if (isExcluded(session.historyOf(problem), session.exclusion)) continue;
       visible.add((number: i + 1, problem: problem));
     }
     final remaining = visible.length;
-    final total = problems.length;
+    final total = domainTotal;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -75,7 +93,7 @@ class _ProblemListPageState extends State<ProblemListPage> {
         elevation: 0,
         scrolledUnderElevation: 0,
         foregroundColor: const Color(0xFF1565C0),
-        title: const Text('問題一覧'),
+        title: Text(AppLocalizations.of(context)!.problemList),
       ),
       body: Stack(
         children: [
@@ -90,17 +108,19 @@ class _ProblemListPageState extends State<ProblemListPage> {
               separatorBuilder: (context, index) => const SizedBox(height: 8),
               itemBuilder: (context, index) {
                 if (index == 0) {
-                  return _ExclusionChip(
+                  return ExclusionFilterCard(
                     mode: session.exclusion,
                     remaining: remaining,
                     total: total,
+                    enabled: session.enabled,
+                    onDomain: _setDomain,
                     onChanged: _setExclusion,
                   );
                 }
                 if (visible.isEmpty) {
-                  return const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 24),
-                    child: Text('該当する問題がありません'),
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 24),
+                    child: Text(AppLocalizations.of(context)!.noMatchingProblems),
                   );
                 }
                 final row = visible[index - 1];
@@ -116,119 +136,6 @@ class _ProblemListPageState extends State<ProblemListPage> {
           ),
         ],
       ),
-    );
-  }
-}
-
-class _ExclusionChip extends StatefulWidget {
-  const _ExclusionChip({
-    required this.mode,
-    required this.remaining,
-    required this.total,
-    required this.onChanged,
-  });
-
-  final ExclusionMode mode;
-  final int remaining;
-  final int total;
-  final ValueChanged<ExclusionMode> onChanged;
-
-  @override
-  State<_ExclusionChip> createState() => _ExclusionChipState();
-}
-
-class _ExclusionChipState extends State<_ExclusionChip> {
-  final _key = GlobalKey();
-
-  Future<void> _openMenu() async {
-    final target = _key.currentContext?.findRenderObject() as RenderBox?;
-    final overlay =
-        Overlay.of(context).context.findRenderObject() as RenderBox?;
-    if (target == null || overlay == null) return;
-    final origin = target.localToGlobal(Offset.zero, ancestor: overlay);
-    final selected = await showMenu<ExclusionMode>(
-      context: context,
-      position: RelativeRect.fromRect(
-        Rect.fromLTWH(
-          origin.dx,
-          origin.dy + target.size.height,
-          target.size.width,
-          0,
-        ),
-        Offset.zero & overlay.size,
-      ),
-      items: [
-        for (final mode in ExclusionMode.values)
-          PopupMenuItem(value: mode, child: Text(mode.label)),
-      ],
-    );
-    if (selected != null) widget.onChanged(selected);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final purple = Colors.purple[700];
-    final style = TextStyle(
-      fontSize: 16,
-      fontWeight: FontWeight.w500,
-      color: purple,
-    );
-    return Material(
-      key: _key,
-      color: Colors.purple.shade50,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(24),
-        side: BorderSide(color: Colors.purple.shade200),
-      ),
-      child: InkWell(
-        onTap: _openMenu,
-        borderRadius: BorderRadius.circular(24),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-          child: FittedBox(
-            fit: BoxFit.scaleDown,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (widget.mode == ExclusionMode.none)
-                  Text('除外なし', style: style)
-                else ...[
-                  Text('最新${widget.mode.neededGreens}回が', style: style),
-                  const SizedBox(width: 4),
-                  const _GreenCheck(),
-                  const SizedBox(width: 4),
-                  Text('の問題を除く', style: style),
-                ],
-                const SizedBox(width: 8),
-                Text(
-                  widget.mode == ExclusionMode.none
-                      ? '全${widget.total}問'
-                      : '(残 ${widget.remaining}問/${widget.total}問)',
-                  style: style.copyWith(color: Colors.purple[600]),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _GreenCheck extends StatelessWidget {
-  const _GreenCheck();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 18,
-      height: 18,
-      decoration: const BoxDecoration(
-        color: Colors.green,
-        shape: BoxShape.circle,
-      ),
-      alignment: Alignment.center,
-      child: const Icon(Icons.check, size: 12, color: Colors.white),
     );
   }
 }
@@ -250,55 +157,120 @@ class _ProblemRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.zero,
+    return DomainTintCard(
+      domains: problem.domains,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(12, 4, 8, 12),
-        child: Column(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'No. $number(${joinedDomainLabels(context, problem.domains)})',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            height: 1.15,
+                          ),
+                        ),
+                        Text(
+                          problem.getLocalizedTheme(context),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontSize: 12,
+                            height: 1.15,
+                            color: Color(0xFF546E7A),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  HistorySlots(
+                    problemId: problem.id,
+                    history: history,
+                    onCycle: onCycle,
+                    iconSize: 33,
+                  ),
+                  ElevatedButton.icon(
+                    key: ValueKey('detail-${problem.id}'),
+                    onPressed: onOpen,
+                    icon: const Icon(Icons.open_in_new, size: 16),
+                    label: Text(AppLocalizations.of(context)!.detail),
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 8,
+                      ),
+                      minimumSize: const Size(0, 32),
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                  ),
+                ],
+              ),
+              _ProblemStatement(
+                text: problem.getLocalizedStatement(context),
+                figure: _listFigure(problem),
+              ),
+            ],
+          ),
+        ),
+    );
+  }
+}
+
+/// 問題文の図。無いときは、自由端・固定端のヒントアニメを一覧にも出す。
+Widget? _listFigure(PhysicsProblem problem) {
+  final figure = problem.figure;
+  if (figure != null) return problemFigureView(figure);
+  return switch (problem.hintReveal) {
+    HintReveal.freeEndReflection => const FreeEndReflectionFigure(),
+    HintReveal.fixedEndReflection => const FixedEndReflectionFigure(),
+    HintReveal.message || HintReveal.groupUpperBlocks => null,
+  };
+}
+
+/// 図はカード幅の半分で中央に置く。高さは図の比率のまま、収まるだけ低くする。
+/// 問題文はその下から書く。
+class _ProblemStatement extends StatelessWidget {
+  const _ProblemStatement({required this.text, this.figure});
+
+  final String text;
+  final Widget? figure;
+
+  static const _style = TextStyle(fontSize: 15, height: 1.5);
+
+  @override
+  Widget build(BuildContext context) {
+    final figure = this.figure;
+    if (figure == null) {
+      return Text(text, style: _style);
+    }
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                Text(
-                  'No. $number',
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
+            Center(
+              child: SizedBox(
+                width: constraints.maxWidth / 2,
+                child: FittedBox(
+                  fit: BoxFit.contain,
+                  child: figure,
                 ),
-                const SizedBox(width: 4),
-                HistorySlots(
-                  problemId: problem.id,
-                  history: history,
-                  onCycle: onCycle,
-                ),
-                const Spacer(),
-                ElevatedButton.icon(
-                  key: ValueKey('detail-${problem.id}'),
-                  onPressed: onOpen,
-                  icon: const Icon(Icons.open_in_new, size: 16),
-                  label: const Text('詳細'),
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 8,
-                    ),
-                    minimumSize: const Size(0, 32),
-                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  ),
-                ),
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.only(right: 4),
-              child: Text(
-                problem.statement,
-                style: const TextStyle(fontSize: 15, height: 1.5),
               ),
             ),
+            const SizedBox(height: 4),
+            Text(text, style: _style),
           ],
-        ),
-      ),
+        );
+      },
     );
   }
 }

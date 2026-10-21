@@ -17,6 +17,7 @@ class PhysicsAiChatLauncher {
     AiChatClient? client,
   }) {
     final session = PhysicsSessionMapper.fromProblem(
+      context: context,
       problem: problem,
       hintShown: hintShown,
       answerShown: answerShown,

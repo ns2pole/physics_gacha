@@ -229,4 +229,7 @@ const coverageThemes = <CoverageTheme>[
   CoverageTheme('自由端反射の節', '下敷きの外', onSheet: false),
   CoverageTheme('固定端反射の節', '下敷きの外', onSheet: false),
   CoverageTheme('電磁波の波長の順', '下敷きの外', onSheet: false),
+  CoverageTheme('並列の合成抵抗', '下敷きの外', onSheet: false),
+  CoverageTheme('ブリッジ形回路の電圧降下', '下敷きの外', onSheet: false),
+  CoverageTheme('鉛直ばねの単振動の周期', '下敷きの外', onSheet: false),
 ];

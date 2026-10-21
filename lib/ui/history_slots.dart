@@ -9,28 +9,31 @@ class HistorySlots extends StatelessWidget {
     required this.problemId,
     required this.history,
     required this.onCycle,
+    this.iconSize = 22,
   });
 
   final String problemId;
   final History history;
   final ValueChanged<int> onCycle;
+  final double iconSize;
 
   @override
   Widget build(BuildContext context) {
+    final tap = iconSize + 10;
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         for (var i = 0; i < history.slots.length; i++)
           IconButton(
             key: ValueKey('history-$problemId-$i'),
-            tooltip: history.slots[i].label,
+            tooltip: history.slots[i].label(context),
             visualDensity: VisualDensity.compact,
             padding: EdgeInsets.zero,
-            constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+            constraints: BoxConstraints(minWidth: tap, minHeight: tap),
             onPressed: () => onCycle(i),
             icon: Icon(
               _icon(history.slots[i]),
-              size: 22,
+              size: iconSize,
               color: _color(history.slots[i]),
             ),
           ),

@@ -30,5 +30,7 @@ void main() {
     expect(choicesHaveDistinctDimensions(['N', 'J', 'W', 'Pa']), isTrue);
     expect(choicesHaveDistinctDimensions(['cm', 'm']), isFalse);
     expect(choicesHaveDistinctDimensions(['J', 'N m']), isFalse);
+    expect(choicesHaveDistinctDimensions(['K', 'Pa', 'J', 'mol']), isTrue);
+    expect(choicesHaveDistinctDimensions(['年', 'Hz', 'm', 'kg']), isTrue);
   });
 }

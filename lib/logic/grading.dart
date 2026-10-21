@@ -49,7 +49,7 @@ AnswerGrade gradeAnswer({
   );
 }
 
-/// 記号の並び。空白や読点の有無は無視する。
+/// 並べた解答。空白や読点の有無は無視する。
 bool orderMatches(String expected, String actual) {
   final left = _compactOrder(expected);
   final right = _compactOrder(actual);

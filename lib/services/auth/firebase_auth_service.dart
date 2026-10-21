@@ -3,6 +3,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
+import '../../utils/l10n_utils.dart';
+
 class GoogleSignInFailedException implements Exception {
   GoogleSignInFailedException({required this.code, this.message});
 
@@ -110,7 +112,7 @@ class FirebaseAuthService {
   static User _requireCurrentUser() {
     final user = currentUser;
     if (user == null) {
-      throw StateError('アカウント削除にはログインが必要です。');
+      throw StateError(appL10nWithoutContext().accountDeletionRequiresLogin);
     }
     return user;
   }
@@ -119,7 +121,7 @@ class FirebaseAuthService {
     final user = _requireCurrentUser();
     final credential = await _requestGoogleCredential();
     if (credential == null) {
-      throw StateError('再認証がキャンセルされました。');
+      throw StateError(appL10nWithoutContext().reauthCancelled);
     }
     await user.reauthenticateWithCredential(credential);
   }

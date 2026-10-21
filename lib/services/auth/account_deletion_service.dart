@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 
 import '../../integrations/ai_chat/physics_ai_chat_config.dart';
 import '../../state/gacha_store.dart';
+import '../../utils/l10n_utils.dart';
 import 'cloud_sync_preference_service.dart';
 import 'firebase_auth_service.dart';
 
@@ -37,16 +38,16 @@ class AccountDeletionService {
     final resolved =
         endpoint ?? PhysicsAiChatConfig.accountDeletionEndpointFromEnvironment();
     if (resolved == null) {
-      throw const AccountDeletionException(
-        'アカウント削除の接続先が設定されていません。',
+      throw AccountDeletionException(
+        appL10nWithoutContext().accountDeletionEndpointMissing,
         code: 'endpoint_not_configured',
       );
     }
 
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) {
-      throw const AccountDeletionException(
-        'ログイン状態を確認できませんでした。',
+      throw AccountDeletionException(
+        appL10nWithoutContext().accountDeletionAuthMissing,
         code: 'not_signed_in',
       );
     }
@@ -70,7 +71,8 @@ class AccountDeletionService {
 
       if (response.statusCode != 200) {
         throw AccountDeletionException(
-          _readErrorMessage(response) ?? 'アカウント削除に失敗しました。',
+          _readErrorMessage(response) ??
+              appL10nWithoutContext().accountDeletionFailed,
           code: _readErrorCode(response) ?? 'server_rejected',
           statusCode: response.statusCode,
         );
@@ -83,8 +85,8 @@ class AccountDeletionService {
       await FirebaseAuthService.signOut();
       await CloudSyncPreferenceService.refreshForUser(null);
     } on TimeoutException {
-      throw const AccountDeletionException(
-        '通信に時間がかかっています。しばらくしてからもう一度お試しください。',
+      throw AccountDeletionException(
+        appL10nWithoutContext().accountDeletionTimeout,
         code: 'timeout',
       );
     } on AccountDeletionException {

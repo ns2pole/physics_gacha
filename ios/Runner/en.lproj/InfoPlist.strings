@@ -1,0 +1,3 @@
+CFBundleDisplayName = "Physics Gacha";
+NSMicrophoneUsageDescription = "Used for voice input in AI chat.";
+NSSpeechRecognitionUsageDescription = "Used for voice input in AI chat.";

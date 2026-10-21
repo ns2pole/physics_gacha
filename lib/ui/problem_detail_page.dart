@@ -1,22 +1,35 @@
 import 'package:flutter/material.dart';
 
+import '../l10n/app_localizations.dart';
 import '../models/physics_problem.dart';
 import '../state/gacha_session.dart';
+import '../utils/l10n_utils.dart';
 import 'ac_resistor_figure.dart';
+import 'battery_resistor_figure.dart';
+import 'beats_figure.dart';
+import 'bridge_voltage_drop_figure.dart';
 import 'background_image.dart';
+import 'filter_bar.dart';
 import 'compressed_spring_figure.dart';
+import 'connected_vessels_figure.dart';
 import 'fixed_end_reflection_figure.dart';
 import 'free_end_reflection_figure.dart';
+import 'gas_cylinder_figure.dart';
 import 'history_slots.dart';
 import 'incline_pull_figure.dart';
+import 'kepler_orbits_figure.dart';
 import 'math_expression_view.dart';
 import 'open_pipe_figure.dart';
+import 'parallel_current_figure.dart';
 import 'resistor_current_figure.dart';
 import 'series_circuit_figure.dart';
+import 'series_current_figure.dart';
+import 'simple_pendulum_figure.dart';
 import 'sliding_comparison_figure.dart';
 import 'spring_pulleys_figure.dart';
 import 'stacked_blocks_figure.dart';
 import 'unit_expression_view.dart';
+import 'vertical_spring_oscillation_figure.dart';
 
 /// 問題文、図、履歴、解説。ガチャへ戻すボタンは置かない。
 class ProblemDetailPage extends StatefulWidget {
@@ -47,6 +60,7 @@ class _ProblemDetailPageState extends State<ProblemDetailPage> {
   @override
   Widget build(BuildContext context) {
     final problem = widget.problem;
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: Colors.white,
       extendBodyBehindAppBar: true,
@@ -70,13 +84,24 @@ class _ProblemDetailPageState extends State<ProblemDetailPage> {
               32,
             ),
             children: [
-              if (problem.figure != null) ...[
-                Center(child: _figure(problem.figure!)),
-                const SizedBox(height: 6),
-              ],
-              Text(
-                problem.statement,
-                style: const TextStyle(fontSize: 16, height: 1.6),
+              DomainTintCard(
+                domains: problem.domains,
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (problem.figure != null) ...[
+                        Center(child: _figure(problem.figure!)),
+                        const SizedBox(height: 6),
+                      ],
+                      Text(
+                        problem.getLocalizedStatement(context),
+                        style: const TextStyle(fontSize: 16, height: 1.6),
+                      ),
+                    ],
+                  ),
+                ),
               ),
               const SizedBox(height: 8),
               HistorySlots(
@@ -85,21 +110,32 @@ class _ProblemDetailPageState extends State<ProblemDetailPage> {
                 onCycle: _cycle,
               ),
               const SizedBox(height: 16),
-              const _Heading('答え'),
+              _Heading(l10n.answerLabel),
               const SizedBox(height: 8),
               _AnswerValue(problem: problem),
               _Section(
-                title: 'ヒント',
-                body: problem.hint,
+                title: l10n.hint,
+                body: problem.getLocalizedHint(context),
                 figure: switch (problem.hintReveal) {
-                  HintReveal.freeEndReflection => const FreeEndReflectionFigure(),
-                  HintReveal.fixedEndReflection => const FixedEndReflectionFigure(),
+                  HintReveal.freeEndReflection =>
+                    const FreeEndReflectionFigure(),
+                  HintReveal.fixedEndReflection =>
+                    const FixedEndReflectionFigure(),
                   HintReveal.message || HintReveal.groupUpperBlocks => null,
                 },
               ),
-              _Section(title: '方針', body: problem.approach),
-              _Section(title: '最初の一手', body: problem.firstStep),
-              _Section(title: '解説', body: problem.explanation),
+              _Section(
+                title: l10n.approach,
+                body: problem.getLocalizedApproach(context),
+              ),
+              _Section(
+                title: l10n.firstStep,
+                body: problem.getLocalizedFirstStep(context),
+              ),
+              _Section(
+                title: l10n.explanation,
+                body: problem.getLocalizedExplanation(context),
+              ),
             ],
           ),
         ],
@@ -118,6 +154,34 @@ class _ProblemDetailPageState extends State<ProblemDetailPage> {
       ProblemFigure.compressedSpring => const CompressedSpringFigure(),
       ProblemFigure.acResistor => const AcResistorFigure(),
       ProblemFigure.inclinePull => const InclinePullFigure(),
+      ProblemFigure.batteryResistor => const BatteryResistorFigure(),
+      ProblemFigure.seriesCurrent => const SeriesCurrentFigure(),
+      ProblemFigure.parallelCurrent => const ParallelCurrentFigure(),
+      ProblemFigure.bridgeVoltageDrop => const BridgeVoltageDropFigure(),
+      ProblemFigure.isothermalGas => const GasCylinderFigure(
+        process: GasCylinderProcess.isothermal,
+      ),
+      ProblemFigure.isobaricGas => const GasCylinderFigure(
+        process: GasCylinderProcess.isobaric,
+      ),
+      ProblemFigure.isochoricGas => const GasCylinderFigure(
+        process: GasCylinderProcess.isochoric,
+      ),
+      ProblemFigure.adiabaticGas => const GasCylinderFigure(
+        process: GasCylinderProcess.adiabatic,
+      ),
+      ProblemFigure.connectedVessels => const ConnectedVesselsFigure(),
+      ProblemFigure.diatomicVessels => const ConnectedVesselsFigure(
+        leftInside: '2.0 mol',
+        leftBelow: '300 K',
+        rightInside: '1.0 mol',
+        rightBelow: '900 K',
+      ),
+      ProblemFigure.verticalSpringOscillation =>
+        const VerticalSpringOscillationFigure(),
+      ProblemFigure.simplePendulum => const SimplePendulumFigure(),
+      ProblemFigure.keplerOrbits => const KeplerOrbitsFigure(),
+      ProblemFigure.beats => const BeatsFigure(),
     };
   }
 }
@@ -171,14 +235,18 @@ class _AnswerValue extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const style = TextStyle(fontSize: 22, fontWeight: FontWeight.w600);
-    final value = _ValueText(text: problem.answerDisplay, style: style);
-    if (problem.answerUnitLabel.isEmpty) return value;
+    final value = _ValueText(
+      text: problem.getLocalizedAnswerDisplay(context),
+      style: style,
+    );
+    final unit = problem.getLocalizedAnswerUnitLabel(context);
+    if (unit.isEmpty) return value;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         value,
         const SizedBox(width: 6),
-        _UnitText(unit: problem.answerUnitLabel, style: style),
+        _UnitText(unit: unit, style: style),
       ],
     );
   }

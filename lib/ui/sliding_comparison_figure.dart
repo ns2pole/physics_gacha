@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '../utils/figure_clock.dart';
+import '../utils/figure_labels.dart';
+import 'span_marker.dart';
+
 /// 同じ水平面をすべる2つの場合。下の距離は上の4倍で、減速の仕方は同じ。
 class SlidingComparisonFigure extends StatefulWidget {
   const SlidingComparisonFigure({super.key});
@@ -19,10 +23,7 @@ class _SlidingComparisonFigureState extends State<SlidingComparisonFigure>
       vsync: this,
       duration: const Duration(milliseconds: 2600),
     );
-    final binding = WidgetsBinding.instance.runtimeType.toString();
-    if (!binding.contains('TestWidgetsFlutterBinding')) {
-      _controller.repeat();
-    }
+    if (figureClockRuns) _controller.repeat();
   }
 
   @override
@@ -33,16 +34,21 @@ class _SlidingComparisonFigureState extends State<SlidingComparisonFigure>
 
   @override
   Widget build(BuildContext context) {
+    final labels = FigureLabels.of(context);
     return SizedBox(
-      height: 168,
-      width: 300,
+      height: 176,
+      width: 274,
       child: AnimatedBuilder(
         animation: _controller,
         builder: (context, _) {
-          const motion = 0.82;
-          final raw = _controller.value;
-          final progress = raw >= motion ? 1.0 : raw / motion;
-          return CustomPaint(painter: _SlidingComparisonPainter(progress: progress));
+          final progress = playPauseProgress(_controller.value);
+          return CustomPaint(
+            painter: _SlidingComparisonPainter(
+              progress: progress,
+              initialSpeedFast: '${labels.initialSpeed} 5.0 m/s',
+              initialSpeedSlow: '${labels.initialSpeed} v₀',
+            ),
+          );
         },
       ),
     );
@@ -50,13 +56,20 @@ class _SlidingComparisonFigureState extends State<SlidingComparisonFigure>
 }
 
 class _SlidingComparisonPainter extends CustomPainter {
-  const _SlidingComparisonPainter({required this.progress});
+  const _SlidingComparisonPainter({
+    required this.progress,
+    required this.initialSpeedFast,
+    required this.initialSpeedSlow,
+  });
 
   /// 0 で出発、1 で遅い方が停止した直後。速い方はその半分で止まっている。
   final double progress;
+  final String initialSpeedFast;
+  final String initialSpeedSlow;
 
   @override
   void paint(Canvas canvas, Size size) {
+    canvas.translate(-12, 0);
     const ink = Color(0xFF37474F);
     const blockColor = Color(0xFF1565C0);
     const origin = 36.0;
@@ -65,9 +78,9 @@ class _SlidingComparisonPainter extends CustomPainter {
 
     _case(
       canvas,
-      label: '初速 5.0 m/s',
+      label: initialSpeedFast,
       distance: 'L',
-      groundY: 46,
+      groundY: 40,
       origin: origin,
       length: shortLength,
       fraction: _stopped(_fraction(progress / 0.5)),
@@ -76,9 +89,9 @@ class _SlidingComparisonPainter extends CustomPainter {
     );
     _case(
       canvas,
-      label: '初速 v₀',
+      label: initialSpeedSlow,
       distance: '4L',
-      groundY: 118,
+      groundY: 130,
       origin: origin,
       length: longLength,
       fraction: _stopped(_fraction(progress)),
@@ -116,7 +129,14 @@ class _SlidingComparisonPainter extends CustomPainter {
       ground,
     );
     _labelLeft(canvas, label, Offset(origin, groundY - 28), blockColor);
-    _lengthMarker(canvas, groundY + 22, origin, origin + length, distance, ink);
+    paintSpanMarker(
+      canvas: canvas,
+      from: Offset(origin, groundY + 22),
+      to: Offset(origin + length, groundY + 22),
+      label: distance,
+      color: ink,
+      tick: const Offset(0, -16),
+    );
 
     const blockWidth = 18.0;
     const blockHeight = 14.0;
@@ -126,49 +146,6 @@ class _SlidingComparisonPainter extends CustomPainter {
       RRect.fromRectAndRadius(rect, const Radius.circular(2)),
       Paint()..color = blockColor,
     );
-  }
-
-  void _lengthMarker(
-    Canvas canvas,
-    double y,
-    double left,
-    double right,
-    String text,
-    Color color,
-  ) {
-    final paint = Paint()
-      ..color = color
-      ..strokeWidth = 1.2
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round;
-    final mid = (left + right) / 2;
-    const gap = 16.0;
-    if (mid - gap > left) {
-      canvas.drawLine(Offset(left, y), Offset(mid - gap, y), paint);
-    }
-    if (mid + gap < right) {
-      canvas.drawLine(Offset(mid + gap, y), Offset(right, y), paint);
-    }
-    _arrowHead(canvas, Offset(left, y), paint, outward: true);
-    _arrowHead(canvas, Offset(right, y), paint, outward: false);
-    _label(canvas, text, Offset(mid, y), color);
-  }
-
-  void _arrowHead(Canvas canvas, Offset tip, Paint paint, {required bool outward}) {
-    final wing = outward ? 6.0 : -6.0;
-    canvas.drawLine(tip, Offset(tip.dx + wing, tip.dy - 3.5), paint);
-    canvas.drawLine(tip, Offset(tip.dx + wing, tip.dy + 3.5), paint);
-  }
-
-  void _label(Canvas canvas, String text, Offset origin, Color color) {
-    final painter = TextPainter(
-      text: TextSpan(
-        text: text,
-        style: TextStyle(color: color, fontSize: 13, fontWeight: FontWeight.w600),
-      ),
-      textDirection: TextDirection.ltr,
-    )..layout();
-    painter.paint(canvas, origin - Offset(painter.width / 2, painter.height / 2));
   }
 
   void _labelLeft(Canvas canvas, String text, Offset origin, Color color) {
@@ -184,5 +161,7 @@ class _SlidingComparisonPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _SlidingComparisonPainter oldDelegate) =>
-      oldDelegate.progress != progress;
+      oldDelegate.progress != progress ||
+      oldDelegate.initialSpeedFast != initialSpeedFast ||
+      oldDelegate.initialSpeedSlow != initialSpeedSlow;
 }

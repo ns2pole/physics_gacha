@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../models/learning_record.dart';
 import '../models/physics_domain.dart';
+import '../l10n/app_localizations.dart';
 
 /// 単元のオン／オフ。色がついていればオン、灰色ならオフ。
 class DomainChips extends StatelessWidget {
@@ -61,7 +62,7 @@ class _DomainPill extends StatelessWidget {
           ),
         ),
         child: Text(
-          domain.label,
+          domain.label(context),
           style: TextStyle(
             fontSize: 15,
             fontWeight: FontWeight.bold,
@@ -106,6 +107,36 @@ class _DomainPaint {
       border: Colors.green.shade700,
     ),
   };
+}
+
+/// 一覧・問題文カードの薄い単元色。
+class DomainTintCard extends StatelessWidget {
+  const DomainTintCard({super.key, required this.domains, required this.child});
+
+  final Set<PhysicsDomain> domains;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final ordered = orderedDomains(domains);
+    final tint = ordered.isEmpty
+        ? Colors.white
+        : domainCardTint(ordered.first);
+    final gradient = ordered.length > 1
+        ? LinearGradient(
+            colors: [for (final domain in ordered) domainCardTint(domain)],
+          )
+        : null;
+    return Card(
+      margin: EdgeInsets.zero,
+      color: tint,
+      clipBehavior: Clip.antiAlias,
+      child: Ink(
+        decoration: gradient == null ? null : BoxDecoration(gradient: gradient),
+        child: child,
+      ),
+    );
+  }
 }
 
 /// 単位ガチャの青い除外ガジェット。タップでメニューが開く。
@@ -155,9 +186,10 @@ class _ExclusionFilterCardState extends State<ExclusionFilterCard> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final countText = widget.mode == ExclusionMode.none
-        ? '除外なし 全${widget.total}問'
-        : '(残 ${widget.remaining}問/${widget.total}問)';
+        ? l10n.exclusionNoneWithTotal(widget.total)
+        : l10n.remainingProblems(widget.remaining, widget.total);
     return Container(
       key: _key,
       width: double.infinity,
@@ -189,7 +221,7 @@ class _ExclusionFilterCardState extends State<ExclusionFilterCard> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    'フィルタ設定',
+                    AppLocalizations.of(context)!.filterSettings,
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue[700]),
                   ),
                   const SizedBox(width: 8),
@@ -238,17 +270,18 @@ class _ExclusionLabel extends StatelessWidget {
       fontWeight: compact ? FontWeight.normal : FontWeight.bold,
       color: compact ? Colors.grey[900] : Colors.blue[600],
     );
+    final l10n = AppLocalizations.of(context)!;
     if (mode == ExclusionMode.none) {
-      return Text('除外なし', style: style);
+      return Text(l10n.exclusionNone, style: style);
     }
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text('最新${mode.neededGreens}回が', style: style),
+        Text(l10n.exclusionLatestPrefix(mode.neededGreens), style: style),
         const SizedBox(width: 4),
         const _SolvedBadge(),
         const SizedBox(width: 4),
-        Text('ならガチャから外す', style: style),
+        Text(l10n.exclusionThenRemoveFromGacha, style: style),
       ],
     );
   }

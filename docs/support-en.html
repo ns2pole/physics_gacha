@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Support — Physics Gacha</title>
+  <style>
+    :root {
+      --ink: #1a1a1a;
+      --muted: #555;
+      --line: #e5e5e5;
+      --bg: #fafafa;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
+      color: var(--ink);
+      background: var(--bg);
+      line-height: 1.75;
+    }
+    .wrap {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+    h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin: 0 0 8px;
+    }
+    .meta {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 32px;
+    }
+    h2 {
+      font-size: 1.15rem;
+      margin: 36px 0 12px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--line);
+    }
+    p, li { font-size: 1rem; }
+    ul { padding-left: 1.25em; }
+    li { margin: 6px 0; }
+    a { color: #0b57d0; }
+    .copy-hint {
+      background: #fff;
+      border: 1px dashed #bbb;
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-bottom: 28px;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+    #notion-paste {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 28px 28px 36px;
+    }
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    button {
+      appearance: none;
+      border: 1px solid #ccc;
+      background: #fff;
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-size: 0.95rem;
+      cursor: pointer;
+    }
+    button:hover { background: #f0f0f0; }
+    button.primary {
+      background: #1a1a1a;
+      color: #fff;
+      border-color: #1a1a1a;
+    }
+    button.primary:hover { background: #333; }
+    #toast {
+      display: none;
+      margin-left: 8px;
+      color: #0a7a2f;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="copy-hint">
+      英語版です。Notion に貼る用です。「テキストをコピー」を押して Notion のページに貼り付け、英語のサポートURLにしてください。プライバシーポリシーの英語の公開URLが決まったら、本文の Privacy にそのURLを足してから貼ってください。
+    </div>
+    <div class="btn-row">
+      <button class="primary" type="button" id="copy-btn">テキストをコピー</button>
+      <span id="toast">コピーしました</span>
+    </div>
+
+    <article id="notion-paste">
+      <h1>Physics Gacha Support</h1>
+      <p class="meta">Last updated: October 21, 2026</p>
+
+      <p>
+        Physics Gacha is an app for solving high-school physics problems one at a time.
+        Problems do not name the topic. You read the situation and decide which law to use. You can use the app without an account.
+      </p>
+
+      <h2>What you can do</h2>
+      <ul>
+        <li>Draw one problem at a time</li>
+        <li>See a hint, the approach, the first step, and the full solution</li>
+        <li>Enter an answer with the calculator, as a value and a unit</li>
+        <li>Keep a learning history and leave out problems you have answered correctly in a row</li>
+        <li>Sign in to save your history and gacha settings in the cloud</li>
+        <li>Use Ask AI about the problem you have open</li>
+      </ul>
+
+      <h2>Cloud sync</h2>
+      <ul>
+        <li>You can use the app without signing in. Gacha settings and learning records stay on that device.</li>
+        <li>When cloud sync is on, the same settings and learning records are also saved in the cloud. On iPhone you sign in with an Apple account. On Android you sign in with a Google account.</li>
+        <li>While cloud sync is off, settings and learning records are not sent off the device. Data already in the cloud stays there until it is deleted.</li>
+      </ul>
+
+      <h2>FAQ</h2>
+      <p><strong>Q. Do I need an account?</strong><br />
+      A. No. You can solve problems, open hints, and keep history on the device without signing in. Sign in only when you want cloud sync, so the same account matches across devices.</p>
+
+      <p><strong>Q. What is saved in a learning record?</strong><br />
+      A. For each problem, the status of up to the three most recent attempts: Empty, Solved, Understood, or Missed. The numbers and expressions you enter as answers are not saved.</p>
+
+      <p><strong>Q. I want to delete my account or the data in the cloud.</strong><br />
+      A. In the app, choose Delete account. That removes the account and the gacha settings and learning records stored in the cloud. If that does not work, email the address below and include the Apple or Google email address you used to sign in. After we confirm the request, we delete them within a reasonable time. You can also use the same email to ask us to delete only the settings and learning records in the cloud, and keep the account.</p>
+
+      <p><strong>Q. The app is not working.</strong><br />
+      A. Email the address below with your device (for example, iPhone 15 / iOS 18) and what is going wrong.</p>
+
+      <h2>Privacy</h2>
+      <p>For how we handle personal information, see the privacy policy.</p>
+
+      <h2>Contact</h2>
+      <p>
+        Operator: Shunsuke Nakamura<br />
+        Email: <a href="mailto:spaceofstar2@gmail.com">spaceofstar2@gmail.com</a>
+      </p>
+      <p>A reply may take a few days.</p>
+    </article>
+  </div>
+
+  <script>
+    document.getElementById("copy-btn").addEventListener("click", async () => {
+      const el = document.getElementById("notion-paste");
+      const text = el.innerText.trim();
+      try {
+        await navigator.clipboard.writeText(text);
+      } catch {
+        const range = document.createRange();
+        range.selectNodeContents(el);
+        const sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+        document.execCommand("copy");
+        sel.removeAllRanges();
+      }
+      const toast = document.getElementById("toast");
+      toast.style.display = "inline";
+      setTimeout(() => { toast.style.display = "none"; }, 2000);
+    });
+  </script>
+</body>
+</html>

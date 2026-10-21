@@ -7,11 +7,12 @@ import 'package:physics_gacha/logic/problem_pool.dart';
 import 'package:physics_gacha/logic/unit_quantity.dart';
 import 'package:physics_gacha/models/learning_record.dart';
 import 'package:physics_gacha/models/physics_domain.dart';
+import 'package:physics_gacha/models/physics_problem.dart';
 import 'package:physics_gacha/state/gacha_session.dart';
 
 void main() {
-  test('仮の15問は5単元と融合を数値か記号で答える', () {
-    expect(sampleProblems, hasLength(15));
+  test('問題は5単元と融合を数値か並びで答える', () {
+    expect(sampleProblems, hasLength(29));
     for (final problem in sampleProblems) {
       if (problem.isSymbolOrder) {
         expect(
@@ -22,6 +23,9 @@ void main() {
         continue;
       }
       expect(problem.answerValue.isFinite, isTrue);
+      if (problem.unitObvious) {
+        expect(problem.unitChoices, isEmpty, reason: problem.id);
+      }
       expect(choicesHaveDistinctDimensions(problem.unitChoices), isTrue);
       final grade = gradeAnswer(
         expectedValue: problem.answerValue,
@@ -38,6 +42,12 @@ void main() {
       sampleProblems.where((problem) => problem.domains.length > 1),
       hasLength(1),
     );
+
+    final kepler = sampleProblems.singleWhere(
+      (problem) => problem.id == '11cf8d71-4c2b-45ed-bb3e-3718131609c2',
+    );
+    expect(kepler.unitObvious, isTrue);
+    expect(kepler.unitInputKind, UnitInputKind.omitted);
   });
 
   test('力学だけオンのときは融合が出ない', () {
@@ -53,6 +63,9 @@ void main() {
       'sample-spring-pulleys',
       'sample-air-resistance',
       'sample-incline',
+      '680f161b-8039-4d8b-97ac-54d641bf875e',
+      '63f5a83f-3152-4583-8c46-67bc2e33d8bc',
+      '11cf8d71-4c2b-45ed-bb3e-3718131609c2',
     ]);
 
     final both = eligibleProblems(

@@ -1,41 +1,97 @@
 import 'package:flutter/material.dart';
 
+import '../utils/figure_clock.dart';
+import '../utils/figure_labels.dart';
+
 /// 仮の力学問題の図。質量は問題文の 1.0 kg、3.0 kg、4.0 kg に合わせてある。
 ///
 /// [groupProgress] が 0 より大きいときは、物体AとBを囲む線が伸びる。
-class StackedBlocksFigure extends StatelessWidget {
+/// 全体は上向きに加速して止まり、はじめの位置に戻る。
+class StackedBlocksFigure extends StatefulWidget {
   const StackedBlocksFigure({super.key, this.groupProgress = 0});
 
   final double groupProgress;
 
   @override
+  State<StackedBlocksFigure> createState() => _StackedBlocksFigureState();
+}
+
+class _StackedBlocksFigureState extends State<StackedBlocksFigure>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _clock;
+
+  @override
+  void initState() {
+    super.initState();
+    _clock = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 2400),
+    );
+    if (figureClockRuns) _clock.repeat();
+  }
+
+  @override
+  void dispose() {
+    _clock.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final labels = FigureLabels.of(context);
     return SizedBox(
-      height: 195,
-      width: 200,
-      child: CustomPaint(
-        painter: _StackedBlocksPainter(groupProgress: groupProgress),
+      height: 210,
+      width: 160,
+      child: AnimatedBuilder(
+        animation: _clock,
+        builder: (context, _) {
+          final t = playPauseProgress(_clock.value);
+          return CustomPaint(
+            painter: _StackedBlocksPainter(
+              groupProgress: widget.groupProgress,
+              lift: 40 * t * t,
+              objectA: '${labels.objectA}  1.0 kg',
+              objectB: '${labels.objectB}  3.0 kg',
+              objectC: '${labels.objectC}  4.0 kg',
+              externalForce: labels.externalForce,
+            ),
+          );
+        },
       ),
     );
   }
 }
 
 class _StackedBlocksPainter extends CustomPainter {
-  const _StackedBlocksPainter({required this.groupProgress});
+  const _StackedBlocksPainter({
+    required this.groupProgress,
+    required this.lift,
+    required this.objectA,
+    required this.objectB,
+    required this.objectC,
+    required this.externalForce,
+  });
 
   final double groupProgress;
+  final double lift;
+  final String objectA;
+  final String objectB;
+  final String objectC;
+  final String externalForce;
 
   @override
   void paint(Canvas canvas, Size size) {
-    const labels = ['物体A  1.0 kg', '物体B  3.0 kg', '物体C  4.0 kg'];
+    canvas.save();
+    canvas.translate(-22, -lift);
+    final labels = [objectA, objectB, objectC];
     final box = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.5
       ..color = const Color(0xFF37474F);
     const blockWidth = 120.0;
     const blockHeight = 42.0;
-    final left = (size.width - blockWidth) / 2 + 8;
-    var top = 8.0;
+    const left = 48.0;
+    var top = 50.0;
     final rects = <Rect>[];
     for (final _ in labels) {
       rects.add(Rect.fromLTWH(left, top, blockWidth, blockHeight));
@@ -54,6 +110,7 @@ class _StackedBlocksPainter extends CustomPainter {
       _drawLabel(canvas, labels[i], rects[i].center);
     }
     _drawForceArrow(canvas, Offset(left + blockWidth / 2, top + 28), top - 4);
+    canvas.restore();
   }
 
   /// 物体AとBの左に、ひとまとめを表す括弧を進捗ぶんだけ描く。
@@ -105,9 +162,9 @@ class _StackedBlocksPainter extends CustomPainter {
       ..close();
     canvas.drawPath(head, Paint()..color = const Color(0xFF1565C0));
     final label = TextPainter(
-      text: const TextSpan(
-        text: '外力',
-        style: TextStyle(color: Color(0xFF1565C0), fontSize: 13),
+      text: TextSpan(
+        text: externalForce,
+        style: const TextStyle(color: Color(0xFF1565C0), fontSize: 13),
       ),
       textDirection: TextDirection.ltr,
     )..layout();
@@ -116,5 +173,10 @@ class _StackedBlocksPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _StackedBlocksPainter oldDelegate) =>
-      oldDelegate.groupProgress != groupProgress;
+      oldDelegate.groupProgress != groupProgress ||
+      oldDelegate.lift != lift ||
+      oldDelegate.objectA != objectA ||
+      oldDelegate.objectB != objectB ||
+      oldDelegate.objectC != objectC ||
+      oldDelegate.externalForce != externalForce;
 }

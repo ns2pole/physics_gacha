@@ -1,31 +1,31 @@
 import 'package:flutter/material.dart';
 
+import '../l10n/app_localizations.dart';
 import '../services/auth/account_deletion_service.dart';
 import '../services/auth/firebase_auth_service.dart';
+import '../utils/l10n_utils.dart';
 
 class AccountDeletionFlow {
   AccountDeletionFlow._();
 
   static Future<bool> show(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('アカウントを削除'),
-        content: const SingleChildScrollView(
-          child: Text(
-            'アカウントとクラウド上の学習履歴・ガチャ設定を削除します。'
-            'この操作は取り消せません。',
-          ),
+        title: Text(l10n.deleteAccountTitle),
+        content: SingleChildScrollView(
+          child: Text(l10n.deleteAccountBody),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('キャンセル'),
+            child: Text(l10n.cancel),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
             style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text('削除する'),
+            child: Text(l10n.delete),
           ),
         ],
       ),
@@ -38,15 +38,15 @@ class AccountDeletionFlow {
     try {
       await _runWithProgress(
         context,
-        'アカウントを削除しています…',
+        AppLocalizations.of(context)!.deletingAccount,
         AccountDeletionService.deleteCurrentAccount,
       );
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('アカウントを削除しました。'),
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.accountDeleted),
             backgroundColor: Colors.green,
-            duration: Duration(seconds: 3),
+            duration: const Duration(seconds: 3),
           ),
         );
       }
@@ -56,12 +56,12 @@ class AccountDeletionFlow {
         await showDialog<void>(
           context: context,
           builder: (context) => AlertDialog(
-            title: const Text('削除に失敗しました'),
-            content: Text(e.toString()),
+            title: Text(AppLocalizations.of(context)!.deleteFailedTitle),
+            content: Text(_errorMessage(e)),
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),
-                child: const Text('閉じる'),
+                child: Text(AppLocalizations.of(context)!.close),
               ),
             ],
           ),
@@ -71,31 +71,33 @@ class AccountDeletionFlow {
     }
   }
 
+  static String _errorMessage(Object e) {
+    if (e is AccountDeletionException) {
+      return localizedAccountDeletionMessage(e);
+    }
+    return e.toString();
+  }
+
   static Future<bool> _reauthenticate(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
     final method = FirebaseAuthService.loginMethod;
     try {
       switch (method) {
         case 'google':
-          final ok = await _confirmReauth(
-            context,
-            'アカウント削除を続けるには、Googleで再度認証してください。',
-          );
+          final ok = await _confirmReauth(context, l10n.reauthGoogle);
           if (ok != true || !context.mounted) return false;
           await _runWithProgress(
             context,
-            '再認証しています…',
+            AppLocalizations.of(context)!.reauthenticating,
             FirebaseAuthService.reauthenticateWithGoogle,
           );
           return true;
         case 'apple':
-          final ok = await _confirmReauth(
-            context,
-            'アカウント削除を続けるには、Appleアカウントで再度認証してください。',
-          );
+          final ok = await _confirmReauth(context, l10n.reauthApple);
           if (ok != true || !context.mounted) return false;
           await _runWithProgress(
             context,
-            '再認証しています…',
+            AppLocalizations.of(context)!.reauthenticating,
             FirebaseAuthService.reauthenticateWithApple,
           );
           return true;
@@ -103,15 +105,12 @@ class AccountDeletionFlow {
           await showDialog<void>(
             context: context,
             builder: (context) => AlertDialog(
-              title: const Text('再認証できません'),
-              content: const Text(
-                'ログイン方法を確認できませんでした。一度ログアウトしてから、'
-                'もう一度ログインしてください。',
-              ),
+              title: Text(AppLocalizations.of(context)!.reauthUnavailableTitle),
+              content: Text(AppLocalizations.of(context)!.reauthUnavailableBody),
               actions: [
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(),
-                  child: const Text('閉じる'),
+                  child: Text(AppLocalizations.of(context)!.close),
                 ),
               ],
             ),
@@ -122,7 +121,7 @@ class AccountDeletionFlow {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('再認証に失敗しました: $e'),
+            content: Text(AppLocalizations.of(context)!.reauthFailed('$e')),
             backgroundColor: Colors.red,
           ),
         );
@@ -132,20 +131,21 @@ class AccountDeletionFlow {
   }
 
   static Future<bool?> _confirmReauth(BuildContext context, String message) {
+    final l10n = AppLocalizations.of(context)!;
     return showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('本人確認'),
+        title: Text(l10n.identityConfirmTitle),
         content: Text(message),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('キャンセル'),
+            child: Text(l10n.cancel),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
             style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text('続行'),
+            child: Text(l10n.continueAction),
           ),
         ],
       ),
@@ -181,4 +181,17 @@ class AccountDeletionFlow {
       }
     }
   }
+}
+
+String localizedAccountDeletionMessage(AccountDeletionException e) {
+  final l10n = appL10nWithoutContext();
+  return switch (e.code) {
+    'endpoint_not_configured' => l10n.accountDeletionEndpointMissing,
+    'not_signed_in' => l10n.accountDeletionAuthMissing,
+    'server_rejected' => e.message.isNotEmpty
+        ? e.message
+        : l10n.accountDeletionFailed,
+    'timeout' => l10n.accountDeletionTimeout,
+    _ => e.message.isNotEmpty ? e.message : l10n.accountDeletionFailed,
+  };
 }

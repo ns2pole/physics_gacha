@@ -2,60 +2,96 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
-/// 水平なばねの両端から、滑車ごしにおもりをつるした図。
+import '../utils/figure_labels.dart';
+
+/// 短い水平ばねの両端から紐が出て、滑車の外側を通っておもりをつるす。
 class SpringPulleysFigure extends StatelessWidget {
   const SpringPulleysFigure({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const SizedBox(
-      height: 168,
-      width: 280,
-      child: CustomPaint(painter: _SpringPulleysPainter()),
+    final labels = FigureLabels.of(context);
+    return SizedBox(
+      height: 152,
+      width: 264,
+      child: CustomPaint(painter: _SpringPulleysPainter(spring: labels.spring)),
     );
   }
 }
 
 class _SpringPulleysPainter extends CustomPainter {
-  const _SpringPulleysPainter();
+  const _SpringPulleysPainter({required this.spring});
+
+  final String spring;
 
   static const _ink = Color(0xFF37474F);
 
   @override
   void paint(Canvas canvas, Size size) {
+    canvas.translate(-8, 0);
     final line = Paint()
       ..color = _ink
       ..strokeWidth = 1.5
-      ..style = PaintingStyle.stroke;
-    const leftPulley = Offset(52, 48);
-    const rightPulley = Offset(228, 48);
-    const radius = 12.0;
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round;
+    const leftPulley = Offset(52, 58);
+    const rightPulley = Offset(228, 58);
+    const radius = 14.0;
+    const springY = 44.0;
+    const springLeft = 112.0;
+    const springRight = 168.0;
     const massTop = 108.0;
     const massWidth = 44.0;
     const massHeight = 36.0;
 
-    _spring(canvas, leftPulley.dx + radius, rightPulley.dx - radius, leftPulley.dy);
-    _label(canvas, 'ばね', Offset((leftPulley.dx + rightPulley.dx) / 2, 16), _ink);
+    _spring(canvas, springLeft, springRight, springY);
+    _label(canvas, spring, const Offset(140, 18), _ink);
 
     canvas.drawCircle(leftPulley, radius, line);
     canvas.drawCircle(rightPulley, radius, line);
-    canvas.drawCircle(leftPulley, 2, Paint()..color = _ink);
-    canvas.drawCircle(rightPulley, 2, Paint()..color = _ink);
+    canvas.drawCircle(leftPulley, 2.2, Paint()..color = _ink);
+    canvas.drawCircle(rightPulley, 2.2, Paint()..color = _ink);
+
+    final leftTop = Offset(leftPulley.dx, leftPulley.dy - radius);
+    final leftOuter = Offset(leftPulley.dx - radius, leftPulley.dy);
+    final rightTop = Offset(rightPulley.dx, rightPulley.dy - radius);
+    final rightOuter = Offset(rightPulley.dx + radius, rightPulley.dy);
+
+    canvas.drawLine(const Offset(springLeft, springY), leftTop, line);
+    canvas.drawArc(
+      Rect.fromCircle(center: leftPulley, radius: radius),
+      -math.pi / 2,
+      -math.pi / 2,
+      false,
+      line,
+    );
+    canvas.drawLine(const Offset(springRight, springY), rightTop, line);
+    canvas.drawArc(
+      Rect.fromCircle(center: rightPulley, radius: radius),
+      -math.pi / 2,
+      math.pi / 2,
+      false,
+      line,
+    );
 
     final leftMass = Rect.fromLTWH(
-      leftPulley.dx - massWidth / 2,
+      leftOuter.dx - massWidth / 2,
       massTop,
       massWidth,
       massHeight,
     );
     final rightMass = Rect.fromLTWH(
-      rightPulley.dx - massWidth / 2,
+      rightOuter.dx - massWidth / 2,
       massTop,
       massWidth,
       massHeight,
     );
-    canvas.drawLine(Offset(leftPulley.dx, leftPulley.dy + radius), Offset(leftMass.center.dx, leftMass.top), line);
-    canvas.drawLine(Offset(rightPulley.dx, rightPulley.dy + radius), Offset(rightMass.center.dx, rightMass.top), line);
+    canvas.drawLine(leftOuter, Offset(leftMass.center.dx, leftMass.top), line);
+    canvas.drawLine(
+      rightOuter,
+      Offset(rightMass.center.dx, rightMass.top),
+      line,
+    );
     canvas.drawRect(leftMass, line);
     canvas.drawRect(rightMass, line);
     _label(canvas, '4.0 kg', leftMass.center, _ink, weight: FontWeight.w500);
@@ -64,9 +100,9 @@ class _SpringPulleysPainter extends CustomPainter {
 
   void _spring(Canvas canvas, double left, double right, double y) {
     final path = Path();
-    const turns = 10;
-    const amplitude = 9.0;
-    const steps = 80;
+    const turns = 6;
+    const amplitude = 8.0;
+    const steps = 48;
     for (var i = 0; i <= steps; i++) {
       final t = i / steps;
       final x = left + (right - left) * t;
@@ -101,9 +137,13 @@ class _SpringPulleysPainter extends CustomPainter {
       ),
       textDirection: TextDirection.ltr,
     )..layout();
-    painter.paint(canvas, center - Offset(painter.width / 2, painter.height / 2));
+    painter.paint(
+      canvas,
+      center - Offset(painter.width / 2, painter.height / 2),
+    );
   }
 
   @override
-  bool shouldRepaint(covariant _SpringPulleysPainter oldDelegate) => false;
+  bool shouldRepaint(covariant _SpringPulleysPainter oldDelegate) =>
+      oldDelegate.spring != spring;
 }

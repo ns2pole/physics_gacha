@@ -9,8 +9,8 @@ class AcResistorFigure extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const SizedBox(
-      height: 186,
-      width: 240,
+      height: 180,
+      width: 200,
       child: CustomPaint(painter: _AcResistorPainter()),
     );
   }
@@ -23,6 +23,7 @@ class _AcResistorPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    canvas.translate(-20, -6);
     final wire = Paint()
       ..color = _ink
       ..strokeWidth = 1.5
