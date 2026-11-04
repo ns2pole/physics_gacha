@@ -27,3 +27,9 @@ sed -i '' "s/^version: .*/version: ${next}/" pubspec.yaml
 echo "version ${current} -> ${next}"
 flutter build appbundle --release
 built=1
+
+# AAB の版と git の版を揃える。ビルド成功後に pubspec だけ commit / push する。
+git add pubspec.yaml
+git commit -m "Bump version to ${next} for Play AAB."
+git push origin HEAD
+echo "pushed version ${next}"
