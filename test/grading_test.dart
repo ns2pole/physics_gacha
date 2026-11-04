@@ -56,6 +56,48 @@ void main() {
     expect(grade.passed, isTrue);
   });
 
+  test('μC と mC は C と同じ電荷', () {
+    final micro = gradeAnswer(
+      expectedValue: 1.8e-2,
+      expectedUnit: 'C',
+      userExpression: '18000',
+      userUnit: 'μC',
+    );
+    expect(micro.passed, isTrue);
+
+    final pico = gradeAnswer(
+      expectedValue: 8.85e-11,
+      expectedUnit: 'F',
+      userExpression: '88.5',
+      userUnit: 'pF',
+    );
+    expect(pico.passed, isTrue);
+
+    final nano = gradeAnswer(
+      expectedValue: 1.77e-9,
+      expectedUnit: 'F',
+      userExpression: '1.77',
+      userUnit: 'nF',
+    );
+    expect(nano.passed, isTrue);
+
+    final metalGap = gradeAnswer(
+      expectedValue: 1.77e-10,
+      expectedUnit: 'F',
+      userExpression: '177',
+      userUnit: 'pF',
+    );
+    expect(metalGap.passed, isTrue);
+
+    final milli = gradeAnswer(
+      expectedValue: 1.8e-2,
+      expectedUnit: 'C',
+      userExpression: '18',
+      userUnit: 'mC',
+    );
+    expect(milli.passed, isTrue);
+  });
+
   test('空欄が正解なのは無次元だけ', () {
     final count = gradeAnswer(
       expectedValue: 4.0e5,

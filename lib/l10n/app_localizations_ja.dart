@@ -399,6 +399,21 @@ class AppLocalizationsJa extends AppLocalizations {
   String get figureAfter => 'あと';
 
   @override
+  String get figureCylinderHeight => '円柱の高さ\n0.318 m';
+
+  @override
+  String get figureCylinderRadius => '半径 0.050 m';
+
+  @override
+  String get figurePlacedBefore => '置く前';
+
+  @override
+  String get figurePlacedAfter => '置いた後';
+
+  @override
+  String get figureFromSide => '横から';
+
+  @override
   String get figureIsothermal => '等温';
 
   @override
@@ -412,6 +427,21 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get figureSun => '太陽';
+
+  @override
+  String get figureEarth => '地球';
+
+  @override
+  String get figureMoon => '月';
+
+  @override
+  String get figureSatellite => '衛星';
+
+  @override
+  String get figureWater => '水';
+
+  @override
+  String get figureInsulated => '断熱';
 
   @override
   String get hintUnavailableEn => '英語のヒントはまだありません。';

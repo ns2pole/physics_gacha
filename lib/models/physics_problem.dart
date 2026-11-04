@@ -25,6 +25,62 @@ enum ProblemFigure {
   simplePendulum,
   keplerOrbits,
   beats,
+  seriesSprings,
+  parallelSprings,
+  resonanceColumn,
+  chargedCapacitor,
+  parallelPlateCapacitor,
+  dielectricCapacitor,
+  metalInsertCapacitor,
+  parallelCapacitors,
+  freeFallSpeed,
+  freeFallTime,
+  longThrow,
+  heatDrop,
+  evacuatedCylinder,
+  geostationarySatellite,
+  moonOrbit,
+  sunOrbit,
+  cavendishTorsion,
+  dopplerWall,
+  singleSlit,
+  diffractionGrating,
+  toothbrushString,
+  stringFundamental,
+  conicalPendulum,
+  twoSpeakers,
+  soundSpeedColumn,
+  verticalSpringRelease,
+  tensionCart,
+  horizontalSpringRelease,
+  pendulumBottomSpeed,
+  blockEndLift,
+  diskHoleCenter,
+  cutSheetCenter,
+  slideTipHeight,
+  floatingWood,
+  everestGravity,
+  kineticFrictionSlide,
+  staticFrictionHold,
+  turntableSpring,
+  elevatorScale,
+  nailPendulum,
+  underwaterScale,
+  pendulumBottomTension,
+  stairPressure,
+  fujiPressure,
+  syringePiston,
+  waterDepthPressure,
+  invertedColumn,
+  saltWaterPressure,
+  heliumBag,
+  nichromeWire,
+  copperWire,
+  currentLoop,
+  rcDecay,
+  solenoidCoil,
+  lorentzBar,
+  aluminumCube,
 }
 
 /// ヒントボタンで、灰色の問題カードの中に足すもの。
@@ -51,6 +107,7 @@ class PhysicsProblem {
   const PhysicsProblem({
     required this.id,
     required this.theme,
+    required this.title,
     required this.domains,
     required this.statement,
     required this.answerValue,
@@ -70,8 +127,11 @@ class PhysicsProblem {
 
   final String id;
 
-  /// この問題が練習するテーマ。下敷きの項目名と揃える。問題文には出さない。
+  /// この問題が練習するテーマ。下敷きの項目名と揃える。画面には出さない。
   final String theme;
+
+  /// 一覧に出す名前。何を聞いているか。法則の名前は入れない。
+  final String title;
 
   final Set<PhysicsDomain> domains;
   final String statement;

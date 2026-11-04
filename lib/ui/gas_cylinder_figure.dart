@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '../utils/figure_label_style.dart';
+
 import '../utils/figure_labels.dart';
+import 'dial_meter.dart';
 
 /// シリンダーの前後。体積の高さは目安で、求める量は書かない。
 enum GasCylinderProcess { isothermal, isobaric, isochoric, adiabatic }
@@ -19,8 +22,11 @@ class GasCylinderFigure extends StatelessWidget {
       GasCylinderProcess.isochoric => labels.isochoric,
       GasCylinderProcess.adiabatic => labels.adiabatic,
     };
+    final roomy =
+        process == GasCylinderProcess.isothermal ||
+        process == GasCylinderProcess.isochoric;
     return SizedBox(
-      height: 170,
+      height: roomy ? 196 : 170,
       width: 270,
       child: CustomPaint(
         painter: _GasCylinderPainter(
@@ -50,8 +56,12 @@ class _GasCylinderPainter extends CustomPainter {
   static const _ink = Color(0xFF37474F);
 
   @override
+  bool get _roomy =>
+      process == GasCylinderProcess.isothermal ||
+      process == GasCylinderProcess.isochoric;
+
   void paint(Canvas canvas, Size size) {
-    canvas.translate(-16, 0);
+    if (!_roomy) canvas.translate(-16, 0);
     final wire = Paint()
       ..color = _ink
       ..strokeWidth = 1.5
@@ -60,59 +70,59 @@ class _GasCylinderPainter extends CustomPainter {
 
     final left = switch (process) {
       GasCylinderProcess.isothermal => (
-        gasHeight: 40.0,
-        pressure: '2.0×10⁵ Pa',
-        volume: '4.0×10⁻³ m³',
-        temperature: '300 K',
+        gasHeight: 58.0,
+        pressure: '1013 hPa',
+        volume: '2.0×10⁻³ m³',
+        temperature: '293 K',
       ),
       GasCylinderProcess.isobaric => (
-        gasHeight: 36.0,
-        pressure: '1.0×10⁵ Pa',
+        gasHeight: 40.0,
+        pressure: '1013 hPa',
         volume: '2.0×10⁻³ m³',
         temperature: '300 K',
       ),
       GasCylinderProcess.isochoric => (
-        gasHeight: 48.0,
-        pressure: '1.5×10⁵ Pa',
+        gasHeight: 64.0,
+        pressure: '1013 hPa',
         volume: '2.0×10⁻³ m³',
-        temperature: '300 K',
+        temperature: '27°C',
       ),
       GasCylinderProcess.adiabatic => (
-        gasHeight: 78.0,
-        pressure: '1.0×10⁵ Pa',
-        volume: '8.0×10⁻³ m³',
-        temperature: null,
+        gasHeight: 70.0,
+        pressure: null,
+        volume: '5.0×10⁻³ m³',
+        temperature: '27°C',
       ),
     };
     final right = switch (process) {
       GasCylinderProcess.isothermal => (
-        gasHeight: 80.0,
+        gasHeight: 116.0,
         pressure: null,
-        volume: '8.0×10⁻³ m³',
-        temperature: '300 K',
+        volume: '4.0×10⁻³ m³',
+        temperature: '293 K',
       ),
       GasCylinderProcess.isobaric => (
-        gasHeight: 50.0,
-        pressure: '1.0×10⁵ Pa',
+        gasHeight: 48.0,
+        pressure: '1013 hPa',
         volume: null,
-        temperature: '450 K',
+        temperature: '360 K',
       ),
       GasCylinderProcess.isochoric => (
-        gasHeight: 48.0,
+        gasHeight: 64.0,
         pressure: null,
         volume: '2.0×10⁻³ m³',
-        temperature: '600 K',
+        temperature: '−3°C',
       ),
       GasCylinderProcess.adiabatic => (
-        gasHeight: 22.0,
+        gasHeight: 14.0,
         pressure: null,
         volume: '1.0×10⁻³ m³',
-        temperature: null,
+        temperature: '???',
       ),
     };
 
-    const leftX = 78.0;
-    const rightX = 222.0;
+    final leftX = _roomy ? 62.0 : 78.0;
+    final rightX = _roomy ? 214.0 : 222.0;
     _cylinder(
       canvas,
       wire,
@@ -134,15 +144,23 @@ class _GasCylinderPainter extends CustomPainter {
       caption: after,
     );
 
-    const midY = 86.0;
-    canvas.drawLine(const Offset(128, midY), const Offset(166, midY), wire);
+    final midY = _roomy ? 92.0 : 86.0;
+    final arrowFrom = _roomy ? 112.0 : 128.0;
+    final arrowTo = _roomy ? 158.0 : 166.0;
+    canvas.drawLine(Offset(arrowFrom, midY), Offset(arrowTo, midY), wire);
     final head = Path()
-      ..moveTo(174, midY)
-      ..lineTo(164, midY - 5)
-      ..lineTo(164, midY + 5)
+      ..moveTo(arrowTo + 8, midY)
+      ..lineTo(arrowTo - 2, midY - 5)
+      ..lineTo(arrowTo - 2, midY + 5)
       ..close();
     canvas.drawPath(head, Paint()..color = _ink);
-    _label(canvas, processName, const Offset(150, 66), size: 14, bold: true);
+    _label(
+      canvas,
+      processName,
+      Offset((leftX + rightX) / 2, _roomy ? 68 : 66),
+      size: 14,
+      bold: true,
+    );
   }
 
   void _cylinder(
@@ -155,10 +173,10 @@ class _GasCylinderPainter extends CustomPainter {
     required String? temperature,
     required String caption,
   }) {
-    const width = 48.0;
-    const baseY = 124.0;
+    final width = _roomy ? 68.0 : 48.0;
+    final baseY = _roomy ? 160.0 : 124.0;
     const wallTop = 28.0;
-    const half = width / 2;
+    final half = width / 2;
     final pistonY = baseY - gasHeight;
     final left = Offset(cx - half, baseY);
     final right = Offset(cx + half, baseY);
@@ -200,16 +218,44 @@ class _GasCylinderPainter extends CustomPainter {
     }
 
     _label(canvas, caption, Offset(cx, 14), size: 13);
-    if (temperature != null) {
-      _label(canvas, temperature, Offset(cx, pistonY + gasHeight * 0.5));
+    if (_roomy) {
+      if (temperature != null) {
+        final y = gasHeight >= 80 ? pistonY + 18 : pistonY + 9;
+        _label(canvas, temperature, Offset(cx, y));
+      }
+      final radius = gasHeight >= 80 ? 10.0 : 8.0;
+      const labelGap = 3.0;
+      final labelCenter = baseY - 14;
+      paintPressureGauge(
+        canvas,
+        Offset(cx, labelCenter - radius - labelGap),
+        radius: radius,
+        reading: pressure ?? '??? hPa',
+        fraction: pressure == null ? 0.42 : 0.55,
+        labelShift: const Offset(0, labelGap - 10),
+      );
+    } else {
+      final askPressure =
+          pressure == null && process != GasCylinderProcess.adiabatic;
+      if (temperature != null) {
+        final y = gasHeight < 24 ? pistonY - 24 : pistonY + gasHeight * 0.5;
+        _label(canvas, temperature, Offset(cx, y));
+      }
+      if (pressure != null) {
+        _label(
+          canvas,
+          pressure,
+          Offset(cx, baseY + (volume == null ? 16 : 32)),
+        );
+      } else if (askPressure) {
+        final tap = Offset(cx + half, pistonY + gasHeight * 0.42);
+        final gauge = Offset(cx + half + 20, tap.dy);
+        canvas.drawLine(tap, Offset(gauge.dx - 13, gauge.dy), wire);
+        paintPressureGauge(canvas, gauge, radius: 12);
+      }
     }
-    var below = baseY + 16;
     if (volume != null) {
-      _label(canvas, volume, Offset(cx, below));
-      below += 16;
-    }
-    if (pressure != null) {
-      _label(canvas, pressure, Offset(cx, below));
+      _label(canvas, volume, Offset(cx, baseY + 16));
     }
   }
 
@@ -223,7 +269,7 @@ class _GasCylinderPainter extends CustomPainter {
     final painter = TextPainter(
       text: TextSpan(
         text: text,
-        style: TextStyle(
+        style: figureLabelStyle(
           color: _ink,
           fontSize: size,
           fontWeight: bold ? FontWeight.w600 : FontWeight.w400,

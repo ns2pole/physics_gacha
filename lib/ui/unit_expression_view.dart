@@ -73,7 +73,7 @@ class _UnitLayout {
   bool get isPlain => factors.length == 1 && factors.single.power == 1;
 }
 
-final _tokenPattern = RegExp(r'^([A-Za-zµΩ]+)(?:\^(-?\d+))?$');
+final _tokenPattern = RegExp(r'^([A-Za-zµμΩ]+)(?:\^(-?\d+))?$');
 
 _UnitLayout? _parseUnitLayout(String source) {
   final raw = source.trim();

@@ -1,3 +1,4 @@
+import '../../data/translations/en/note_article_problems_en.dart';
 import '../../data/translations/en/sample_problems_en.dart';
 import '../../models/problem_translation.dart';
 
@@ -6,7 +7,7 @@ class TranslationManager {
   TranslationManager._();
 
   static final Map<String, List<Map<String, ProblemTranslation>>> _sources = {
-    'en': [sampleProblemsTranslationsEn],
+    'en': [sampleProblemsTranslationsEn, noteArticleTranslationsEn],
     'ja': const [],
   };
 

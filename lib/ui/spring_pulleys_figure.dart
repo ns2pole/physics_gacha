@@ -2,6 +2,8 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import '../utils/figure_label_style.dart';
+
 import '../utils/figure_labels.dart';
 
 /// 短い水平ばねの両端から紐が出て、滑車の外側を通っておもりをつるす。
@@ -133,7 +135,7 @@ class _SpringPulleysPainter extends CustomPainter {
     final painter = TextPainter(
       text: TextSpan(
         text: text,
-        style: TextStyle(color: color, fontSize: 13, fontWeight: weight),
+        style: figureLabelStyle(color: color, fontWeight: weight),
       ),
       textDirection: TextDirection.ltr,
     )..layout();

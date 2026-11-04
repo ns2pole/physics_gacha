@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../utils/figure_label_style.dart';
+
 /// 12 V の電源に 4.0 Ω と 8.0 Ω を直列につないだ回路。
 /// 電源は下辺の中央に置き、回路全体を左右対称にする。
 class SeriesCircuitFigure extends StatelessWidget {
@@ -36,15 +38,39 @@ class _SeriesCircuitPainter extends CustomPainter {
       (Rect.fromLTWH(72, 32, 64, 24), '4.0 Ω'),
       (Rect.fromLTWH(164, 32, 64, 24), '8.0 Ω'),
     ];
-    canvas.drawLine(const Offset(left, top), Offset(resistors[0].$1.left, top), wire);
-    canvas.drawLine(Offset(resistors[0].$1.right, top), Offset(resistors[1].$1.left, top), wire);
-    canvas.drawLine(Offset(resistors[1].$1.right, top), const Offset(right, top), wire);
-    canvas.drawLine(const Offset(right, top), const Offset(right, bottom), wire);
+    canvas.drawLine(
+      const Offset(left, top),
+      Offset(resistors[0].$1.left, top),
+      wire,
+    );
+    canvas.drawLine(
+      Offset(resistors[0].$1.right, top),
+      Offset(resistors[1].$1.left, top),
+      wire,
+    );
+    canvas.drawLine(
+      Offset(resistors[1].$1.right, top),
+      const Offset(right, top),
+      wire,
+    );
+    canvas.drawLine(
+      const Offset(right, top),
+      const Offset(right, bottom),
+      wire,
+    );
     canvas.drawLine(const Offset(left, top), const Offset(left, bottom), wire);
     const positive = center - 4.5;
     const negative = center + 4.5;
-    canvas.drawLine(const Offset(left, bottom), const Offset(positive, bottom), wire);
-    canvas.drawLine(const Offset(negative, bottom), const Offset(right, bottom), wire);
+    canvas.drawLine(
+      const Offset(left, bottom),
+      const Offset(positive, bottom),
+      wire,
+    );
+    canvas.drawLine(
+      const Offset(negative, bottom),
+      const Offset(right, bottom),
+      wire,
+    );
 
     canvas.drawLine(
       const Offset(positive, bottom - 14),
@@ -71,11 +97,14 @@ class _SeriesCircuitPainter extends CustomPainter {
     final painter = TextPainter(
       text: TextSpan(
         text: text,
-        style: TextStyle(color: color, fontSize: 13),
+        style: figureLabelStyle(color: color),
       ),
       textDirection: TextDirection.ltr,
     )..layout();
-    painter.paint(canvas, origin - Offset(painter.width / 2, painter.height / 2));
+    painter.paint(
+      canvas,
+      origin - Offset(painter.width / 2, painter.height / 2),
+    );
   }
 
   @override

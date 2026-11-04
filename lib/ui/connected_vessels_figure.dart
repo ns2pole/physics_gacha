@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 
+import '../utils/figure_label_style.dart';
+
 /// コックで仕切った二つの容器。既定は圧力を聞く単原子の問題。
 class ConnectedVesselsFigure extends StatelessWidget {
   const ConnectedVesselsFigure({
     super.key,
-    this.leftInside = '2.0×10⁵ Pa',
+    this.leftInside = '1519.5 hPa',
     this.leftBelow = '3.0×10⁻³ m³',
-    this.rightInside = '1.0×10⁵ Pa',
+    this.rightInside = '1013 hPa',
     this.rightBelow = '2.0×10⁻³ m³',
   });
 
@@ -91,7 +93,7 @@ class _ConnectedVesselsPainter extends CustomPainter {
     final painter = TextPainter(
       text: TextSpan(
         text: text,
-        style: const TextStyle(color: _ink, fontSize: 15),
+        style: figureLabelStyle(color: _ink, fontSize: 15),
       ),
       textDirection: TextDirection.ltr,
     )..layout();

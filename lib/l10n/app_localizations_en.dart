@@ -408,6 +408,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get figureAfter => 'After';
 
   @override
+  String get figureCylinderHeight => 'height\n0.318 m';
+
+  @override
+  String get figureCylinderRadius => 'radius 0.050 m';
+
+  @override
+  String get figurePlacedBefore => 'Before';
+
+  @override
+  String get figurePlacedAfter => 'Placed';
+
+  @override
+  String get figureFromSide => 'From the side';
+
+  @override
   String get figureIsothermal => 'Isothermal';
 
   @override
@@ -421,6 +436,21 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get figureSun => 'Sun';
+
+  @override
+  String get figureEarth => 'Earth';
+
+  @override
+  String get figureMoon => 'Moon';
+
+  @override
+  String get figureSatellite => 'Satellite';
+
+  @override
+  String get figureWater => 'Water';
+
+  @override
+  String get figureInsulated => 'Insulated';
 
   @override
   String get hintUnavailableEn => 'Hint is not available in English yet.';

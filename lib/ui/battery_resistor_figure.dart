@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
-/// 9.0 V の電池に 18 Ω の抵抗をつないだ回路。
+import '../utils/figure_label_style.dart';
+
+/// 9.0 V の電池に 100 Ω の抵抗をつないだ回路。
 class BatteryResistorFigure extends StatelessWidget {
   const BatteryResistorFigure({super.key});
 
@@ -76,7 +78,7 @@ class _BatteryResistorPainter extends CustomPainter {
     );
 
     canvas.drawRect(resistor, wire);
-    _label(canvas, '18 Ω', Offset(center, resistor.top - 14), ink);
+    _label(canvas, '100 Ω', Offset(center, resistor.top - 14), ink);
     _label(canvas, '9.0 V', const Offset(center, bottom + 28), ink);
   }
 
@@ -84,7 +86,7 @@ class _BatteryResistorPainter extends CustomPainter {
     final painter = TextPainter(
       text: TextSpan(
         text: text,
-        style: TextStyle(color: color, fontSize: 13),
+        style: figureLabelStyle(color: color),
       ),
       textDirection: TextDirection.ltr,
     )..layout();

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../utils/figure_label_style.dart';
+
 import '../utils/figure_clock.dart';
 import '../utils/figure_labels.dart';
 
@@ -109,7 +111,7 @@ class _StackedBlocksPainter extends CustomPainter {
       canvas.drawRect(rects[i], box);
       _drawLabel(canvas, labels[i], rects[i].center);
     }
-    _drawForceArrow(canvas, Offset(left + blockWidth / 2, top + 28), top - 4);
+    _drawForceArrow(canvas, Offset(left + blockWidth / 2, top + 28), top + 4);
     canvas.restore();
   }
 
@@ -138,7 +140,7 @@ class _StackedBlocksPainter extends CustomPainter {
     final painter = TextPainter(
       text: TextSpan(
         text: label,
-        style: const TextStyle(color: Color(0xFF263238), fontSize: 13),
+        style: figureLabelStyle(color: const Color(0xFF263238)),
       ),
       textDirection: TextDirection.ltr,
     )..layout();
@@ -164,7 +166,7 @@ class _StackedBlocksPainter extends CustomPainter {
     final label = TextPainter(
       text: TextSpan(
         text: externalForce,
-        style: const TextStyle(color: Color(0xFF1565C0), fontSize: 13),
+        style: figureLabelStyle(color: const Color(0xFF1565C0)),
       ),
       textDirection: TextDirection.ltr,
     )..layout();

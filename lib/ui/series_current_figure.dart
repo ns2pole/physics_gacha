@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../utils/figure_label_style.dart';
+
 /// 8.0 V の電池に 2.0 Ω と 6.0 Ω を直列につないだ回路。
 /// 電源は下辺の中央に置き、回路全体を左右対称にする。
 class SeriesCurrentFigure extends StatelessWidget {
@@ -95,7 +97,7 @@ class _SeriesCurrentPainter extends CustomPainter {
     final painter = TextPainter(
       text: TextSpan(
         text: text,
-        style: TextStyle(color: color, fontSize: 13),
+        style: figureLabelStyle(color: color),
       ),
       textDirection: TextDirection.ltr,
     )..layout();

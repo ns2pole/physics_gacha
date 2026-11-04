@@ -2,11 +2,14 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import '../utils/figure_label_style.dart';
+
 import '../utils/figure_clock.dart';
 import '../utils/figure_labels.dart';
 
 /// 太陽のまわりの二つの円軌道。半径の比は見やすさのためで、値はラベルに任せる。
-/// 内側は 1 年、外側は 8 年で一周する。
+/// 内側は 4 秒、外側は 32 秒で一周する。内側の一周ごとに戻さず、
+/// 両方が同時に元へ戻る 192 秒（約 3 分）でループする。
 class KeplerOrbitsFigure extends StatefulWidget {
   const KeplerOrbitsFigure({super.key});
 
@@ -23,12 +26,12 @@ class _KeplerOrbitsFigureState extends State<KeplerOrbitsFigure>
     super.initState();
     _clock = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 4000),
+      duration: const Duration(seconds: 192),
     );
     if (figureClockRuns) {
       _clock.repeat();
     } else {
-      _clock.value = 0.12;
+      _clock.value = 0.0025;
     }
   }
 
@@ -48,10 +51,7 @@ class _KeplerOrbitsFigureState extends State<KeplerOrbitsFigure>
         animation: _clock,
         builder: (context, _) {
           return CustomPaint(
-            painter: _KeplerOrbitsPainter(
-              sun: labels.sun,
-              phase: _clock.value,
-            ),
+            painter: _KeplerOrbitsPainter(sun: labels.sun, phase: _clock.value),
           );
         },
       ),
@@ -77,14 +77,25 @@ class _KeplerOrbitsPainter extends CustomPainter {
     const center = Offset(118, 98);
     const inner = 38.0;
     const outer = 78.0;
-    final innerAngle = -math.pi / 2 + 2 * math.pi * phase;
-    final outerAngle = -math.pi / 2 + 2 * math.pi * phase / 8;
+    // phase が 0 から 1 までで内側は 48 周、外側は 6 周。どちらも整数周なので継ぎ目で飛ばない。
+    const innerTurns = 48.0;
+    const outerTurns = 6.0;
+    final innerAngle = -math.pi / 2 + 2 * math.pi * phase * innerTurns;
+    final outerAngle = -math.pi / 2 + 2 * math.pi * phase * outerTurns;
 
     canvas.drawCircle(center, 7, Paint()..color = _ink);
     canvas.drawCircle(center, inner, wire);
     canvas.drawCircle(center, outer, wire);
-    canvas.drawCircle(_onOrbit(center, inner, innerAngle), 4, Paint()..color = _ink);
-    canvas.drawCircle(_onOrbit(center, outer, outerAngle), 4, Paint()..color = _ink);
+    canvas.drawCircle(
+      _onOrbit(center, inner, innerAngle),
+      4,
+      Paint()..color = _ink,
+    );
+    canvas.drawCircle(
+      _onOrbit(center, outer, outerAngle),
+      4,
+      Paint()..color = _ink,
+    );
 
     _label(canvas, sun, Offset(center.dx, center.dy + 18));
     _label(
@@ -107,7 +118,7 @@ class _KeplerOrbitsPainter extends CustomPainter {
     final painter = TextPainter(
       text: TextSpan(
         text: text,
-        style: const TextStyle(color: _ink, fontSize: 13),
+        style: figureLabelStyle(color: _ink),
       ),
       textDirection: TextDirection.ltr,
     )..layout();

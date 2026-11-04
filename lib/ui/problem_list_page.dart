@@ -180,13 +180,13 @@ class _ProblemRow extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          problem.getLocalizedTheme(context),
+                          problem.getLocalizedTitle(context),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
-                            fontSize: 12,
-                            height: 1.15,
-                            color: Color(0xFF546E7A),
+                            fontSize: 14,
+                            height: 1.25,
+                            color: Color(0xFF263238),
                           ),
                         ),
                       ],

@@ -2,6 +2,7 @@
 class ProblemTranslation {
   const ProblemTranslation({
     this.theme,
+    this.title,
     this.statement,
     this.hint,
     this.approach,
@@ -13,6 +14,7 @@ class ProblemTranslation {
   });
 
   final String? theme;
+  final String? title;
   final String? statement;
   final String? hint;
   final String? approach;

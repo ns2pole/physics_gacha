@@ -2,6 +2,8 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import '../utils/figure_label_style.dart';
+
 /// 実効値 240 V の交流電源に 10 kΩ の抵抗をつないだ回路。
 class AcResistorFigure extends StatelessWidget {
   const AcResistorFigure({super.key});
@@ -40,11 +42,27 @@ class _AcResistorPainter extends CustomPainter {
     );
 
     canvas.drawLine(const Offset(left, top), Offset(resistor.left, top), wire);
-    canvas.drawLine(Offset(resistor.right, top), const Offset(right, top), wire);
+    canvas.drawLine(
+      Offset(resistor.right, top),
+      const Offset(right, top),
+      wire,
+    );
     canvas.drawLine(const Offset(left, top), const Offset(left, bottom), wire);
-    canvas.drawLine(const Offset(right, top), const Offset(right, bottom), wire);
-    canvas.drawLine(const Offset(left, bottom), Offset(center - 18, bottom), wire);
-    canvas.drawLine(Offset(center + 18, bottom), const Offset(right, bottom), wire);
+    canvas.drawLine(
+      const Offset(right, top),
+      const Offset(right, bottom),
+      wire,
+    );
+    canvas.drawLine(
+      const Offset(left, bottom),
+      Offset(center - 18, bottom),
+      wire,
+    );
+    canvas.drawLine(
+      Offset(center + 18, bottom),
+      const Offset(right, bottom),
+      wire,
+    );
     canvas.drawRect(resistor, wire);
     _label(canvas, '10 kΩ', Offset(center, resistor.top - 16));
 
@@ -69,11 +87,14 @@ class _AcResistorPainter extends CustomPainter {
     final painter = TextPainter(
       text: TextSpan(
         text: text,
-        style: const TextStyle(color: _ink, fontSize: 13),
+        style: figureLabelStyle(color: _ink),
       ),
       textDirection: TextDirection.ltr,
     )..layout();
-    painter.paint(canvas, origin - Offset(painter.width / 2, painter.height / 2));
+    painter.paint(
+      canvas,
+      origin - Offset(painter.width / 2, painter.height / 2),
+    );
   }
 
   @override

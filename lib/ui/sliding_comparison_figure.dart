@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../utils/figure_label_style.dart';
+
 import '../utils/figure_clock.dart';
 import '../utils/figure_labels.dart';
 import 'span_marker.dart';
@@ -9,7 +11,8 @@ class SlidingComparisonFigure extends StatefulWidget {
   const SlidingComparisonFigure({super.key});
 
   @override
-  State<SlidingComparisonFigure> createState() => _SlidingComparisonFigureState();
+  State<SlidingComparisonFigure> createState() =>
+      _SlidingComparisonFigureState();
 }
 
 class _SlidingComparisonFigureState extends State<SlidingComparisonFigure>
@@ -46,7 +49,7 @@ class _SlidingComparisonFigureState extends State<SlidingComparisonFigure>
             painter: _SlidingComparisonPainter(
               progress: progress,
               initialSpeedFast: '${labels.initialSpeed} 5.0 m/s',
-              initialSpeedSlow: '${labels.initialSpeed} v₀',
+              initialSpeedSlow: '${labels.initialSpeed} ???',
             ),
           );
         },
@@ -135,13 +138,19 @@ class _SlidingComparisonPainter extends CustomPainter {
       to: Offset(origin + length, groundY + 22),
       label: distance,
       color: ink,
-      tick: const Offset(0, -16),
     );
 
     const blockWidth = 18.0;
     const blockHeight = 14.0;
-    final center = Offset(origin + fraction * length, groundY - blockHeight / 2);
-    final rect = Rect.fromCenter(center: center, width: blockWidth, height: blockHeight);
+    final center = Offset(
+      origin + fraction * length,
+      groundY - blockHeight / 2,
+    );
+    final rect = Rect.fromCenter(
+      center: center,
+      width: blockWidth,
+      height: blockHeight,
+    );
     canvas.drawRRect(
       RRect.fromRectAndRadius(rect, const Radius.circular(2)),
       Paint()..color = blockColor,
@@ -152,7 +161,7 @@ class _SlidingComparisonPainter extends CustomPainter {
     final painter = TextPainter(
       text: TextSpan(
         text: text,
-        style: TextStyle(color: color, fontSize: 13, fontWeight: FontWeight.w600),
+        style: figureLabelStyle(color: color, fontWeight: FontWeight.w600),
       ),
       textDirection: TextDirection.ltr,
     )..layout();

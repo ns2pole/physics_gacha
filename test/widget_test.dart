@@ -53,6 +53,7 @@ void main() {
     expect(appBar.backgroundColor, Colors.transparent);
     expect(appBar.forceMaterialTransparency, isTrue);
     await tester.ensureVisible(find.text('答えを見る', skipOffstage: false));
+    await tester.pumpAndSettle();
     expect(find.text('答えを見る'), findsOneWidget);
     expect(find.text('ヒント'), findsOneWidget);
     expect(
@@ -92,7 +93,7 @@ void main() {
 
     expect(find.text('フィルタ設定'), findsOneWidget);
     expect(find.text('ならガチャから外す'), findsOneWidget);
-    expect(find.text('(残 29問/29問)'), findsOneWidget);
+    expect(find.text('(残 85問/85問)'), findsOneWidget);
 
     await tester.tap(find.text('フィルタ設定'));
     await tester.pumpAndSettle();
@@ -100,7 +101,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('ならガチャから外す'), findsNothing);
-    expect(find.text('除外なし 全29問'), findsOneWidget);
+    expect(find.text('除外なし 全85問'), findsOneWidget);
   });
 
   testWidgets('詳細で問題と答えと解説が見える', (tester) async {
@@ -108,7 +109,7 @@ void main() {
 
     expect(find.text('No. 1(力学)'), findsOneWidget);
     expect(find.text('ならガチャから外す'), findsOneWidget);
-    expect(find.text('(残 29問/29問)'), findsOneWidget);
+    expect(find.text('(残 85問/85問)'), findsOneWidget);
     expect(find.text('出題'), findsNothing);
     expect(find.text('力学'), findsOneWidget);
     expect(find.widgetWithText(ElevatedButton, '詳細'), findsWidgets);
@@ -162,13 +163,13 @@ void main() {
 
     expect(find.text('No. 1(力学)'), findsNothing);
     expect(find.text('No. 2(電磁気学)'), findsOneWidget);
-    expect(find.text('(残 28問/29問)'), findsOneWidget);
+    expect(find.text('(残 84問/85問)'), findsOneWidget);
 
     await tester.tap(find.byTooltip('戻る'));
     await tester.pumpAndSettle();
     expect(find.text('ならガチャから外す'), findsOneWidget);
-    expect(find.text('除外なし 全29問'), findsNothing);
-    expect(find.text('(残 28問/29問)'), findsOneWidget);
+    expect(find.text('除外なし 全85問'), findsNothing);
+    expect(find.text('(残 84問/85問)'), findsOneWidget);
   });
 
   testWidgets('左が空の枠は進まず、単元オフなら一覧も絞る', (tester) async {
@@ -181,10 +182,10 @@ void main() {
     await tester.tap(find.text('問題一覧'));
     await tester.pumpAndSettle();
 
-    expect(find.text('(残 28問/28問)'), findsOneWidget);
+    expect(find.text('(残 83問/83問)'), findsOneWidget);
     await tester.tap(find.text('波動'));
     await tester.pumpAndSettle();
-    expect(find.text('(残 23問/23問)'), findsOneWidget);
+    expect(find.text('(残 70問/70問)'), findsOneWidget);
     final second = find.byKey(const ValueKey('history-sample-mechanics-1'));
     await tester.tap(second);
     await tester.pumpAndSettle();
@@ -337,7 +338,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('m^-1'), findsNothing);
-    await _tapVisible(tester, find.widgetWithText(ElevatedButton, 'm'));
+    await _tapVisible(tester, find.byKey(const ValueKey('unit-choice-m^-1')));
     await tester.pumpAndSettle();
 
     expect(find.text('m^-1'), findsNothing);
@@ -448,7 +449,7 @@ void main() {
       await tester.tap(find.text(label));
       await tester.pumpAndSettle();
     }
-    for (var i = 0; i < 12; i++) {
+    for (var i = 0; i < 500; i++) {
       if (find.textContaining('自由端反射').evaluate().isNotEmpty) break;
       await tester.tap(find.widgetWithText(InkWell, 'ガチャを回す'));
       await tester.pumpAndSettle();
@@ -506,7 +507,7 @@ void main() {
       await tester.tap(find.text(label));
       await tester.pumpAndSettle();
     }
-    for (var i = 0; i < 12; i++) {
+    for (var i = 0; i < 500; i++) {
       if (find.textContaining('固定端反射').evaluate().isNotEmpty) break;
       await tester.tap(find.widgetWithText(InkWell, 'ガチャを回す'));
       await tester.pumpAndSettle();
@@ -567,7 +568,7 @@ void main() {
       await tester.tap(find.text(label));
       await tester.pumpAndSettle();
     }
-    for (var i = 0; i < 16; i++) {
+    for (var i = 0; i < 500; i++) {
       if (find.textContaining('波長の短い順').evaluate().isNotEmpty) break;
       await tester.tap(find.widgetWithText(InkWell, 'ガチャを回す'));
       await tester.pumpAndSettle();
@@ -578,10 +579,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('答え　X線、紫外線、可視光、赤外線、電波'), findsOneWidget);
     expect(find.text('無次元'), findsNothing);
-    expect(
-      find.text('波長の短い順は、X線、紫外線、可視光、赤外線、電波である。'),
-      findsOneWidget,
-    );
+    expect(find.text('波長の短い順は、X線、紫外線、可視光、赤外線、電波である。'), findsOneWidget);
 
     await _tapVisible(tester, find.text('答えを隠す'));
     await tester.pumpAndSettle();
@@ -612,7 +610,7 @@ Future<void> _showKepler(WidgetTester tester) async {
     await tester.tap(find.text(label));
     await tester.pumpAndSettle();
   }
-  for (var i = 0; i < 80; i++) {
+  for (var i = 0; i < 500; i++) {
     if (find.textContaining('公転周期を答えよ').evaluate().isNotEmpty) break;
     await tester.tap(find.widgetWithText(InkWell, 'ガチャを回す'));
     await tester.pumpAndSettle();
@@ -634,7 +632,7 @@ Future<void> _showMechanics(WidgetTester tester) async {
     await tester.tap(find.text(label));
     await tester.pumpAndSettle();
   }
-  for (var i = 0; i < 80; i++) {
+  for (var i = 0; i < 500; i++) {
     if (find.textContaining('図のように鉛直上向きに外力を加えたところ').evaluate().isNotEmpty) {
       break;
     }

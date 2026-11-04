@@ -2,6 +2,8 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import '../utils/figure_label_style.dart';
+
 import '../utils/figure_labels.dart';
 
 /// 両端が開いた管と、腹が 3 個の定在波。腹だけが上下する。
@@ -87,7 +89,11 @@ class _OpenPipePainter extends CustomPainter {
 
     _lengthMarker(canvas, 16, left, right, ink);
     canvas.drawLine(const Offset(left, top), const Offset(right, top), wall);
-    canvas.drawLine(const Offset(left, bottom), const Offset(right, bottom), wall);
+    canvas.drawLine(
+      const Offset(left, bottom),
+      const Offset(right, bottom),
+      wall,
+    );
 
     final wave = Path();
     const steps = 48;
@@ -110,7 +116,12 @@ class _OpenPipePainter extends CustomPainter {
     );
 
     _label(canvas, antinode, const Offset(left, top - 14), waveColor);
-    _label(canvas, antinode, Offset((left + right) / 2, bottom + 14), waveColor);
+    _label(
+      canvas,
+      antinode,
+      Offset((left + right) / 2, bottom + 14),
+      waveColor,
+    );
     _label(canvas, antinode, const Offset(right, top - 14), waveColor);
     _label(
       canvas,
@@ -121,7 +132,13 @@ class _OpenPipePainter extends CustomPainter {
     );
   }
 
-  void _lengthMarker(Canvas canvas, double y, double left, double right, Color color) {
+  void _lengthMarker(
+    Canvas canvas,
+    double y,
+    double left,
+    double right,
+    Color color,
+  ) {
     final paint = Paint()
       ..color = color
       ..strokeWidth = 1.2
@@ -135,7 +152,12 @@ class _OpenPipePainter extends CustomPainter {
     _label(canvas, '90 cm', Offset(mid, y), color, weight: FontWeight.w500);
   }
 
-  void _arrowHead(Canvas canvas, Offset tip, Paint paint, {required bool outward}) {
+  void _arrowHead(
+    Canvas canvas,
+    Offset tip,
+    Paint paint, {
+    required bool outward,
+  }) {
     final wing = outward ? 7.0 : -7.0;
     canvas.drawLine(tip, Offset(tip.dx + wing, tip.dy - 4), paint);
     canvas.drawLine(tip, Offset(tip.dx + wing, tip.dy + 4), paint);
@@ -151,11 +173,14 @@ class _OpenPipePainter extends CustomPainter {
     final painter = TextPainter(
       text: TextSpan(
         text: text,
-        style: TextStyle(color: color, fontSize: 13, fontWeight: weight),
+        style: figureLabelStyle(color: color, fontWeight: weight),
       ),
       textDirection: TextDirection.ltr,
     )..layout();
-    painter.paint(canvas, origin - Offset(painter.width / 2, painter.height / 2));
+    painter.paint(
+      canvas,
+      origin - Offset(painter.width / 2, painter.height / 2),
+    );
   }
 
   @override

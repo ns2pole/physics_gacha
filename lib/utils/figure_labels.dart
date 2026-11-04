@@ -28,9 +28,19 @@ class FigureLabels {
   String get string => _l10n.figureString;
   String get before => _l10n.figureBefore;
   String get after => _l10n.figureAfter;
+  String get cylinderHeight => _l10n.figureCylinderHeight;
+  String get cylinderRadius => _l10n.figureCylinderRadius;
+  String get placedBefore => _l10n.figurePlacedBefore;
+  String get placedAfter => _l10n.figurePlacedAfter;
+  String get fromSide => _l10n.figureFromSide;
   String get isothermal => _l10n.figureIsothermal;
   String get isobaric => _l10n.figureIsobaric;
   String get isochoric => _l10n.figureIsochoric;
   String get adiabatic => _l10n.figureAdiabatic;
   String get sun => _l10n.figureSun;
+  String get earth => _l10n.figureEarth;
+  String get moon => _l10n.figureMoon;
+  String get satellite => _l10n.figureSatellite;
+  String get water => _l10n.figureWater;
+  String get insulated => _l10n.figureInsulated;
 }

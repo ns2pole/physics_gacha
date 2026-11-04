@@ -21,6 +21,18 @@ void main() {
     );
   });
 
+  test('108 km/h は 30 m/s', () {
+    expect(
+      samePhysicalQuantity(
+        leftValue: 108,
+        leftUnit: parseUnit('km/h')!,
+        rightValue: 30,
+        rightUnit: parseUnit('m/s')!,
+      ),
+      isTrue,
+    );
+  });
+
   test('空欄は無次元', () {
     expect(parseUnit('')!.isDimensionless, isTrue);
     expect(parseUnit('無次元')!.isDimensionless, isTrue);

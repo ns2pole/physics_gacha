@@ -19,7 +19,7 @@ void main() {
       for (final theme in coverageThemes)
         if (theme.onSheet && (byTheme[theme.name]?.length ?? 0) > 1) theme.name,
     ];
-    expect(duplicated, ['仕事とエネルギー']);
+    expect(duplicated, ['仕事とエネルギー', '理想気体の状態方程式']);
 
     final listed = <String>[];
     final checked = <String, String>{};

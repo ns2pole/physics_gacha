@@ -830,6 +830,36 @@ abstract class AppLocalizations {
   /// **'あと'**
   String get figureAfter;
 
+  /// No description provided for @figureCylinderHeight.
+  ///
+  /// In ja, this message translates to:
+  /// **'円柱の高さ\n0.318 m'**
+  String get figureCylinderHeight;
+
+  /// No description provided for @figureCylinderRadius.
+  ///
+  /// In ja, this message translates to:
+  /// **'半径 0.050 m'**
+  String get figureCylinderRadius;
+
+  /// No description provided for @figurePlacedBefore.
+  ///
+  /// In ja, this message translates to:
+  /// **'置く前'**
+  String get figurePlacedBefore;
+
+  /// No description provided for @figurePlacedAfter.
+  ///
+  /// In ja, this message translates to:
+  /// **'置いた後'**
+  String get figurePlacedAfter;
+
+  /// No description provided for @figureFromSide.
+  ///
+  /// In ja, this message translates to:
+  /// **'横から'**
+  String get figureFromSide;
+
   /// No description provided for @figureIsothermal.
   ///
   /// In ja, this message translates to:
@@ -859,6 +889,36 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'太陽'**
   String get figureSun;
+
+  /// No description provided for @figureEarth.
+  ///
+  /// In ja, this message translates to:
+  /// **'地球'**
+  String get figureEarth;
+
+  /// No description provided for @figureMoon.
+  ///
+  /// In ja, this message translates to:
+  /// **'月'**
+  String get figureMoon;
+
+  /// No description provided for @figureSatellite.
+  ///
+  /// In ja, this message translates to:
+  /// **'衛星'**
+  String get figureSatellite;
+
+  /// No description provided for @figureWater.
+  ///
+  /// In ja, this message translates to:
+  /// **'水'**
+  String get figureWater;
+
+  /// No description provided for @figureInsulated.
+  ///
+  /// In ja, this message translates to:
+  /// **'断熱'**
+  String get figureInsulated;
 
   /// No description provided for @hintUnavailableEn.
   ///

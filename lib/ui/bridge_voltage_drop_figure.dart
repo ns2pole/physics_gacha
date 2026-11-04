@@ -2,6 +2,8 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import '../utils/figure_label_style.dart';
+
 /// ブリッジ形の回路。四つの抵抗と電池電圧を図に出す。
 /// 中央の対角線はつながない。電流の値は書かない。
 class BridgeVoltageDropFigure extends StatelessWidget {
@@ -70,6 +72,8 @@ class _BridgeVoltageDropPainter extends CustomPainter {
     for (final node in [left, top, right, bottom]) {
       canvas.drawCircle(node, 3.2, Paint()..color = ink);
     }
+    _label(canvas, 'A', left + const Offset(22, 0), ink);
+    _label(canvas, 'B', top + const Offset(0, 22), ink);
 
     _resistorLabel(canvas, left, top, '4.0 Ω', ink);
     _resistorLabel(canvas, top, right, '6.0 Ω', ink);
@@ -121,7 +125,7 @@ class _BridgeVoltageDropPainter extends CustomPainter {
     final painter = TextPainter(
       text: TextSpan(
         text: text,
-        style: TextStyle(color: color, fontSize: 13),
+        style: figureLabelStyle(color: color),
       ),
       textDirection: TextDirection.ltr,
     )..layout();

@@ -2,6 +2,8 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import '../utils/figure_label_style.dart';
+
 import '../utils/figure_clock.dart';
 
 /// 微小な振れの単振り子。鉛直線の左右に小さく揺れる。
@@ -82,12 +84,7 @@ class _SimplePendulumPainter extends CustomPainter {
       canvas.drawLine(Offset(x, 18), Offset(x - 7, 10), line);
     }
     canvas.drawCircle(pivot, 3.2, Paint()..color = _ink);
-    _dashed(
-      canvas,
-      pivot,
-      Offset(pivot.dx, pivot.dy + length + 8),
-      line,
-    );
+    _dashed(canvas, pivot, Offset(pivot.dx, pivot.dy + length), line);
     canvas.drawLine(pivot, bob, line);
     canvas.drawCircle(bob, bobR, line);
     _label(
@@ -121,7 +118,7 @@ class _SimplePendulumPainter extends CustomPainter {
     final painter = TextPainter(
       text: TextSpan(
         text: text,
-        style: const TextStyle(color: _ink, fontSize: 13),
+        style: figureLabelStyle(color: _ink),
       ),
       textDirection: TextDirection.ltr,
     )..layout();

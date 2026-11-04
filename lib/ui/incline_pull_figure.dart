@@ -2,6 +2,8 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import '../utils/figure_label_style.dart';
+
 import '../utils/figure_clock.dart';
 import '../utils/figure_labels.dart';
 
@@ -84,24 +86,23 @@ class _InclinePullPainter extends CustomPainter {
     final along = Offset(math.cos(angle), math.sin(angle));
     final outward = Offset(math.sin(angle), -math.cos(angle));
 
+    final blockDistance = 70.0 + 90.0 * travel;
     canvas.drawLine(origin, origin + along * slopeLength, line);
-    for (var distance = 52.0; distance < slopeLength - 8; distance += 16) {
-      if (distance > 88 && distance < 132) continue;
+    // あらい面の目盛りは斜面の下側。角度の印を避け、物体の接触面から先まで付ける。
+    for (var distance = 64.0; distance < slopeLength - 8; distance += 16) {
       final base = origin + along * distance;
       canvas.drawLine(base, base - outward * 8, line);
     }
     _dashed(canvas, origin, origin + const Offset(132, 0), line);
     canvas.drawArc(
-      Rect.fromCircle(center: origin, radius: 34),
+      Rect.fromCircle(center: origin, radius: 28),
       0,
       angle,
       false,
       line,
     );
-    final mark = origin + Offset(math.cos(angle / 2), math.sin(angle / 2)) * 58;
-    _label(canvas, '30°', mark + const Offset(6, -12));
+    _label(canvas, '30°', Offset(origin.dx + 58, origin.dy - 16));
 
-    final blockDistance = 70.0 + 90.0 * travel;
     final block = origin + along * blockDistance;
     canvas.save();
     canvas.translate(block.dx, block.dy);
@@ -133,7 +134,7 @@ class _InclinePullPainter extends CustomPainter {
     final painter = TextPainter(
       text: TextSpan(
         text: text,
-        style: const TextStyle(color: _ink, fontSize: 13),
+        style: figureLabelStyle(color: _ink),
       ),
       textDirection: TextDirection.ltr,
     )..layout();

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
-/// 6.0 V の電池に 3.0 Ω と 6.0 Ω を並列につないだ回路。
+import '../utils/figure_label_style.dart';
+
+/// 3.0 V の電池に 100 Ω と 150 Ω を並列につないだ回路。
 ///
 /// 1本の抵抗と下辺中央の電池、という単ループに、横枝の抵抗を1本足して
 /// ループを1つ増やしたもの。電池の極板は縦。
@@ -50,7 +52,15 @@ class _ParallelCurrentPainter extends CustomPainter {
     canvas.drawLine(const Offset(left, mid), Offset(lower.left, mid), wire);
     canvas.drawLine(Offset(lower.right, mid), const Offset(right, mid), wire);
     canvas.drawLine(const Offset(left, top), const Offset(left, bottom), wire);
-    canvas.drawLine(const Offset(right, top), const Offset(right, bottom), wire);
+    canvas.drawLine(
+      const Offset(right, top),
+      const Offset(right, bottom),
+      wire,
+    );
+
+    const mark = Offset(left, 146);
+    canvas.drawCircle(mark, 3.4, Paint()..color = ink);
+    _label(canvas, 'P', mark + const Offset(16, 0), ink);
 
     const positive = center - 4.5;
     const negative = center + 4.5;
@@ -80,16 +90,16 @@ class _ParallelCurrentPainter extends CustomPainter {
 
     canvas.drawRect(upper, wire);
     canvas.drawRect(lower, wire);
-    _label(canvas, '3.0 Ω', Offset(center, upper.top - 14), ink);
-    _label(canvas, '6.0 Ω', Offset(center, lower.top - 14), ink);
-    _label(canvas, '6.0 V', const Offset(center, bottom + 22), ink);
+    _label(canvas, '100 Ω', Offset(center, upper.top - 14), ink);
+    _label(canvas, '150 Ω', Offset(center, lower.top - 14), ink);
+    _label(canvas, '3.0 V', const Offset(center, bottom + 22), ink);
   }
 
   void _label(Canvas canvas, String text, Offset origin, Color color) {
     final painter = TextPainter(
       text: TextSpan(
         text: text,
-        style: TextStyle(color: color, fontSize: 13),
+        style: figureLabelStyle(color: color),
       ),
       textDirection: TextDirection.ltr,
     )..layout();

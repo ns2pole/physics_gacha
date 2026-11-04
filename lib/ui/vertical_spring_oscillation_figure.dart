@@ -2,6 +2,8 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import '../utils/figure_label_style.dart';
+
 import '../utils/figure_clock.dart';
 
 /// 天井からつるした鉛直ばねの単振動。おもりが釣り合いの上下に動く。
@@ -120,7 +122,7 @@ class _VerticalSpringOscillationPainter extends CustomPainter {
     final painter = TextPainter(
       text: TextSpan(
         text: text,
-        style: const TextStyle(color: _ink, fontSize: 13),
+        style: figureLabelStyle(color: _ink),
       ),
       textDirection: TextDirection.ltr,
     )..layout();

@@ -107,13 +107,19 @@ const _named = <String, _NamedUnit>{
   'J': _NamedUnit(1, Dimensions(kg: 1, m: 2, s: -2)),
   'W': _NamedUnit(1, Dimensions(kg: 1, m: 2, s: -3)),
   'Pa': _NamedUnit(1, Dimensions(kg: 1, m: -1, s: -2)),
+  'Ω': _NamedUnit(1, Dimensions(kg: 1, m: 2, s: -3, a: -2)),
+  'H': _NamedUnit(1, Dimensions(kg: 1, m: 2, s: -2, a: -2)),
+  'T': _NamedUnit(1, Dimensions(kg: 1, s: -2, a: -1)),
   'Hz': _NamedUnit(1, Dimensions(s: -1)),
   'V': _NamedUnit(1, Dimensions(kg: 1, m: 2, s: -3, a: -1)),
   'C': _NamedUnit(1, Dimensions(s: 1, a: 1)),
+  'F': _NamedUnit(1, Dimensions(kg: -1, m: -2, s: 4, a: 2)),
   'K': _NamedUnit(1, Dimensions(kelvin: 1)),
   'mol': _NamedUnit(1, Dimensions(mol: 1)),
   '年': _NamedUnit(365.25 * 24 * 3600, Dimensions(s: 1)),
   'yr': _NamedUnit(365.25 * 24 * 3600, Dimensions(s: 1)),
+  // 単独の h は時。hm のように後ろへ単位が続くときは、接頭辞のヘクトのまま。
+  'h': _NamedUnit(3600, Dimensions(s: 1)),
 };
 
 const _prefixes = <String, double>{
@@ -125,7 +131,9 @@ const _prefixes = <String, double>{
   'm': 1e-3,
   'u': 1e-6,
   'µ': 1e-6,
+  'μ': 1e-6,
   'n': 1e-9,
+  'p': 1e-12,
 };
 
 ParsedUnit? parseUnit(String source) {
@@ -186,7 +194,7 @@ ParsedUnit? _parseProduct(String source) {
 }
 
 ParsedUnit? _parseToken(String token) {
-  final match = RegExp(r'^([A-Za-zµ]+|Ω|年)(?:\^(-?\d+))?$').firstMatch(token);
+  final match = RegExp(r'^([A-Za-zµμ]+|Ω|年)(?:\^(-?\d+))?$').firstMatch(token);
   if (match == null) return null;
   final symbol = match.group(1)!;
   final exponent = int.tryParse(match.group(2) ?? '1');

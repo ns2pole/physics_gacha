@@ -38,6 +38,9 @@ class PhysicsAiChatPorts implements AiChatHostPorts {
       PhysicsAiChatClientFactory.authHeaders();
 
   @override
+  Future<int?> fetchCreditsRemaining() async => null;
+
+  @override
   List<AiChatQuickReply>? starterQuickReplies(String? contentId) {
     final s = strings;
     return [

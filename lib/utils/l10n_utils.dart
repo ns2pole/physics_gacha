@@ -17,6 +17,11 @@ extension PhysicsProblemLocalization on PhysicsProblem {
     return t?.theme ?? theme;
   }
 
+  String getLocalizedTitle(BuildContext context) {
+    final t = TranslationManager.getTranslation(_localeTag(context), id);
+    return t?.title ?? title;
+  }
+
   String getLocalizedStatement(BuildContext context) {
     final t = TranslationManager.getTranslation(_localeTag(context), id);
     return t?.statement ?? statement;

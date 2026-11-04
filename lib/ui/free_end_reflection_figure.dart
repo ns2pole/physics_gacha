@@ -2,6 +2,8 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import '../utils/figure_label_style.dart';
+
 import '../utils/figure_clock.dart';
 import '../utils/figure_labels.dart';
 
@@ -12,7 +14,8 @@ class FreeEndReflectionFigure extends StatefulWidget {
   const FreeEndReflectionFigure({super.key});
 
   @override
-  State<FreeEndReflectionFigure> createState() => _FreeEndReflectionFigureState();
+  State<FreeEndReflectionFigure> createState() =>
+      _FreeEndReflectionFigureState();
 }
 
 class _FreeEndReflectionFigureState extends State<FreeEndReflectionFigure>
@@ -43,8 +46,8 @@ class _FreeEndReflectionFigureState extends State<FreeEndReflectionFigure>
   Widget build(BuildContext context) {
     final labels = FigureLabels.of(context);
     return SizedBox(
-      height: 170,
-      width: 320,
+      height: 196,
+      width: 512,
       child: AnimatedBuilder(
         animation: _clock,
         builder: (context, _) {
@@ -77,9 +80,14 @@ class _FreeEndPainter extends CustomPainter {
 
   static const _ink = Color(0xFF37474F);
   static const _wave = Color(0xFF1565C0);
-  /// 左端が x = 0。波長 12 cm を 144 px とし、壁 x = 20 cm まで描く。
-  static const _left = 28.0;
-  static const _wall = _left + 240.0;
+
+  /// 波長 12 cm を 144 px。軸は x = -10 から 30、波は 0 から壁 20 cm。
+  static const _cm = 12.0;
+  static const _zero = 16.0 + 10 * _cm;
+  static const _wall = _zero + 20 * _cm;
+  static const _axisLeft = _zero - 10 * _cm;
+  static const _axisRight = _zero + 30 * _cm;
+  static const _axisY = 164.0;
   static const _center = 74.0;
   static const _component = 13.0;
   static const _lambda = 144.0;
@@ -94,8 +102,8 @@ class _FreeEndPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    canvas.translate(0, -6);
     _axis(canvas);
+    _positionMarks(canvas);
     _equilibrium(canvas);
     _drawWall(canvas);
     _envelope(canvas);
@@ -105,25 +113,52 @@ class _FreeEndPainter extends CustomPainter {
   }
 
   void _axis(Canvas canvas) {
-    const y = 164.0;
     final paint = Paint()
       ..color = _ink
       ..strokeWidth = 1.2
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round;
-    canvas.drawLine(Offset(_left, y - 5), Offset(_left, y + 5), paint);
-    canvas.drawLine(const Offset(_left, y), const Offset(_left + 36, y), paint);
-    final tip = const Offset(_left + 36, y);
+    const tip = Offset(_axisRight, _axisY);
+    canvas.drawLine(const Offset(_axisLeft, _axisY), tip, paint);
     canvas.drawLine(tip, tip + const Offset(-7, -4), paint);
     canvas.drawLine(tip, tip + const Offset(-7, 4), paint);
-    _label(canvas, '0', const Offset(_left, y - 14), _ink, weight: FontWeight.w500);
-    _label(canvas, 'x', const Offset(_left + 48, y), _ink, weight: FontWeight.w500);
+    _label(
+      canvas,
+      'x',
+      const Offset(_axisRight - 16, _axisY - 14),
+      _ink,
+      weight: FontWeight.w500,
+    );
+  }
+
+  /// 平衡の破線を縦にして、x = 0 と壁 x = 20 cm を示す。
+  void _positionMarks(Canvas canvas) {
+    final paint = Paint()
+      ..color = _ink.withValues(alpha: 0.55)
+      ..strokeWidth = 1.2;
+    for (final x in const [_zero, _wall]) {
+      _dashed(canvas, Offset(x, 32), Offset(x, _axisY), paint);
+    }
+    _label(
+      canvas,
+      '0',
+      const Offset(_zero, _axisY + 14),
+      _ink,
+      weight: FontWeight.w600,
+    );
+    _label(
+      canvas,
+      '20',
+      const Offset(_wall, _axisY + 14),
+      _ink,
+      weight: FontWeight.w600,
+    );
   }
 
   void _equilibrium(Canvas canvas) {
     _dashed(
       canvas,
-      const Offset(_left, _center),
+      const Offset(_zero, _center),
       const Offset(_wall, _center),
       Paint()
         ..color = _ink.withValues(alpha: 0.35)
@@ -136,11 +171,7 @@ class _FreeEndPainter extends CustomPainter {
       ..color = _ink
       ..strokeWidth = 2.4
       ..strokeCap = StrokeCap.square;
-    canvas.drawLine(
-      const Offset(_wall, 36),
-      const Offset(_wall, 118),
-      paint,
-    );
+    canvas.drawLine(const Offset(_wall, 36), const Offset(_wall, 118), paint);
     final hatch = Paint()
       ..color = _ink
       ..strokeWidth = 1.3
@@ -164,7 +195,7 @@ class _FreeEndPainter extends CustomPainter {
     const steps = 72;
     for (var i = 0; i <= steps; i++) {
       final t = i / steps;
-      final x = _left + (_wall - _left) * t;
+      final x = _zero + (_wall - _zero) * t;
       final reach = 2 * _component * math.cos(k * (_wall - x)).abs();
       final top = Offset(x, _center - reach);
       final bottom = Offset(x, _center + reach);
@@ -185,7 +216,7 @@ class _FreeEndPainter extends CustomPainter {
     const steps = 80;
     for (var i = 0; i <= steps; i++) {
       final t = i / steps;
-      final x = _left + (_wall - _left) * t;
+      final x = _zero + (_wall - _zero) * t;
       final y = _center - _displacement(x);
       if (i == 0) {
         path.moveTo(x, y);
@@ -222,7 +253,7 @@ class _FreeEndPainter extends CustomPainter {
     final rest = Paint()..color = _ink.withValues(alpha: 0.45);
     for (final multiple in [3.0, 5.0]) {
       final x = _wall - multiple * _lambda / 4;
-      if (x > _left + 8) canvas.drawCircle(Offset(x, _center), 3, rest);
+      if (x > _zero + 8) canvas.drawCircle(Offset(x, _center), 3, rest);
     }
     canvas.drawCircle(Offset(nearest, _center), 4.5, Paint()..color = _wave);
     _label(canvas, node, Offset(nearest, _center + 28), _wave);
@@ -267,7 +298,7 @@ class _FreeEndPainter extends CustomPainter {
     final painter = TextPainter(
       text: TextSpan(
         text: text,
-        style: TextStyle(
+        style: figureLabelStyle(
           color: color.withValues(alpha: opacity),
           fontSize: size,
           fontWeight: weight,
@@ -275,7 +306,10 @@ class _FreeEndPainter extends CustomPainter {
       ),
       textDirection: TextDirection.ltr,
     )..layout();
-    painter.paint(canvas, center - Offset(painter.width / 2, painter.height / 2));
+    painter.paint(
+      canvas,
+      center - Offset(painter.width / 2, painter.height / 2),
+    );
   }
 
   @override

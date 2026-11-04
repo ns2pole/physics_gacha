@@ -84,6 +84,7 @@ void main() {
     const problem = PhysicsProblem(
       id: 'empty-explanation',
       theme: 'テストテーマ',
+      title: '空の解説',
       domains: {PhysicsDomain.mechanics},
       statement: '問う量だけ。',
       answerValue: 1,
@@ -113,6 +114,7 @@ void main() {
     final problem = PhysicsProblem(
       id: 'long',
       theme: 't',
+      title: '長い解説',
       domains: {PhysicsDomain.waves},
       statement: 's',
       answerValue: 1,

@@ -9,7 +9,9 @@ import 'unit_expression_view.dart';
 
 const _unitLabelStyle = TextStyle(fontSize: 18, color: Colors.black87);
 
-class UnitKeypad extends StatelessWidget {
+const _unitPrefixes = ['p', 'n', 'μ', 'm', 'k'];
+
+class UnitKeypad extends StatefulWidget {
   const UnitKeypad({
     super.key,
     required this.problem,
@@ -32,26 +34,57 @@ class UnitKeypad extends StatelessWidget {
   final VoidCallback? onConfirm;
 
   @override
+  State<UnitKeypad> createState() => _UnitKeypadState();
+}
+
+class _UnitKeypadState extends State<UnitKeypad> {
+  String _prefix = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _prefix = _prefixOf(widget.selectedChoice);
+  }
+
+  @override
+  void didUpdateWidget(UnitKeypad oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final problemChanged = widget.problem.id != oldWidget.problem.id;
+    final choiceChanged = widget.selectedChoice != oldWidget.selectedChoice;
+    if (problemChanged || (choiceChanged && widget.selectedChoice != null)) {
+      _prefix = _prefixOf(widget.selectedChoice);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final preview = _preview(context);
+    final selectedBase = _baseOf(widget.selectedChoice);
     return CalculatorFrame(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           _UnitPreview(
-            value: value.trim(),
+            value: widget.value.trim(),
             unit: preview.unit,
             hint: preview.hint,
           ),
           const SizedBox(height: 12),
-          if (problem.unitInputKind == UnitInputKind.base)
-            _BaseKeys(text: text, onTextChanged: onTextChanged)
-          else
-            _ChoiceKeys(
-              choices: problem.unitChoices,
-              selected: selectedChoice,
-              onChoice: onChoice,
+          if (widget.problem.unitInputKind == UnitInputKind.base)
+            _BaseKeys(text: widget.text, onTextChanged: widget.onTextChanged)
+          else ...[
+            _PrefixKeys(
+              selected: _prefix,
+              onPrefix: _tapPrefix,
+              onClear: _prefix.isEmpty ? null : _clearPrefix,
             ),
+            const SizedBox(height: 6),
+            _ChoiceKeys(
+              choices: widget.problem.unitChoices,
+              selected: selectedBase,
+              onChoice: _tapChoice,
+            ),
+          ],
           const SizedBox(height: 12),
           Row(
             children: [
@@ -71,7 +104,7 @@ class UnitKeypad extends StatelessWidget {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    onPressed: onBack,
+                    onPressed: widget.onBack,
                     child: Text(AppLocalizations.of(context)!.backToNumbers),
                   ),
                 ),
@@ -82,7 +115,7 @@ class UnitKeypad extends StatelessWidget {
                   height: 52,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: onConfirm == null
+                      backgroundColor: widget.onConfirm == null
                           ? Colors.grey.shade300
                           : Colors.blue,
                       foregroundColor: Colors.white,
@@ -95,7 +128,7 @@ class UnitKeypad extends StatelessWidget {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    onPressed: onConfirm,
+                    onPressed: widget.onConfirm,
                     child: Text(AppLocalizations.of(context)!.confirm),
                   ),
                 ),
@@ -107,15 +140,59 @@ class UnitKeypad extends StatelessWidget {
     );
   }
 
+  void _tapPrefix(String prefix) {
+    if (_prefix == prefix) return;
+    setState(() => _prefix = prefix);
+    final base = _baseOf(widget.selectedChoice);
+    if (base != null) widget.onChoice(_compose(prefix, base));
+  }
+
+  void _clearPrefix() {
+    if (_prefix.isEmpty) return;
+    setState(() => _prefix = '');
+    final base = _baseOf(widget.selectedChoice);
+    if (base != null) widget.onChoice(base);
+  }
+
+  void _tapChoice(String choice) {
+    widget.onChoice(_compose(_prefix, choice));
+  }
+
   ({String unit, String hint}) _preview(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    if (problem.unitInputKind == UnitInputKind.choices) {
-      final selected = selectedChoice;
+    if (widget.problem.unitInputKind == UnitInputKind.choices) {
+      final selected = widget.selectedChoice;
       if (selected == null) return (unit: '', hint: l10n.selectUnit);
       return (unit: selected, hint: '');
     }
-    if (text.isEmpty) return (unit: '', hint: l10n.assembleUnitHint);
-    return (unit: text, hint: '');
+    if (widget.text.isEmpty) return (unit: '', hint: l10n.assembleUnitHint);
+    return (unit: widget.text, hint: '');
+  }
+
+  String _compose(String prefix, String base) {
+    if (prefix.isEmpty || base == '1' || base == '無次元') return base;
+    return '$prefix$base';
+  }
+
+  String _prefixOf(String? selected) {
+    final base = _baseOf(selected);
+    if (selected == null || base == null || selected == base) return '';
+    for (final prefix in _unitPrefixes) {
+      if (selected == '$prefix$base') return prefix;
+    }
+    return '';
+  }
+
+  String? _baseOf(String? selected) {
+    if (selected == null || selected.isEmpty) return null;
+    final choices = widget.problem.unitChoices;
+    if (choices.contains(selected)) return selected;
+    for (final prefix in _unitPrefixes) {
+      if (!selected.startsWith(prefix)) continue;
+      final base = selected.substring(prefix.length);
+      if (choices.contains(base)) return base;
+    }
+    return null;
   }
 }
 
@@ -168,6 +245,63 @@ class _UnitPreview extends StatelessWidget {
   }
 }
 
+class _PrefixKeys extends StatelessWidget {
+  const _PrefixKeys({
+    required this.selected,
+    required this.onPrefix,
+    required this.onClear,
+  });
+
+  final String selected;
+  final ValueChanged<String> onPrefix;
+  final VoidCallback? onClear;
+
+  @override
+  Widget build(BuildContext context) {
+    const perRow = 4;
+    final labels = [..._unitPrefixes, '×'];
+    while (labels.length % perRow != 0) {
+      labels.insert(labels.length - 1, '');
+    }
+    final rowCount = labels.length ~/ perRow;
+    return Column(
+      children: [
+        for (var row = 0; row < rowCount; row++) ...[
+          if (row > 0) const SizedBox(height: 6),
+          Row(
+            children: [
+              for (var column = 0; column < perRow; column++) ...[
+                if (column > 0) const SizedBox(width: 6),
+                Expanded(child: _cell(labels[row * perRow + column])),
+              ],
+            ],
+          ),
+        ],
+      ],
+    );
+  }
+
+  Widget _cell(String label) {
+    if (label.isEmpty) return const SizedBox(height: 48);
+    if (label == '×') {
+      return _UnitButton(
+        key: const ValueKey('unit-prefix-clear'),
+        label: '×',
+        background: onClear == null ? Colors.grey.shade300 : Colors.orange,
+        foreground: Colors.white,
+        bold: true,
+        onPressed: onClear,
+      );
+    }
+    return _UnitButton(
+      key: ValueKey('unit-prefix-$label'),
+      label: label,
+      background: selected == label ? Colors.lightBlue.shade300 : Colors.white,
+      onPressed: () => onPrefix(label),
+    );
+  }
+}
+
 class _ChoiceKeys extends StatelessWidget {
   const _ChoiceKeys({
     required this.choices,
@@ -205,6 +339,7 @@ class _ChoiceKeys extends StatelessWidget {
     final choice = choices[index];
     final selectedThis = selected == choice;
     return _UnitButton(
+      key: ValueKey('unit-choice-$choice'),
       label: choice,
       background: selectedThis ? Colors.lightBlue.shade300 : Colors.white,
       onPressed: () => onChoice(choice),
@@ -275,6 +410,7 @@ class _BaseKeys extends StatelessWidget {
 
 class _UnitButton extends StatelessWidget {
   const _UnitButton({
+    super.key,
     required this.label,
     required this.background,
     required this.onPressed,
@@ -286,7 +422,7 @@ class _UnitButton extends StatelessWidget {
   final Color background;
   final Color foreground;
   final bool bold;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -295,7 +431,9 @@ class _UnitButton extends StatelessWidget {
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
           backgroundColor: background,
+          disabledBackgroundColor: background,
           foregroundColor: foreground,
+          disabledForegroundColor: foreground,
           elevation: 0,
           padding: const EdgeInsets.symmetric(horizontal: 4),
           shape: RoundedRectangleBorder(

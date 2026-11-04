@@ -1,11 +1,13 @@
 import '../models/physics_domain.dart';
 import '../models/physics_problem.dart';
+import 'note_article_problems.dart';
 
 /// 出題する問題。表示番号は並びの順。
 const sampleProblems = <PhysicsProblem>[
   PhysicsProblem(
     id: 'sample-mechanics',
     theme: '運動方程式（ニュートン第2法則）',
+    title: '物体Bが物体Cから受ける力',
     domains: {PhysicsDomain.mechanics},
     figure: ProblemFigure.stackedBlocks,
     statement:
@@ -30,6 +32,7 @@ const sampleProblems = <PhysicsProblem>[
   PhysicsProblem(
     id: 'sample-electromagnetism',
     theme: '電力 [W]',
+    title: '直列回路で電源が供給する電力',
     domains: {PhysicsDomain.electromagnetism},
     figure: ProblemFigure.seriesCircuit,
     statement:
@@ -49,6 +52,7 @@ const sampleProblems = <PhysicsProblem>[
   PhysicsProblem(
     id: 'sample-waves',
     theme: '気柱の振動（閉管の共鳴）',
+    title: '腹が3個ある閉管の長さ',
     domains: {PhysicsDomain.waves},
     figure: ProblemFigure.openPipe,
     statement:
@@ -74,6 +78,7 @@ const sampleProblems = <PhysicsProblem>[
   PhysicsProblem(
     id: 'sample-thermodynamics',
     theme: '熱力学第1法則',
+    title: '熱を加え仕事をしたあとの内部エネルギー',
     domains: {PhysicsDomain.thermodynamics},
     statement:
         '内部エネルギーが 2.4×10² J の気体に 1.5×10² J の熱を加えたところ、'
@@ -93,6 +98,7 @@ const sampleProblems = <PhysicsProblem>[
   PhysicsProblem(
     id: 'sample-atom',
     theme: '放射性崩壊と半減期',
+    title: '半減期のあとに残る原子核の個数',
     domains: {PhysicsDomain.atom},
     statement:
         '半減期が 8.0 日の放射性原子核がある。はじめの個数が 3.2×10⁶ 個であったとき、'
@@ -111,9 +117,11 @@ const sampleProblems = <PhysicsProblem>[
   PhysicsProblem(
     id: 'sample-fusion',
     theme: '熱量',
+    title: '落下した物体が水に与える熱量',
     domains: {PhysicsDomain.mechanics, PhysicsDomain.thermodynamics},
+    figure: ProblemFigure.heatDrop,
     statement:
-        '断熱容器の中にある水に、質量 0.50 kg の物体を高さ 2.0 m から落とした。'
+        '図のように、断熱容器の中にある水に、質量 0.50 kg の物体を高さ 2.0 m から落とした。'
         '物体の力学的エネルギーはすべて熱として水に移り、水の温度上昇に使われた。'
         '水が受け取った熱量を答えよ。\n'
         '※重力加速度の大きさを 9.8 m/s² とし、'
@@ -132,13 +140,13 @@ const sampleProblems = <PhysicsProblem>[
   PhysicsProblem(
     id: 'sample-sliding',
     theme: '仕事とエネルギー',
+    title: '4倍の距離をすべって止まる初速',
     domains: {PhysicsDomain.mechanics},
     figure: ProblemFigure.slidingComparison,
     statement:
-        'ある水平面上で物体に 5.0 m/s の速さを与えてすべらせたところ、'
-        '距離 L だけすべって停止した。また、同じ水平面上において、'
-        'この物体に速さ v₀ を与えてすべらせたところ、'
-        '水平面上を 4L だけすべって停止した。v₀ を答えよ。',
+        'ある水平面上で物体に 5.0 m/s の初速を与えてすべらせたところ、'
+        '距離 L だけすべって停止した。同じ水平面上において、'
+        'この4倍の距離を滑らせるためには物体にどれだけの初速を与えればよいか。',
     answerValue: 10,
     answerUnit: 'm/s',
     answerDisplay: '10',
@@ -156,6 +164,7 @@ const sampleProblems = <PhysicsProblem>[
   PhysicsProblem(
     id: 'sample-electrons',
     theme: '電流の定義 [A]',
+    title: '抵抗を通過した自由電子の個数',
     domains: {PhysicsDomain.electromagnetism},
     figure: ProblemFigure.resistorCurrent,
     statement:
@@ -177,6 +186,7 @@ const sampleProblems = <PhysicsProblem>[
   PhysicsProblem(
     id: 'sample-free-end',
     theme: '自由端反射の節',
+    title: '自由端反射で壁に最も近い節',
     domains: {PhysicsDomain.waves},
     hintReveal: HintReveal.freeEndReflection,
     statement:
@@ -199,6 +209,7 @@ const sampleProblems = <PhysicsProblem>[
   PhysicsProblem(
     id: 'sample-fixed-end',
     theme: '固定端反射の節',
+    title: '固定端反射で壁に最も近い節',
     domains: {PhysicsDomain.waves},
     hintReveal: HintReveal.fixedEndReflection,
     statement:
@@ -221,6 +232,7 @@ const sampleProblems = <PhysicsProblem>[
   PhysicsProblem(
     id: 'sample-spectrum',
     theme: '電磁波の波長の順',
+    title: '電磁波を波長の短い順に並べる',
     domains: {PhysicsDomain.waves},
     statement:
         '赤外線、紫外線、電波、可視光、X線について、'
@@ -239,6 +251,7 @@ const sampleProblems = <PhysicsProblem>[
   PhysicsProblem(
     id: 'sample-spring-pulleys',
     theme: 'フックの法則',
+    title: '両端におもりをつるしたばねののび',
     domains: {PhysicsDomain.mechanics},
     figure: ProblemFigure.springPulleys,
     statement:
@@ -262,6 +275,7 @@ const sampleProblems = <PhysicsProblem>[
   PhysicsProblem(
     id: 'sample-air-resistance',
     theme: '仕事とエネルギー',
+    title: '上昇するおもりへの空気抵抗の仕事',
     domains: {PhysicsDomain.mechanics},
     figure: ProblemFigure.compressedSpring,
     statement:
@@ -288,6 +302,7 @@ const sampleProblems = <PhysicsProblem>[
   PhysicsProblem(
     id: 'sample-ac-power',
     theme: '電流・電圧の実効値の定義',
+    title: '交流電源につないだ抵抗の消費電力',
     domains: {PhysicsDomain.electromagnetism},
     figure: ProblemFigure.acResistor,
     statement:
@@ -312,17 +327,18 @@ const sampleProblems = <PhysicsProblem>[
   PhysicsProblem(
     id: 'sample-incline',
     theme: '力のつり合い',
+    title: '斜面を一定の速さで引き上げる張力',
     domains: {PhysicsDomain.mechanics},
     figure: ProblemFigure.inclinePull,
     statement:
         '図のように、水平から 30° 傾いたあらい斜面上で、質量 10 kg の小物体に'
         '軽くて伸び縮みしない糸を取りつけ、小物体を一定の速さで引き上げた。'
         'このとき、糸の張力の大きさを求めよ。\n'
-        '※重力加速度の大きさを 9.8 m/s²、小物体と斜面との間の動摩擦係数を 0.50、'
+        '※重力加速度の大きさを 9.8 m/s²、小物体と斜面との間の動摩擦係数を 1/√3、'
         '√3 = 1.73 とする。',
-    answerValue: 91.385,
+    answerValue: 98,
     answerUnit: 'N',
-    answerDisplay: '91.385',
+    answerDisplay: '98',
     unitChoices: ['N', 'J', 'W', 'kg'],
     hint: '一定の速さなので加速度は 0 である。引き上げているので、動摩擦力は斜面を下る向きにはたらく。',
     approach: '斜面に垂直な向きと、斜面に沿った向きで、力のつりあいを書く。',
@@ -332,34 +348,36 @@ const sampleProblems = <PhysicsProblem>[
         '斜面に垂直な向きのつりあいから、垂直抗力は N = mg cos 30°。'
         '動摩擦力の大きさは f = μN で、向きは斜面を下る向きである。'
         '斜面に沿ったつりあいは T − mg sin 30° − f = 0。'
-        'sin 30° = 1/2、cos 30° = √3/2 = 1.73/2 = 0.865。'
-        'mg sin 30° = 10 × 9.8 × 1/2 = 49 N。'
-        'N = 10 × 9.8 × 0.865 = 84.77 N。f = 0.50 × 84.77 = 42.385 N。'
-        'T = 49 + 42.385 = 91.385 N。',
+        'したがって T = mg sin 30° + μ mg cos 30° = mg (sin 30° + μ cos 30°)。'
+        'sin 30° = 1/2、cos 30° = √3/2、μ = 1/√3 なので、'
+        'μ cos 30° = (1/√3) × (√3/2) = 1/2。'
+        'T = mg (1/2 + 1/2) = mg = 10 × 9.8 = 98 N。',
   ),
   PhysicsProblem(
     id: 'a3ed863f-73f0-4ba2-977a-268f464df3ad',
     theme: '電気抵抗の定義（オームの法則）',
+    title: '電池につないだ抵抗に流れる電流',
     domains: {PhysicsDomain.electromagnetism},
     figure: ProblemFigure.batteryResistor,
     statement:
-        '図のように、9.0 V の電池に 18 Ω の抵抗をつないだ。'
+        '図のように、9.0 V の電池に 100 Ω の抵抗をつないだ。'
         '抵抗に流れる電流の大きさを答えよ。',
-    answerValue: 0.5,
+    answerValue: 0.09,
     answerUnit: 'A',
-    answerDisplay: '0.50',
+    answerDisplay: '0.09',
     unitChoices: ['A', 'V', 'W', 'C'],
     hint: '抵抗は一つで、両端の電圧と抵抗値が出ている。電流は、その二つで決まる。',
     approach: 'オームの法則 V = RI を使う。',
-    firstStep: '9.0 = 18 I である。',
+    firstStep: '9.0 = 100 I である。',
     explanation:
         'オームの法則は V = RI である。'
-        '抵抗は一つで、電池の電圧がそのまま両端にかかるので、9.0 = 18 I。'
-        'I = 9.0 / 18 = 0.50 A。',
+        '抵抗は一つで、電池の電圧がそのまま両端にかかるので、9.0 = 100 I。'
+        'I = 9.0 / 100 = 0.09 A。',
   ),
   PhysicsProblem(
     id: 'b6cb0c9c-869b-44b0-a121-e28b7bca1597',
     theme: '合成抵抗',
+    title: '直列につないだ二つの抵抗の電流',
     domains: {PhysicsDomain.electromagnetism},
     figure: ProblemFigure.seriesCurrent,
     statement:
@@ -381,181 +399,193 @@ const sampleProblems = <PhysicsProblem>[
   PhysicsProblem(
     id: '4f9096d1-35ee-49ee-b4c9-48041c56cdee',
     theme: '並列の合成抵抗',
+    title: '並列につないだ二つの抵抗の電流',
     domains: {PhysicsDomain.electromagnetism},
     figure: ProblemFigure.parallelCurrent,
     statement:
-        '図のように、6.0 V の電池に 3.0 Ω の抵抗と 6.0 Ω の抵抗を並列につないだ。'
-        '電流が分岐する手前の導線に流れる電流の大きさを答えよ。',
-    answerValue: 3,
+        '図のように、3.0 V の電池に 100 Ω の抵抗と 150 Ω の抵抗を並列につないだ。'
+        '点Pに流れる電流の大きさを答えよ。',
+    answerValue: 0.05,
     answerUnit: 'A',
-    answerDisplay: '3.0',
+    answerDisplay: '0.05',
     unitChoices: ['A', 'V', 'W', 'C'],
-    hint: '二つの抵抗は、どちらも電池の電圧をそのまま受けている。分岐の手前の電流は、その二つの通り道をまとめた抵抗で決まる。',
+    hint: '点Pは、電流が二つの抵抗に分かれる前の導線にある。二つの抵抗は、どちらも電池の電圧をそのまま受けている。',
     approach: '並列の合成抵抗を求め、オームの法則 V = RI を使う。',
-    firstStep: '1/R = 1/3.0 + 1/6.0 である。',
+    firstStep: '1/R = 1/100 + 1/150 である。',
     explanation:
         '並列の合成抵抗は 1/R = 1/R1 + 1/R2 である。'
-        '1/R = 1/3.0 + 1/6.0 = 2/6.0 + 1/6.0 = 1/2.0。R = 2.0 Ω。'
-        '分岐の手前では、この合成抵抗に電池の電圧がかかる。'
-        'オームの法則は V = RI なので、6.0 = 2.0 I。'
-        'I = 6.0 / 2.0 = 3.0 A。',
+        '1/R = 1/100 + 1/150 = 3/300 + 2/300 = 5/300 = 1/60。R = 60 Ω。'
+        '点Pでは、この合成抵抗に電池の電圧がかかる。'
+        'オームの法則は V = RI なので、3.0 = 60 I。'
+        'I = 3.0 / 60 = 0.05 A。',
   ),
   PhysicsProblem(
     id: '5adf49b5-0a92-439b-9f65-88ad58a94bc3',
     theme: 'ブリッジ形回路の電圧降下',
+    title: '点Aと点Bの間の電圧降下',
     domains: {PhysicsDomain.electromagnetism},
     figure: ProblemFigure.bridgeVoltageDrop,
-    statement:
-        '図のように、左上の抵抗での電圧降下の大きさを答えよ。',
+    statement: '図のように、点Aと点Bの間の電圧降下の大きさを答えよ。',
     answerValue: 2,
     answerUnit: 'V',
     answerDisplay: '2.0',
     unitChoices: ['V', 'A', 'W', 'C'],
-    hint: '左上と左下は一本の通り道で、その両端は電池である。電流はその通り道で決まり、電圧降下は左上だけを見る。',
+    hint: '点Aと点Bは、左上の抵抗の両端にある。左上と左下は一本の通り道で、その両端は電池である。',
     approach: 'オームの法則 V = RI を使う。',
     firstStep: '左の通り道では 6.0 = (4.0 + 8.0) I である。',
     explanation:
         'オームの法則は V = RI である。'
         '左上の 4.0 Ω と左下の 8.0 Ω は直列で、両端の電圧は電池の 6.0 V なので、'
         '6.0 = (4.0 + 8.0) I。'
-        'I = 6.0 / 12 = 0.50 A。左上の電圧降下は V = 4.0 × 0.50 = 2.0 V。',
+        'I = 6.0 / 12 = 0.50 A。点Aと点Bの間の電圧降下は V = 4.0 × 0.50 = 2.0 V。',
   ),
   PhysicsProblem(
     id: '059e9128-3c09-4e75-9a6b-8c401a807e7c',
     theme: '等温変化（ボイルの法則）',
+    title: '温度を保って体積を変えたあとの圧力',
     domains: {PhysicsDomain.thermodynamics},
     figure: ProblemFigure.isothermalGas,
     statement:
-        '図のように、温度を 300 K に保ったまま、圧力 2.0×10⁵ Pa、体積 4.0×10⁻³ m³ の'
-        '理想気体の体積を 8.0×10⁻³ m³ にした。このときの圧力を答えよ。',
-    answerValue: 1.0e5,
-    answerUnit: 'Pa',
-    answerDisplay: '1.0×10^5',
-    unitChoices: ['Pa', 'J', 'N', 'W'],
+        '図のように、温度を 293 K に保ったまま、圧力 1013 hPa、体積 2.0×10⁻³ m³ の'
+        '理想気体の体積を 4.0×10⁻³ m³ にした。このときの圧力を答えよ。',
+    answerValue: 506.5,
+    answerUnit: 'hPa',
+    answerDisplay: '506.5',
+    unitChoices: ['hPa', 'J', 'N', 'W'],
     hint: '温度が変わっていない。圧力と体積の積が保たれる。',
     approach: 'ボイルの法則 PV = 一定 を使う。',
-    firstStep: '2.0×10⁵ × 4.0×10⁻³ = P × 8.0×10⁻³ である。',
+    firstStep: '1013 × 2.0×10⁻³ = P × 4.0×10⁻³ である。',
     explanation:
         '等温変化ではボイルの法則 PV = 一定である。'
-        '2.0×10⁵ × 4.0×10⁻³ = P × 8.0×10⁻³。'
-        'P = 2.0×10⁵ × 4.0×10⁻³ / 8.0×10⁻³ = 1.0×10⁵ Pa。',
+        '1013 × 2.0×10⁻³ = P × 4.0×10⁻³。'
+        'P = 1013 × 2.0×10⁻³ / 4.0×10⁻³ = 506.5 hPa。',
   ),
   PhysicsProblem(
     id: '62dce096-726f-4a28-8139-de3eff094793',
     theme: '等圧変化（シャルルの法則）',
+    title: '圧力を保って温度を変えたあとの体積',
     domains: {PhysicsDomain.thermodynamics},
     figure: ProblemFigure.isobaricGas,
     statement:
-        '図のように、圧力を 1.0×10⁵ Pa に保ったまま、温度 300 K、体積 2.0×10⁻³ m³ の'
-        '理想気体を 450 K にした。このときの体積を答えよ。',
-    answerValue: 3.0e-3,
+        '図のように、圧力を 1013 hPa に保ったまま、温度 300 K、体積 2.0×10⁻³ m³ の'
+        '理想気体を 360 K にした。このときの体積を答えよ。',
+    answerValue: 2.4e-3,
     answerUnit: 'm^3',
-    answerDisplay: '3.0×10^-3',
+    answerDisplay: '2.4×10^-3',
     unitChoices: [],
     hint: '圧力が変わっていない。体積と絶対温度の比が保たれる。',
     approach: 'シャルルの法則 V/T = 一定 を使う。',
-    firstStep: '2.0×10⁻³ / 300 = V / 450 である。',
+    firstStep: '2.0×10⁻³ / 300 = V / 360 である。',
     explanation:
         '等圧変化ではシャルルの法則 V/T = 一定である。'
-        '2.0×10⁻³ / 300 = V / 450。'
-        'V = 2.0×10⁻³ × 450 / 300 = 3.0×10⁻³ m³。',
+        '2.0×10⁻³ / 300 = V / 360。'
+        'V = 2.0×10⁻³ × 360 / 300 = 2.4×10⁻³ m³。',
   ),
   PhysicsProblem(
     id: 'bf43572d-42ac-4b81-9dce-85c4a71ee6d7',
     theme: '等積変化',
+    title: '体積を保って温度を変えたあとの圧力',
     domains: {PhysicsDomain.thermodynamics},
     figure: ProblemFigure.isochoricGas,
     statement:
-        '図のように、体積を 2.0×10⁻³ m³ に保ったまま、温度 300 K、圧力 1.5×10⁵ Pa の'
-        '理想気体を 600 K にした。このときの圧力を答えよ。',
-    answerValue: 3.0e5,
-    answerUnit: 'Pa',
-    answerDisplay: '3.0×10^5',
-    unitChoices: ['Pa', 'J', 'N', 'W'],
-    hint: '体積が変わっていない。圧力と絶対温度の比が保たれる。',
+        '図のように、体積を 2.0×10⁻³ m³ に保ったまま、温度 27℃、圧力 1013 hPa の'
+        '理想気体を −3℃ にした。このときの圧力を答えよ。\n'
+        '※0℃ = 273 K とする。',
+    answerValue: 911.7,
+    answerUnit: 'hPa',
+    answerDisplay: '911.7',
+    unitChoices: ['hPa', 'J', 'N', 'W'],
+    hint: '体積が変わっていない。圧力と絶対温度の比が保たれる。℃のままでは比にできない。',
     approach: 'ゲイリュサックの法則 P/T = 一定 を使う。',
-    firstStep: '1.5×10⁵ / 300 = P / 600 である。',
+    firstStep: '1013 / 300 = P / 270 である。',
     explanation:
         '等積変化ではゲイリュサックの法則 P/T = 一定である。'
-        '1.5×10⁵ / 300 = P / 600。'
-        'P = 1.5×10⁵ × 600 / 300 = 3.0×10⁵ Pa。',
+        '27℃ は 27 + 273 = 300 K、−3℃ は −3 + 273 = 270 K。'
+        '1013 / 300 = P / 270。'
+        'P = 1013 × 270 / 300 = 1013 × 0.90 = 911.7 hPa。',
   ),
   PhysicsProblem(
     id: '2eef6ac4-67da-439f-b4fa-d6436a743eb8',
     theme: '断熱変化（ポアソンの式）',
+    title: '熱の出入りなく圧縮したあとの温度',
     domains: {PhysicsDomain.thermodynamics},
     figure: ProblemFigure.adiabaticGas,
     statement:
-        '図のように、外部と熱の出入りがないように、圧力 1.0×10⁵ Pa、体積 8.0×10⁻³ m³ の'
-        '単原子理想気体を、体積 1.0×10⁻³ m³ まで圧縮した。このときの圧力を答えよ。\n'
-        '※γ = 5/3 とする。',
-    answerValue: 3.2e6,
-    answerUnit: 'Pa',
-    answerDisplay: '3.2×10^6',
-    unitChoices: ['Pa', 'J', 'N', 'W'],
-    hint: '外部との熱の出入りがない。圧力と体積は、温度が一定のときの積とは違う形で結ばれる。',
-    approach: 'ポアソンの式 P V^γ = 一定 を使う。',
-    firstStep: '1.0×10⁵ × (8.0×10⁻³)^{5/3} = P × (1.0×10⁻³)^{5/3} である。',
+        '図のように、外部と熱の出入りがないように、温度 27℃、体積 5.0×10⁻³ m³ の'
+        '空気を、体積 1.0×10⁻³ m³ まで圧縮した。このときの温度を K で答えよ。\n'
+        '※0℃ = 273 K、γ = 1.4、5^{0.4} = 1.9 とする。',
+    answerValue: 570,
+    answerUnit: 'K',
+    answerDisplay: '570',
+    unitChoices: [],
+    unitObvious: true,
+    hint: '外部との熱の出入りがない。体積の比と、はじめの絶対温度を見る。',
+    approach: 'ポアソンの式 T V^{γ−1} = 一定 を使う。',
+    firstStep: 'T × (1.0×10⁻³)^{0.4} = 300 × (5.0×10⁻³)^{0.4} である。',
     explanation:
-        '断熱変化ではポアソンの式 P V^γ = 一定である。γ = 5/3。'
-        '1.0×10⁵ × (8.0×10⁻³)^{5/3} = P × (1.0×10⁻³)^{5/3}。'
-        '体積の比は 8.0×10⁻³ / 1.0×10⁻³ = 8.0。'
-        '8.0^{5/3} = (8.0^{1/3})^5 = 2.0^5 = 32。'
-        'P = 1.0×10⁵ × 32 = 3.2×10⁶ Pa。',
+        '断熱変化ではポアソンの式 T V^{γ−1} = 一定である。γ = 1.4 なので γ−1 = 0.4。'
+        '27℃ は 27 + 273 = 300 K。'
+        '体積の比は 5.0×10⁻³ / 1.0×10⁻³ = 5。'
+        'T × (1.0×10⁻³)^{0.4} = 300 × (5.0×10⁻³)^{0.4}。'
+        'T = 300 × 5^{0.4}。'
+        '5^{0.4} = 1.9 なので、T = 300 × 1.9 = 570 K。',
   ),
   PhysicsProblem(
     id: '6dbf478a-bb30-40a4-bacb-c7c1ddd5b550',
     theme: '気体の内部エネルギー',
+    title: '仕切りを開いたあとの気体の圧力',
     domains: {PhysicsDomain.thermodynamics},
     figure: ProblemFigure.connectedVessels,
     statement:
         '図のように、コックで仕切られた二つの容器に単原子分子の理想気体が入っている。'
         'コックを開いて十分に時間がたったとき、気体の圧力を答えよ。\n'
         '※容器の外への熱の出入りはなく、容器の体積は変わらないものとする。',
-    answerValue: 1.6e5,
-    answerUnit: 'Pa',
-    answerDisplay: '1.6×10^5',
-    unitChoices: ['Pa', 'J', 'N', 'W'],
+    answerValue: 1316.9,
+    answerUnit: 'hPa',
+    answerDisplay: '1316.9',
+    unitChoices: ['hPa', 'J', 'N', 'W'],
     hint: 'コックを開くあいだ、気体はつりあっていない。外への仕事も熱の出入りもない。',
     approach: '単原子理想気体の内部エネルギー U = (3/2) pV が、全体で保存されることを使う。',
-    firstStep: '(3/2)×2.0×10⁵×3.0×10⁻³ + (3/2)×1.0×10⁵×2.0×10⁻³ = (3/2) P × 5.0×10⁻³ である。',
+    firstStep: '(3/2)×1519.5×3.0×10⁻³ + (3/2)×1013×2.0×10⁻³ = (3/2) P × 5.0×10⁻³ である。',
     explanation:
         '単原子理想気体の内部エネルギーは U = (3/2) nRT = (3/2) pV である。'
         'コックを開くあいだ、外への熱の出入りはなく、容器の体積は変わらないので外への仕事もない。'
         'したがって内部エネルギーの和は変わらない。'
-        '(3/2)×2.0×10⁵×3.0×10⁻³ + (3/2)×1.0×10⁵×2.0×10⁻³ = (3/2) P × 5.0×10⁻³。'
-        '2.0×10⁵×3.0×10⁻³ + 1.0×10⁵×2.0×10⁻³ = P × 5.0×10⁻³。'
-        '6.0×10² + 2.0×10² = 5.0×10⁻³ P。'
-        'P = 8.0×10² / 5.0×10⁻³ = 1.6×10⁵ Pa。',
+        '(3/2)×1519.5×3.0×10⁻³ + (3/2)×1013×2.0×10⁻³ = (3/2) P × 5.0×10⁻³。'
+        '1519.5×3.0 + 1013×2.0 = P × 5.0。'
+        '4558.5 + 2026 = 5.0 P。'
+        'P = 6584.5 / 5.0 = 1316.9 hPa。',
   ),
   PhysicsProblem(
     id: 'c6d333a8-fdff-45e6-ae3d-d576394a8f58',
     theme: '2原子理想気体のモル比熱',
+    title: '仕切りを開いたあとの気体の温度',
     domains: {PhysicsDomain.thermodynamics},
     figure: ProblemFigure.diatomicVessels,
     statement:
         '図のように、コックで仕切られた二つの容器に2原子分子の理想気体が入っている。'
         'コックを開いて十分に時間がたったとき、気体の温度を答えよ。\n'
         '※容器の外への熱の出入りはなく、容器の体積は変わらないものとする。',
-    answerValue: 500,
+    answerValue: 313,
     answerUnit: 'K',
-    answerDisplay: '500',
-    unitChoices: ['K', 'Pa', 'J', 'mol'],
+    answerDisplay: '313',
+    unitChoices: ['K', 'hPa', 'J', 'mol'],
     hint: 'コックを開くあいだ、気体はつりあっていない。外への仕事も熱の出入りもなく、物質の量は保たれる。',
     approach: '2原子理想気体の内部エネルギー U = (5/2) nRT が、全体で保存されることを使う。',
-    firstStep: '(5/2)×2.0×R×300 + (5/2)×1.0×R×900 = (5/2)×(2.0+1.0)×R×T である。',
+    firstStep: '(5/2)×0.20×R×293 + (5/2)×0.10×R×353 = (5/2)×(0.20+0.10)×R×T である。',
     explanation:
         '2原子理想気体の定積モル比熱は C_V = (5/2) R なので、内部エネルギーは U = n C_V T = (5/2) nRT である。'
         'コックを開くあいだ、外への熱の出入りはなく、容器の体積は変わらないので外への仕事もない。'
         'したがって内部エネルギーの和は変わらない。物質量の和も変わらない。'
-        '(5/2)×2.0×R×300 + (5/2)×1.0×R×900 = (5/2)×(2.0+1.0)×R×T。'
-        '2.0×300 + 1.0×900 = 3.0 T。'
-        '600 + 900 = 3.0 T。'
-        'T = 1500 / 3.0 = 500 K。',
+        '(5/2)×0.20×R×293 + (5/2)×0.10×R×353 = (5/2)×(0.20+0.10)×R×T。'
+        '0.20×293 + 0.10×353 = 0.30 T。'
+        '58.6 + 35.3 = 0.30 T。'
+        'T = 93.9 / 0.30 = 313 K。',
   ),
   PhysicsProblem(
     id: '680f161b-8039-4d8b-97ac-54d641bf875e',
     theme: '鉛直ばねの単振動の周期',
+    title: 'つるしたばねの振動の周期',
     domains: {PhysicsDomain.mechanics},
     figure: ProblemFigure.verticalSpringOscillation,
     statement:
@@ -579,6 +609,7 @@ const sampleProblems = <PhysicsProblem>[
   PhysicsProblem(
     id: '63f5a83f-3152-4583-8c46-67bc2e33d8bc',
     theme: '単振り子の周期',
+    title: '小さく振った振り子の周期',
     domains: {PhysicsDomain.mechanics},
     figure: ProblemFigure.simplePendulum,
     statement:
@@ -601,6 +632,7 @@ const sampleProblems = <PhysicsProblem>[
   PhysicsProblem(
     id: '11cf8d71-4c2b-45ed-bb3e-3718131609c2',
     theme: 'ケプラー第3法則',
+    title: '太陽から遠い天体の公転周期',
     domains: {PhysicsDomain.mechanics},
     figure: ProblemFigure.keplerOrbits,
     statement:
@@ -622,21 +654,463 @@ const sampleProblems = <PhysicsProblem>[
   PhysicsProblem(
     id: '94b33f1d-6d59-425c-9481-9b73a8686890',
     theme: 'うなり',
+    title: '二つの音叉の音の強さの繰り返し',
     domains: {PhysicsDomain.waves},
     figure: ProblemFigure.beats,
     statement:
         '図のように、左右の音叉を同時に鳴らしたところ、そのあいだで'
         '音の強さが強くなったり弱くなったりを繰り返した。'
         'この繰り返しの周期を答えよ。',
-    answerValue: 0.5,
+    answerValue: 0.25,
     answerUnit: 's',
-    answerDisplay: '0.5',
+    answerDisplay: '0.25',
     unitChoices: ['s', 'Hz', 'm', 'N'],
     hint: '二つの音叉の振動数がわずかに違っている。音の強さが繰り返す間隔は、その差で決まる。',
     approach: 'うなりの周期 T = 1/|f1 − f2| を使う。',
-    firstStep: 'T = 1/|442 − 440| である。',
+    firstStep: 'T = 1/|104 − 100| である。',
     explanation:
         'うなりの回数は |f1 − f2| である。周期はその逆数なので T = 1/|f1 − f2|。'
-        'T = 1/|442 − 440| = 1/2 = 0.5 s。',
+        'T = 1/|104 − 100| = 1/4 = 0.25 s。',
   ),
+  PhysicsProblem(
+    id: 'ab68af64-b6f1-4a0b-b27d-9c8da85c2075',
+    theme: '直列の合成ばね',
+    title: '直列につないだばね全体ののび',
+    domains: {PhysicsDomain.mechanics},
+    figure: ProblemFigure.seriesSprings,
+    statement:
+        '図のように、天井から二つのばねを直列につなぎ、下端におもりをつるして静止させた。'
+        'ばね全体の自然長からののびを答えよ。\n'
+        '※重力加速度の大きさを 9.8 m/s² とする。',
+    answerValue: 0.30,
+    answerUnit: 'm',
+    answerDisplay: '0.30',
+    unitChoices: ['m', 's', 'N', 'J'],
+    hint: '二つのばねは一本の通り道になっている。全体ののびは、それぞれののびを合わせたものになる。',
+    approach: '直列の合成ばね定数 1/k = 1/k1 + 1/k2 を使う。',
+    firstStep: '1/k = 1/49 + 1/98 である。',
+    explanation:
+        '直列の合成ばね定数は 1/k = 1/k1 + 1/k2 である。'
+        '1/k = 1/49 + 1/98 = 2/98 + 1/98 = 3/98 なので、k = 98/3 N/m。'
+        'おもりは静止しているので mg = kx。'
+        '1.0 × 9.8 = (98/3) x。x = 9.8 × 3 / 98 = 0.30 m。',
+  ),
+  PhysicsProblem(
+    id: '355ab9b8-5510-4ab9-be24-4ffb0e0d3d2a',
+    theme: '並列の合成ばね',
+    title: '並列につないだばねののび',
+    domains: {PhysicsDomain.mechanics},
+    figure: ProblemFigure.parallelSprings,
+    statement:
+        '図のように、天井から二つのばねを並列につなぎ、下端におもりをつるして静止させた。'
+        'ばねの自然長からののびを答えよ。\n'
+        '※重力加速度の大きさを 9.8 m/s² とする。',
+    answerValue: 0.10,
+    answerUnit: 'm',
+    answerDisplay: '0.10',
+    unitChoices: ['m', 's', 'N', 'J'],
+    hint: '二つのばねは、のびが同じになるようにつながっている。おもりの重力は、二つのばねが分けて支えている。',
+    approach: '並列の合成ばね定数 k = k1 + k2 を使う。',
+    firstStep: 'k = 49 + 147 である。',
+    explanation:
+        '並列の合成ばね定数は k = k1 + k2 である。'
+        'k = 49 + 147 = 196 N/m。'
+        'おもりは静止しているので mg = kx。'
+        '2.0 × 9.8 = 196 x。x = 19.6 / 196 = 0.10 m。',
+  ),
+  PhysicsProblem(
+    id: '16e3da14-71f7-4691-9997-ee15a8209c5e',
+    theme: '開口端補正のある閉管の共鳴',
+    title: '共鳴した気柱から音の速さ',
+    domains: {PhysicsDomain.waves},
+    figure: ProblemFigure.resonanceColumn,
+    statement:
+        '図のように、円筒の上端近くで振動数 430 Hz の音叉を鳴らしながら、'
+        '円筒の水面の位置を徐々に変えたところ、上端から水面までの距離が '
+        '18.5 cm のときと 58.5 cm のときに共鳴し、そのあいだでは共鳴しなかった。'
+        'この事実から音速を理論的に計算せよ。',
+    answerValue: 344,
+    answerUnit: 'm/s',
+    answerDisplay: '344',
+    unitChoices: [],
+    hint: '共鳴した長さが2つあり、そのあいだには共鳴がない。水面と、筒の上端の少し外を見る。',
+    approach: '閉管の共鳴を使う。隣り合う共鳴長の差は λ/2 で、開口端補正は差をとると消える。',
+    firstStep: '58.5 cm − 18.5 cm = λ/2 である。',
+    explanation:
+        '閉管の共鳴では、水面が節、腹が開口端の外側にある。開口端補正を Δ とすると、'
+        'l + Δ = (2n − 1)λ/4 である。'
+        '隣り合う共鳴では差をとると Δ が消え、'
+        'λ/2 = 58.5 cm − 18.5 cm = 40.0 cm = 0.400 m となる。λ = 0.800 m。'
+        '音の速さは V = fλ = 430 × 0.800 = 344 m/s。',
+  ),
+  PhysicsProblem(
+    id: '6970d4b5-abcd-4825-a0fd-fc210892bc2f',
+    theme: '理想気体の状態方程式',
+    title: '1 m³の空気の質量',
+    domains: {PhysicsDomain.thermodynamics},
+    statement:
+        '酸素と窒素の物質量の比が 1:3 の空気がある。'
+        '温度 300 K、圧力 997.2 hPa のとき、空気 1.0 m³ の質量を答えよ。\n'
+        '※理想気体とみなし、酸素の分子量を 32、窒素の分子量を 28、'
+        '気体定数を R = 8.31 J/(mol·K)、997.2 hPa = 9.972×10⁴ Pa とする。',
+    answerValue: 1.16,
+    answerUnit: 'kg',
+    answerDisplay: '1.16',
+    unitChoices: ['kg', 'mol', 'hPa', 'J'],
+    hint: '圧力も体積も温度も決まっていて、変化の前後はない。酸素と窒素の割合は、1 mol の質量を決める。',
+    approach: '理想気体の状態方程式 PV = nRT を使う。',
+    firstStep: '9.972×10⁴ × 1.0 = n × 8.31 × 300 である。',
+    explanation:
+        '理想気体の状態方程式は PV = nRT である。'
+        '質量 m と物質量 n は、モル質量 M を用いて m = nM で結ばれる。'
+        '酸素と窒素の物質量の比は 1:3 なので、'
+        'M = (1×32 + 3×28)/(1+3) = 116/4 = 29 g/mol = 2.9×10⁻² kg/mol。'
+        '9.972×10⁴ × 1.0 = n × 8.31 × 300。'
+        '8.31 × 300 = 2493。'
+        'n = 9.972×10⁴ / 2493 = 40 mol。'
+        'm = 40 × 2.9×10⁻² = 1.16 kg。',
+  ),
+  PhysicsProblem(
+    id: '3f04e9ee-5b10-44b3-959a-8066a139be9d',
+    theme: '等加速度運動の速度',
+    title: '落とした物体の地面での速さ',
+    domains: {PhysicsDomain.mechanics},
+    figure: ProblemFigure.freeFallSpeed,
+    statement:
+        '図のように、高さ 0.90 m から物体を静かに放した。地面に達する直前の速さを答えよ。\n'
+        '※重力加速度の大きさを 9.8 m/s² とし、空気抵抗は無視する。',
+    answerValue: 4.2,
+    answerUnit: 'm/s',
+    answerDisplay: '4.2',
+    unitChoices: [],
+    hint: '放した瞬間の速さは 0 で、落ちる距離が分かっている。落下中の加速度の大きさは変わらない。',
+    approach: '等加速度運動の速度の式 v² − v₀² = 2ax を使う。',
+    firstStep: 'v² − 0 = 2 × 9.8 × 0.90 である。',
+    explanation:
+        '下向きを正とする。初速 0 の等加速度運動では v² − v₀² = 2ax である。'
+        'a = 9.8 m/s²、x = 0.90 m、v₀ = 0 なので、'
+        'v² − 0 = 2 × 9.8 × 0.90。'
+        'v² = 17.64。v = 4.2 m/s。',
+  ),
+  PhysicsProblem(
+    id: '3587cf2f-0e4c-44bf-a255-4413086cf0c9',
+    theme: '等加速度運動の位置',
+    title: '落とした物体が地面に達する時間',
+    domains: {PhysicsDomain.mechanics},
+    figure: ProblemFigure.freeFallTime,
+    statement:
+        '図のように、高さ 4.9 m から物体を静かに放した。地面に達するまでの時間を答えよ。\n'
+        '※重力加速度の大きさを 9.8 m/s² とし、空気抵抗は無視する。',
+    answerValue: 1,
+    answerUnit: 's',
+    answerDisplay: '1.0',
+    unitChoices: ['s', 'm', 'm/s', 'm/s^2'],
+    hint: '放した瞬間の速さは 0 で、落ちる距離が分かっている。求めるのは、地面に達するまでの時間である。',
+    approach: '等加速度運動の位置の式 x = v₀t + (1/2)at² を使う。',
+    firstStep: '4.9 = 0 × t + (1/2) × 9.8 × t² である。',
+    explanation:
+        '下向きを正とする。等加速度運動の位置は x = v₀t + (1/2)at² である。'
+        'x = 4.9 m、v₀ = 0、a = 9.8 m/s² なので、'
+        '4.9 = 0 × t + (1/2) × 9.8 × t²。'
+        '4.9 = 4.9 t²。t² = 1.0。t = 1.0 s。',
+  ),
+  PhysicsProblem(
+    id: '03565785-cd7a-4353-bd44-ff3879ea6935',
+    theme: '万有引力による重力場',
+    title: '静止衛星高度',
+    domains: {PhysicsDomain.mechanics},
+    figure: ProblemFigure.geostationarySatellite,
+    statement:
+        '図のように、地球の赤道上空を、地球の自転と同じ角速度で円運動する衛星がある。'
+        '地表からの高度を答えよ。\n'
+        '※地球の半径を 6.4×10⁶ m、地表での重力加速度の大きさを 10 m/s²、'
+        '地球の自転の角速度を 8.0×10⁻⁵ rad/s とする。',
+    answerValue: 3.36e7,
+    answerUnit: 'm',
+    answerDisplay: '3.36×10^7',
+    unitChoices: ['m', 's', 'm/s', 'm/s^2'],
+    hint: '地球の自転と同じ角速度でまわり続けている。地表の重力加速度と、地球の半径が与えられている。',
+    approach: '万有引力による重力場 GM/r² が、向心加速度 rω² に等しいことを使う。',
+    firstStep: '10 × (6.4×10⁶)² / r² = r × (8.0×10⁻⁵)² である。',
+    explanation:
+        '万有引力による重力場は GM/r² である。'
+        '地表面では r = R で、この大きさが g なので GM = g R²。'
+        '静止衛星では、この重力場が向心加速度 rω² に等しい。'
+        'g R² / r² = r ω²。'
+        'r³ = g R² / ω² = 10 × (6.4×10⁶)² / (8.0×10⁻⁵)²。'
+        '(6.4×10⁶)² = 4.096×10¹³、(8.0×10⁻⁵)² = 6.4×10⁻⁹。'
+        'r³ = 10 × 4.096×10¹³ / 6.4×10⁻⁹ = 6.4×10²²。'
+        '6.4×10²² = 64×10²¹ = (4.0×10⁷)³ なので、r = 4.0×10⁷ m。'
+        '地表からの高度は h = r − R = 4.0×10⁷ − 6.4×10⁶ = 3.36×10⁷ m。',
+  ),
+  PhysicsProblem(
+    id: 'ad238071-a49c-4825-99a7-29c217b9fd0c',
+    theme: '静電容量の定義 [F]',
+    title: 'コンデンサーに蓄えられる電荷',
+    domains: {PhysicsDomain.electromagnetism},
+    figure: ProblemFigure.chargedCapacitor,
+    statement: '図のコンデンサーに蓄えられる電荷を答えよ。',
+    answerValue: 1.8e-2,
+    answerUnit: 'C',
+    answerDisplay: '1.8×10^-2',
+    unitChoices: ['C', 'V', 'A', 'J'],
+    hint: '容量と、かけた電圧が出ている。蓄えられる電荷は、その二つで決まる。',
+    approach: '静電容量の定義 Q = CV を使う。',
+    firstStep: 'Q = 1000×10⁻⁶ × 18 である。',
+    explanation:
+        '静電容量の定義は C = Q/V、すなわち Q = CV である。'
+        '1000 μF = 1000×10⁻⁶ F = 1.0×10⁻³ F。'
+        'Q = 1.0×10⁻³ × 18 = 1.8×10⁻² C。',
+  ),
+  PhysicsProblem(
+    id: '990f59e0-b900-4224-8c81-42e9d3e147c7',
+    theme: '平行板コンデンサーの電気容量',
+    title: '真空の平行板コンデンサーの電気容量',
+    domains: {PhysicsDomain.electromagnetism},
+    figure: ProblemFigure.parallelPlateCapacitor,
+    statement:
+        '図のように、正方形の極板を 2 枚平行に置いた。'
+        '極板の間は真空である。この電気容量を答えよ。\n'
+        '※真空の誘電率を 8.85×10⁻¹² F/m とする。',
+    answerValue: 8.85e-11,
+    answerUnit: 'F',
+    answerDisplay: '8.85×10^-11',
+    unitChoices: ['F', 'C', 'V', 'm'],
+    hint: '極板の面積と、間隔が出ている。間は真空で、誘電率が与えられている。',
+    approach: '平行板コンデンサーの電気容量 C = ε₀ S / d を使う。',
+    firstStep: 'C = 8.85×10⁻¹² × (0.10)² / 1.0×10⁻³ である。',
+    explanation:
+        '平行板コンデンサーの電気容量は C = ε₀ S / d である。'
+        '極板は一辺 10 cm = 0.10 m の正方形なので、S = 0.10 × 0.10 = 1.0×10⁻² m²。'
+        '間隔は 1 mm = 1.0×10⁻³ m。'
+        'C = 8.85×10⁻¹² × 1.0×10⁻² / 1.0×10⁻³ = 8.85×10⁻¹¹ F。',
+  ),
+  PhysicsProblem(
+    id: 'f5c795da-e888-4d9a-bb13-03b190638904',
+    theme: '誘電率と比誘電率',
+    title: '紙を挟んだコンデンサーの電気容量',
+    domains: {PhysicsDomain.electromagnetism},
+    figure: ProblemFigure.dielectricCapacitor,
+    statement:
+        '図のように、正方形の極板の間を紙が満たしている。この電気容量を答えよ。\n'
+        '※真空の誘電率を 8.85×10⁻¹² F/m とする。',
+    answerValue: 1.77e-9,
+    answerUnit: 'F',
+    answerDisplay: '1.77×10^-9',
+    unitChoices: ['F', 'C', 'V', 'm'],
+    hint: '間を紙が満たしていて、その比誘電率が出ている。極板の面積と、紙の厚さもある。',
+    approach: '誘電率と比誘電率の関係から、C = ε_r ε₀ S / d を使う。',
+    firstStep: 'C = 2.0 × 8.85×10⁻¹² × (0.10)² / 1.0×10⁻⁴ である。',
+    explanation:
+        '誘電率と比誘電率の関係は ε = ε_r ε₀ である。'
+        '紙が極板の間を満たすとき、電気容量は C = ε S / d = ε_r ε₀ S / d である。'
+        '極板は一辺 10 cm = 0.10 m の正方形なので、S = 0.10 × 0.10 = 1.0×10⁻² m²。'
+        '紙の厚さは 0.1 mm = 1.0×10⁻⁴ m で、これが間隔 d である。'
+        'C = 2.0 × 8.85×10⁻¹² × 1.0×10⁻² / 1.0×10⁻⁴ = 1.77×10⁻⁹ F。',
+  ),
+  PhysicsProblem(
+    id: '2c769ccf-20fe-4de8-a0dc-f98eb5d7e824',
+    theme: 'コンデンサーの合成容量',
+    title: '金属板を挟んだコンデンサーの電気容量',
+    domains: {PhysicsDomain.electromagnetism},
+    figure: ProblemFigure.metalInsertCapacitor,
+    statement:
+        '図のように、正方形の極板の間に、極板と同じ大きさの金属板を極板と平行に挟んだ。'
+        '隙間は真空である。この電気容量を答えよ。\n'
+        '※真空の誘電率を 8.85×10⁻¹² F/m とする。',
+    answerValue: 1.77e-10,
+    answerUnit: 'F',
+    answerDisplay: '1.77×10^-10',
+    unitChoices: ['F', 'C', 'V', 'm'],
+    hint: '間の金属板が、隙間を二つに分けている。金属の中には電場ができない。極板の面積と、二つの間隔が出ている。',
+    approach: 'コンデンサーの直列合成 1/C = 1/C₁ + 1/C₂ を使う。',
+    firstStep: '1/C = (2.0×10⁻⁴ + 3.0×10⁻⁴) / (8.85×10⁻¹² × (0.10)²) である。',
+    explanation:
+        '直列につないだコンデンサーの合成容量は 1/C = 1/C₁ + 1/C₂ である。'
+        '極板の間の金属板は、隙間を二つの平行板コンデンサーに分ける。'
+        '金属の中には電場ができないので、この二つは直列になる。'
+        'したがって 1/C = (d₁ + d₂) / (ε₀ S) である。'
+        '極板は一辺 10 cm = 0.10 m の正方形なので、S = 0.10 × 0.10 = 1.0×10⁻² m²。'
+        'd₁ = 0.2 mm = 2.0×10⁻⁴ m、d₂ = 0.3 mm = 3.0×10⁻⁴ m で、d₁ + d₂ = 5.0×10⁻⁴ m。'
+        'C = 8.85×10⁻¹² × 1.0×10⁻² / 5.0×10⁻⁴ = 1.77×10⁻¹⁰ F。',
+  ),
+  PhysicsProblem(
+    id: 'ee55e3b5-6de2-4c75-8536-e772727beff3',
+    theme: '並列の合成容量',
+    title: '並列につないだコンデンサーの電気容量',
+    domains: {PhysicsDomain.electromagnetism},
+    figure: ProblemFigure.parallelCapacitors,
+    statement: '図のように、三つのコンデンサーを並列につないだ。この電気容量を答えよ。',
+    answerValue: 100,
+    answerUnit: 'μF',
+    answerDisplay: '100',
+    unitChoices: ['μF', 'C', 'V', 'A'],
+    hint: '三つのコンデンサーは、同じ二つの導線のあいだにつながっている。かかる電圧は、どれも同じになる。',
+    approach: '並列の合成容量 C = C₁ + C₂ + C₃ を使う。',
+    firstStep: 'C = 10 + 22 + 68 である。',
+    explanation:
+        '並列につないだコンデンサーの合成容量は C = C₁ + C₂ + C₃ である。'
+        '三つのコンデンサーは、両端がそれぞれつながっているので並列である。'
+        'C = 10 + 22 + 68 = 100 μF。',
+  ),
+  PhysicsProblem(
+    id: 'ea751b97-55c2-4363-a575-5d8fdc5cc9a7',
+    theme: '万有引力定数 [N·m^2/kg^2]',
+    title: '万有引力定数の測定',
+    domains: {PhysicsDomain.mechanics},
+    figure: ProblemFigure.cavendishTorsion,
+    statement:
+        '図のように、棒の中央を針金で水平につるした。'
+        '大球を置くと、棒は回って止まった。万有引力定数を答えよ。\n'
+        '※針金のねじり定数を 6.7×10⁻⁵ N·m/rad とする。'
+        'ねじり定数は、針金を 1 rad ねじったときに戻そうとする力のモーメントである。'
+        '止まったときの針金のねじれ角を θ = 1.0×10⁻³ rad とする。'
+        '止まったとき、大球と小球の中心を結ぶ向きは棒と垂直である。'
+        '球の大きさは、中心のあいだの距離に比べて無視できる。',
+    answerValue: 6.7e-11,
+    answerUnit: 'N m^2/kg^2',
+    answerDisplay: '6.7×10^-11',
+    unitChoices: [],
+    hint: '大球を置いたあと、棒は回って止まっている。針金のねじれと、大球と小球の位置を、棒の中央のまわりで見る。',
+    approach: '力のモーメントのつり合いと、万有引力の法則を使う。',
+    firstStep: 'κθ = (GMm / r²) × L である。',
+    explanation:
+        '万有引力の大きさは F = GMm / r² である。'
+        '置いたあとでは、大球と小球の中心を結ぶ向きは棒と垂直である。'
+        '棒の両端でこの向きは互いに逆で、棒を回す向きは同じになる。'
+        '棒の長さを L とすると、中央のまわりの力のモーメントは 2 × F × (L/2) = FL である。'
+        '止まった位置では、このモーメントと、針金が戻すモーメント κθ が釣り合う。'
+        'κθ = FL = GMmL / r²。したがって G = κθ r² / (MmL)。'
+        'κ = 6.7×10⁻⁵ N·m/rad、θ = 1.0×10⁻³ rad、r = 0.20 m、'
+        'M = 100 kg、m = 0.40 kg、L = 1.0 m を入れる。'
+        'r² = (0.20)² = 0.040。'
+        '分子は 6.7×10⁻⁵ × 1.0×10⁻³ × 0.040 = 2.68×10⁻⁹。'
+        '分母は 100 × 0.40 × 1.0 = 40。'
+        'G = 2.68×10⁻⁹ / 40 = 6.7×10⁻¹¹ N·m²/kg²。',
+  ),
+  PhysicsProblem(
+    id: '4dc4c30e-cd7d-4453-abc4-4f653c9076f3',
+    theme: '公転周期から軌道半径',
+    title: '地球から月までの距離',
+    domains: {PhysicsDomain.mechanics},
+    figure: ProblemFigure.moonOrbit,
+    statement:
+        '図のように、月は地球のまわりを円運動している。'
+        '地球の中心から月までの距離を答えよ。\n'
+        '※地球の半径を 6.4×10⁶ m、地表での重力加速度の大きさを 9.8 m/s²、'
+        '月の公転周期を 27.3 日、1日を 8.64×10⁴ s、π = 3.14、'
+        '∛(5.66×10²⁵) = 3.84×10⁸ とする。'
+        '月の質量は地球に比べて無視できる。',
+    answerValue: 3.84e8,
+    answerUnit: 'm',
+    answerDisplay: '3.84×10^8',
+    unitChoices: ['m', 's', 'm/s', 'm/s^2'],
+    hint: '月は地球のまわりを、与えられた周期でまわり続けている。地表の重力加速度と、地球の半径も与えられている。',
+    approach: 'ケプラー第3法則 T² = 4π² a³ / GM を使う。GM は地表の重力加速度から出す。',
+    firstStep: '(27.3 × 8.64×10⁴)² = 4 × (3.14)² × a³ / (9.8 × (6.4×10⁶)²) である。',
+    explanation:
+        'ケプラー第3法則は T² = 4π² a³ / GM である。'
+        '地表では重力加速度の大きさが g = GM / R² なので、GM = g R²。'
+        'したがって T² = 4π² a³ / (g R²)。'
+        'a³ = g R² T² / (4π²)。'
+        'T = 27.3 × 8.64×10⁴ = 2.35872×10⁶ s。'
+        'R² = (6.4×10⁶)² = 4.096×10¹³。'
+        'g R² = 9.8 × 4.096×10¹³ = 4.01408×10¹⁴。'
+        'T² = (2.35872×10⁶)² = 5.56356×10¹²。'
+        'g R² T² = 4.01408×10¹⁴ × 5.56356×10¹² = 2.23325×10²⁷。'
+        '4π² = 4 × (3.14)² = 4 × 9.8596 = 39.4384。'
+        'a³ = 2.23325×10²⁷ / 39.4384 = 5.66×10²⁵。'
+        '∛(5.66×10²⁵) = 3.84×10⁸ なので、a = 3.84×10⁸ m。',
+  ),
+  PhysicsProblem(
+    id: '1de21279-b406-41f8-a86d-4da5a47293f9',
+    theme: '斜方投射の飛距離',
+    title: '遠投の初速',
+    domains: {PhysicsDomain.mechanics},
+    figure: ProblemFigure.longThrow,
+    statement:
+        '図のように、地面から 45° の向きにボールを投げたところ、'
+        '90 m 先の地面に落ちた。投げ出したときの速さを、時速の km で答えよ。\n'
+        '※重力加速度の大きさを 10 m/s² とし、空気抵抗は無視する。',
+    answerValue: 108,
+    answerUnit: 'km/h',
+    answerDisplay: '108',
+    unitChoices: [],
+    unitObvious: true,
+    hint: '投げた場所と落ちた場所は、同じ地面の上にある。地面との角度は 45° である。',
+    approach: '斜方投射の飛距離 R = v₀² sin 2θ / g を使う。',
+    firstStep: '90 = v₀² × sin 90° / 10 である。',
+    explanation:
+        '斜方投射で、投げ出した高さと落ちた高さが同じときの飛距離は '
+        'R = v₀² sin 2θ / g である。'
+        'θ = 45° なので 2θ = 90°、sin 90° = 1。'
+        '90 = v₀² × 1 / 10。'
+        'v₀² = 900。v₀ = 30 m/s。'
+        '時速は 30 × 3.6 = 108 km/h。',
+  ),
+  PhysicsProblem(
+    id: '2984b8a0-e30c-4106-8dbe-4d790b4bde61',
+    theme: '軌道半径と公転周期から中心の質量',
+    title: '太陽の質量',
+    domains: {PhysicsDomain.mechanics},
+    figure: ProblemFigure.sunOrbit,
+    statement:
+        '図のように、地球は太陽のまわりを円運動している。太陽の質量を答えよ。\n'
+        '※地球の公転半径を 1.50×10¹¹ m、公転周期を 365.6 日、1日を 8.64×10⁴ s、'
+        '万有引力定数を 6.67×10⁻¹¹ N·m²/kg²、π = 3.14 とする。'
+        '地球の質量は太陽に比べて無視できる。',
+    answerValue: 2.0e30,
+    answerUnit: 'kg',
+    answerDisplay: '2.0×10^30',
+    unitChoices: ['kg', 'm', 's', 'N'],
+    hint: '地球は太陽のまわりを、与えられた半径と周期でまわり続けている。万有引力定数も与えられている。',
+    approach: 'ケプラー第3法則 T² = 4π² a³ / GM を使う。',
+    firstStep:
+        '(365.6 × 8.64×10⁴)² = 4 × (3.14)² × (1.50×10¹¹)³ / (6.67×10⁻¹¹ × M) である。',
+    explanation:
+        'ケプラー第3法則は T² = 4π² a³ / GM である。'
+        '地球の質量を無視すると、M は太陽の質量である。'
+        'M = 4π² a³ / (G T²)。'
+        'T = 365.6 × 8.64×10⁴ = 3.158784×10⁷ s。'
+        'T² = (3.158784×10⁷)² = 9.97791×10¹⁴。'
+        'a³ = (1.50×10¹¹)³ = 3.375×10³³。'
+        '4π² = 4 × (3.14)² = 4 × 9.8596 = 39.4384。'
+        '4π² a³ = 39.4384 × 3.375×10³³ = 1.33105×10³⁵。'
+        'G T² = 6.67×10⁻¹¹ × 9.97791×10¹⁴ = 6.65527×10⁴。'
+        'M = 1.33105×10³⁵ / 6.65527×10⁴ = 2.0×10³⁰ kg。',
+  ),
+  PhysicsProblem(
+    id: '960df344-a24b-4174-821c-9ddbcdce5631',
+    theme: '理想気体の状態方程式',
+    title: '空気を抜いたあとの秤の減り',
+    domains: {PhysicsDomain.thermodynamics},
+    figure: ProblemFigure.evacuatedCylinder,
+    statement:
+        '図のように、円柱の容器に入った乾燥空気をほぼ真空になるまで抜いた。'
+        '秤の示す値は何 g 減るか。\n'
+        '※理想気体とみなし、乾燥空気のモル質量を 29 g/mol、'
+        '気体定数を R = 8.31 J/(mol·K)、π = 3.14、0℃ = 273 K、'
+        'はじめの気圧を 1.0×10⁵ Pa とする。容器の外側の体積は変わらない。',
+    answerValue: 2.90,
+    answerUnit: 'g',
+    answerDisplay: '2.90',
+    unitChoices: ['g', 'mol', 'hPa', 'J'],
+    hint:
+        '容器の外側は変わっていない。秤が減るのは、中から出ていった空気の分である。'
+        '温度と容積は、抜く前後で同じである。',
+    approach: '理想気体の状態方程式 pV = nRT を、抜く前と抜いたあとに使う。',
+    firstStep: '1.0×10⁵ × V = Δn × 8.31 × 300 である。',
+    explanation:
+        '理想気体の状態方程式は pV = nRT である。'
+        'ほぼ真空まで抜くので、出ていく物質量ははじめの物質量に等しい。'
+        'Δn = p V / (R T)。秤の減りは Δm = Δn M である。'
+        '容器の外側の体積は変わらないので、浮力は変わらない。'
+        '27℃ は 27 + 273 = 300 K。'
+        '円柱の容積は V = π r² h = 3.14 × (0.050)² × 0.318。'
+        '(0.050)² = 0.0025。'
+        'V = 3.14 × 0.0025 × 0.318 = 2.4963×10⁻³ m³。'
+        'Δm = 1.0×10⁵ × 2.4963×10⁻³ × 29 / (8.31 × 300)'
+        ' = 7240.77 / 2493 = 2.90 g。',
+  ),
+  ...noteArticleProblems,
 ];

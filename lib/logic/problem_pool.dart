@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import '../data/gacha_suspended_ids.dart';
 import '../models/learning_record.dart';
 import '../models/physics_domain.dart';
 import '../models/physics_problem.dart';
@@ -16,7 +17,8 @@ List<PhysicsProblem> eligibleProblems({
 }) {
   return [
     for (final problem in problems)
-      if (acceptsDomains(problem, enabled) &&
+      if (!gachaSuspendedProblemIds.contains(problem.id) &&
+          acceptsDomains(problem, enabled) &&
           !isExcluded(histories[problem.id] ?? History.empty(), exclusion))
         problem,
   ];
