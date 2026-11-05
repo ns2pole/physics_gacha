@@ -59,7 +59,6 @@ enum ProblemFigure {
   cutSheetCenter,
   slideTipHeight,
   floatingWood,
-  everestGravity,
   kineticFrictionSlide,
   staticFrictionHold,
   turntableSpring,

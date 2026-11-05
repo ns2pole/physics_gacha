@@ -161,7 +161,11 @@ class _SlidingComparisonPainter extends CustomPainter {
     final painter = TextPainter(
       text: TextSpan(
         text: text,
-        style: figureLabelStyle(color: color, fontWeight: FontWeight.w600),
+        style: figureLabelStyle(
+          color: color,
+          fontSize: 15,
+          fontWeight: FontWeight.w600,
+        ),
       ),
       textDirection: TextDirection.ltr,
     )..layout();

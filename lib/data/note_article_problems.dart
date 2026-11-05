@@ -244,7 +244,7 @@ const noteArticleProblems = <PhysicsProblem>[
     statement:
         '図のように、滑らかな台上の 200 g の物体と、滑車を通した 200 g のおもりをつなぎ、'
         '静かに放して 0.80 m 進んだ。台上の物体の速さを m/s で答えよ。\n'
-        '※重力加速度の大きさを 9.8 m/s² とする。糸も滑車も軽く、摩擦はない。',
+        '※台は固定されており、重力加速度の大きさを 9.8 m/s² とする。糸も滑車も軽く、摩擦はない。',
     answerValue: 2.8,
     answerUnit: 'm/s',
     answerDisplay: '2.8',
@@ -269,7 +269,8 @@ const noteArticleProblems = <PhysicsProblem>[
     figure: ProblemFigure.horizontalSpringRelease,
     statement:
         '図のように、滑らかな水平面上で、ばね定数 4.0 N/m の軽いばねを 0.30 m 縮め、'
-        '40 g の物体を静かに放した。ばねが自然長に戻ったときの速さを m/s で答えよ。',
+        '40 g の物体を静かに放した。ばねが自然長に戻ったときの速さを m/s で答えよ。\n'
+        '※台は固定されている。',
     answerValue: 3.0,
     answerUnit: 'm/s',
     answerDisplay: '3.0',
@@ -440,9 +441,8 @@ const noteArticleProblems = <PhysicsProblem>[
     theme: '地上の重力加速度 [m/s^2]',
     title: '地球半径だけ離れた点の重力加速度',
     domains: {PhysicsDomain.mechanics},
-    figure: ProblemFigure.everestGravity,
     statement:
-        '図のように、地球を半径 6.4×10⁶ m の球とし、地表から地球の半径だけ離れた点での'
+        '地球を半径 6.4×10⁶ m の球とする。地表から地球の半径だけ離れた点での'
         '重力加速度の大きさを m/s² で答えよ。\n'
         '※地表での重力加速度の大きさを 9.8 m/s² とする。地球の自転は考えない。',
     answerValue: 2.45,

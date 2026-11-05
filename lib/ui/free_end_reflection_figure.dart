@@ -45,9 +45,11 @@ class _FreeEndReflectionFigureState extends State<FreeEndReflectionFigure>
   @override
   Widget build(BuildContext context) {
     final labels = FigureLabels.of(context);
-    return SizedBox(
-      height: 196,
-      width: 512,
+    const designW = 304.0;
+    const designH = 196.0;
+    final figure = SizedBox(
+      height: designH,
+      width: designW,
       child: AnimatedBuilder(
         animation: _clock,
         builder: (context, _) {
@@ -61,6 +63,14 @@ class _FreeEndReflectionFigureState extends State<FreeEndReflectionFigure>
           );
         },
       ),
+    );
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (!constraints.hasBoundedWidth || constraints.maxWidth >= designW) {
+          return figure;
+        }
+        return FittedBox(fit: BoxFit.contain, child: figure);
+      },
     );
   }
 }
@@ -81,16 +91,16 @@ class _FreeEndPainter extends CustomPainter {
   static const _ink = Color(0xFF37474F);
   static const _wave = Color(0xFF1565C0);
 
-  /// 波長 12 cm を 144 px。軸は x = -10 から 30、波は 0 から壁 20 cm。
-  static const _cm = 12.0;
-  static const _zero = 16.0 + 10 * _cm;
+  /// 波長 12 cm。左右の空きを抑えて、狭い画面でも壁が見切れないようにする。
+  static const _cm = 11.0;
+  static const _zero = 28.0;
   static const _wall = _zero + 20 * _cm;
-  static const _axisLeft = _zero - 10 * _cm;
-  static const _axisRight = _zero + 30 * _cm;
+  static const _axisLeft = _zero - 10;
+  static const _axisRight = _wall + 40;
   static const _axisY = 164.0;
   static const _center = 74.0;
   static const _component = 13.0;
-  static const _lambda = 144.0;
+  static const _lambda = 12 * _cm;
 
   /// 入射波と、位相が反転しない反射波。壁では足し合わさって腹になる。
   double _displacement(double x) {

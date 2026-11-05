@@ -213,8 +213,8 @@ const noteArticleTranslationsEn = <String, ProblemTranslation>{
         'As shown, a 200 g object on a smooth table is connected over a pulley '
         'to a 200 g hanging mass and released from rest. Find the speed of the '
         'object on the table after it has moved 0.80 m, in m/s.\n'
-        '※Take g = 9.8 m/s². The string and the pulley are light, and there '
-        'is no friction.',
+        '※The table is fixed. Take g = 9.8 m/s². The string and the pulley '
+        'are light, and there is no friction.',
     hint: 'The only force that does work while they move is the weight of the descending mass.',
     approach: 'Use work and energy for the two objects together.',
     firstStep: '0.200 × 9.8 × 0.80 = (1/2) × (0.200 + 0.200) × v².',
@@ -231,7 +231,8 @@ const noteArticleTranslationsEn = <String, ProblemTranslation>{
         'As shown, on a smooth horizontal surface a light spring of constant '
         '4.0 N/m is compressed by 0.30 m and a 40 g object is released from '
         'rest. Find the speed when the spring returns to its natural length, '
-        'in m/s.',
+        'in m/s.\n'
+        '※The table is fixed.',
     hint:
         'The surface is horizontal and frictionless, so only the compression '
         'of the spring changes the speed.',
@@ -366,9 +367,9 @@ const noteArticleTranslationsEn = <String, ProblemTranslation>{
     theme: 'Gravitational acceleration at the surface [m/s^2]',
     title: 'Gravity at one Earth-radius from the surface',
     statement:
-        'As shown, treat Earth as a sphere of radius 6.4×10⁶ m. Find the '
-        'magnitude of gravitational acceleration at a point one Earth radius '
-        'above the surface, in m/s².\n'
+        'Treat Earth as a sphere of radius 6.4×10⁶ m. Find the magnitude of '
+        'gravitational acceleration at a point one Earth radius above the '
+        'surface, in m/s².\n'
         '※Take the surface value to be 9.8 m/s². Ignore the rotation of Earth.',
     hint:
         'Away from the surface, the distance from the center of Earth is longer '

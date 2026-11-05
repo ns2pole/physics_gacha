@@ -138,7 +138,11 @@ const _prefixes = <String, double>{
 
 ParsedUnit? parseUnit(String source) {
   final text = source.trim();
-  if (text.isEmpty || text == '無次元' || text == 'Dimensionless' || text == '1') {
+  if (text.isEmpty ||
+      text == '無次元' ||
+      text == 'Dimensionless' ||
+      text == '1' ||
+      text == '個') {
     return ParsedUnit.dimensionless;
   }
   final sides = text.split('/');

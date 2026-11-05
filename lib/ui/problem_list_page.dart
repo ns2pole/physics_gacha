@@ -236,8 +236,7 @@ Widget? _listFigure(PhysicsProblem problem) {
   };
 }
 
-/// 図はカード幅の半分で中央に置く。高さは図の比率のまま、収まるだけ低くする。
-/// 問題文はその下から書く。
+/// 図は出題画面と同じ実寸で中央に置く。問題文はその下から書く。
 class _ProblemStatement extends StatelessWidget {
   const _ProblemStatement({required this.text, this.figure});
 
@@ -252,25 +251,13 @@ class _ProblemStatement extends StatelessWidget {
     if (figure == null) {
       return Text(text, style: _style);
     }
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: SizedBox(
-                width: constraints.maxWidth / 2,
-                child: FittedBox(
-                  fit: BoxFit.contain,
-                  child: figure,
-                ),
-              ),
-            ),
-            const SizedBox(height: 4),
-            Text(text, style: _style),
-          ],
-        );
-      },
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Center(child: figure),
+        const SizedBox(height: 4),
+        Text(text, style: _style),
+      ],
     );
   }
 }

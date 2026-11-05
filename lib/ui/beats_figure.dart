@@ -11,7 +11,7 @@ import '../utils/figure_clock.dart';
 /// 左 100 Hz（右向き）と右 104 Hz（左向き）の合成を、位置 x に対して描く。
 ///
 /// y = sin(2π·100 t − k1 x) + sin(2π·104 t + k2 x)。
-/// アニメは t だけを進める。実時間の 1/10。
+/// アニメは t だけを進める。実時間の 1/50（以前の 1/10 のさらに 1/5）。
 class BeatsFigure extends StatefulWidget {
   const BeatsFigure({super.key});
 
@@ -56,7 +56,7 @@ class _BeatsFigureState extends State<BeatsFigure>
 class _BeatsPainter extends CustomPainter {
   const _BeatsPainter({required this.seconds});
 
-  /// 画面上の時刻。物理の時刻はこれの 1/10。
+  /// 画面上の時刻。物理の時刻はこれの 1/50。
   final double seconds;
 
   static const _ink = Color(0xFF37474F);
@@ -65,7 +65,7 @@ class _BeatsPainter extends CustomPainter {
   static const _component = 12.0;
   static const _waveLeft = 64.0;
   static const _waveRight = 256.0;
-  static const _playback = 10.0;
+  static const _playback = 50.0;
   static const _f1 = 100.0;
   static const _f2 = 104.0;
   static const _fBar = (_f1 + _f2) / 2;

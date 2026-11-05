@@ -3,183 +3,194 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import '../utils/figure_label_style.dart';
-import '../utils/figure_labels.dart';
 import 'span_marker.dart';
 
-/// 上から見た置く前・置いた後と、止まったあとを横から見た図。
-/// 上から見た棒の回転は、本当の 1.0×10⁻³ rad を 15° に誇張している。
+/// 斜め上から見たキャベンディッシュのねじり秤。
+/// 棒の回転は、本当の 1.0×10⁻³ rad を見やすい角度に誇張している。
 /// 止まったとき、大球と小球の中心を結ぶ向きは棒と垂直である。
 class CavendishTorsionFigure extends StatelessWidget {
   const CavendishTorsionFigure({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final labels = FigureLabels.of(context);
-    return SizedBox(
-      width: 360,
-      height: 348,
-      child: CustomPaint(
-        painter: _CavendishTorsionPainter(
-          before: labels.placedBefore,
-          after: labels.placedAfter,
-          side: labels.fromSide,
-        ),
-      ),
+    return const SizedBox(
+      width: 340,
+      height: 280,
+      child: CustomPaint(painter: _CavendishTorsionPainter()),
     );
   }
 }
 
 class _CavendishTorsionPainter extends CustomPainter {
-  const _CavendishTorsionPainter({
-    required this.before,
-    required this.after,
-    required this.side,
-  });
-
-  final String before;
-  final String after;
-  final String side;
+  const _CavendishTorsionPainter();
 
   static const _ink = Color(0xFF37474F);
   static const _largeFill = Color(0xFFCFD8DC);
-  static const _twist = 15 * math.pi / 180;
-  static const _smallRadius = 6.0;
-  static const _largeRadius = 13.0;
+  // 真上ではなく斜め上からの見え方。奥行きで少しつぶす。
+  static const _depth = 0.42;
+  static const _half = 1.0;
+  // 置く前の棒の向き（ワールド xy）。見た目の斜め感用。
+  static const _baseAngle = -0.38;
+  // ねじれは実際より大きく見せる。
+  static const _twist = 0.48;
+  static const _smallR = 7.0;
+  static const _largeR = 28.0;
 
   @override
   void paint(Canvas canvas, Size size) {
-    const beforeCenter = Offset(96, 112);
-    const afterCenter = Offset(264, 112);
-    _caption(canvas, before, const Offset(96, 16));
-    _topBefore(canvas, beforeCenter);
-    _arrow(canvas, const Offset(158, 112), const Offset(188, 112));
-    _caption(canvas, after, const Offset(264, 16));
-    _topAfter(canvas, afterCenter);
-    _caption(canvas, side, const Offset(180, 198));
-    _side(canvas, const Offset(180, 278));
-  }
+    const pivot3 = Offset(0, 0);
+    const scale = 92.0;
+    final origin = Offset(size.width * 0.48, size.height * 0.58);
 
-  void _topBefore(Canvas canvas, Offset center) {
-    const half = 46.0;
-    final leftEnd = center + const Offset(-half, 0);
-    final rightEnd = center + const Offset(half, 0);
-    _rod(canvas, leftEnd, rightEnd);
-    _smallBall(canvas, leftEnd);
-    _smallBall(canvas, rightEnd);
-    _pivot(canvas, center);
-    _label(canvas, '0.40 kg', leftEnd + const Offset(0, -20), size: 12);
-    _label(canvas, '0.40 kg', rightEnd + const Offset(0, -20), size: 12);
+    Offset map(Offset p, {double z = 0}) {
+      // x: 左右、y: 奥行き、z: 上。
+      return Offset(
+        origin.dx + scale * (p.dx + _depth * p.dy),
+        origin.dy + scale * (0.55 * p.dy - z),
+      );
+    }
+
+    final base = Offset(math.cos(_baseAngle), math.sin(_baseAngle));
+    final twisted = Offset(
+      math.cos(_baseAngle + _twist),
+      math.sin(_baseAngle + _twist),
+    );
+    final left0 = pivot3 - base * _half;
+    final right0 = pivot3 + base * _half;
+    final left = pivot3 - twisted * _half;
+    final right = pivot3 + twisted * _half;
+
+    // 大球は棒と垂直。両端で回す向きが同じになるよう、逆向きに置く。
+    final normal = Offset(-twisted.dy, twisted.dx);
+    const gap = 0.42; // 見た目の 0.20 m 相当
+    final rightLarge = right + normal * gap;
+    final leftLarge = left - normal * gap;
+
+    // 天井と針金
+    final pivot = map(pivot3);
+    final ceilingY = pivot.dy - 108;
+    _ceiling(canvas, pivot.dx, ceilingY);
+    canvas.drawLine(
+      Offset(pivot.dx, ceilingY),
+      pivot,
+      _stroke(1.5),
+    );
+
+    // 置く前の棒（破線）と小球の位置
+    _dashed(canvas, map(left0), map(right0));
+    _dashedCircle(canvas, map(left0), _smallR);
+    _dashedCircle(canvas, map(right0), _smallR);
+
+    // ねじれ角
+    _angleArc(canvas, pivot, map(right0) - pivot, map(right) - pivot);
+    _angleArc(canvas, pivot, map(left0) - pivot, map(left) - pivot);
+    _label(
+      canvas,
+      '1.0×10⁻³ rad',
+      pivot + const Offset(56, -18),
+      size: 12,
+    );
+
+    // 置いたあとの棒と球
+    _rod(canvas, map(left), map(right));
+    _largeBall(canvas, map(rightLarge));
+    _largeBall(canvas, map(leftLarge));
+    _smallBall(canvas, map(left));
+    _smallBall(canvas, map(right));
+    _pivot(canvas, pivot);
+
+    // 引力の向き（棒と垂直）
+    _forceArrow(canvas, map(right), map(rightLarge));
+    _forceArrow(canvas, map(left), map(leftLarge));
+
+    // 数値
+    _label(canvas, '0.40 kg', map(left) + const Offset(-28, -18), size: 12);
+    _label(canvas, '0.40 kg', map(right) + const Offset(28, -18), size: 12);
+    _label(canvas, '100 kg', map(leftLarge) + const Offset(-36, 8), size: 12);
+    _label(canvas, '100 kg', map(rightLarge) + const Offset(36, 8), size: 12);
+
     paintSpanMarker(
       canvas: canvas,
-      from: leftEnd + const Offset(0, 26),
-      to: rightEnd + const Offset(0, 26),
+      from: map(left) + const Offset(0, 36),
+      to: map(right) + const Offset(0, 36),
       label: '1.0 m',
       color: _ink,
     );
-  }
 
-  void _topAfter(Canvas canvas, Offset center) {
-    const half = 46.0;
-    final bar = Offset(math.cos(-_twist), math.sin(-_twist));
-    final leftEnd = center - bar * half;
-    final rightEnd = center + bar * half;
-    final touch = _smallRadius + _largeRadius - 1;
-    final rightLarge = rightEnd + _turned(bar, -math.pi / 2) * touch;
-    final leftLarge = leftEnd + _turned(-bar, -math.pi / 2) * touch;
-    _dashed(canvas, center + const Offset(-half, 0), center + const Offset(half, 0));
-    canvas.drawArc(
-      Rect.fromCircle(center: center, radius: 16),
-      0,
-      -_twist,
-      false,
-      _stroke(1.2),
+    // 大球–小球の間隔（右端側）
+    final midGap = Offset(
+      (map(right).dx + map(rightLarge).dx) / 2,
+      (map(right).dy + map(rightLarge).dy) / 2,
     );
-    _rod(canvas, leftEnd, rightEnd);
-    _largeBall(canvas, rightLarge);
-    _largeBall(canvas, leftLarge);
-    _smallBall(canvas, leftEnd);
-    _smallBall(canvas, rightEnd);
-    _pivot(canvas, center);
-    _label(canvas, '100 kg', rightLarge + const Offset(0, -22), size: 12);
-    _label(canvas, '100 kg', leftLarge + const Offset(-18, 18), size: 12);
-    _label(canvas, '0.20 m', rightLarge + const Offset(34, 20), size: 12);
-    _label(canvas, '1.0×10⁻³ rad', center + const Offset(28, 36), size: 11);
-  }
-
-  void _side(Canvas canvas, Offset center) {
-    const half = 52.0;
-    _ceiling(canvas, center.dx, center.dy - 58);
-    _straightWire(canvas, Offset(center.dx, center.dy - 54), center + const Offset(0, -30));
-    _helix(canvas, center + const Offset(0, -30), center);
-    final leftEnd = center + const Offset(-half, 0);
-    final rightEnd = center + const Offset(half, 0);
-    _rod(canvas, leftEnd, rightEnd);
-    final rightLarge = rightEnd + const Offset(0, 16);
-    final leftLarge = leftEnd + const Offset(0, -16);
-    _largeBall(canvas, rightLarge);
-    _largeBall(canvas, leftLarge);
-    _smallBall(canvas, leftEnd);
-    _smallBall(canvas, rightEnd);
-    _pivot(canvas, center);
-  }
-
-  Offset _turned(Offset direction, double angle) {
-    final c = math.cos(angle);
-    final s = math.sin(angle);
-    return Offset(
-      direction.dx * c - direction.dy * s,
-      direction.dx * s + direction.dy * c,
-    );
+    _label(canvas, '0.20 m', midGap + const Offset(22, 22), size: 12);
   }
 
   void _ceiling(Canvas canvas, double x, double y) {
-    canvas.drawLine(Offset(x - 28, y), Offset(x + 28, y), _stroke(2));
-  }
-
-  void _straightWire(Canvas canvas, Offset top, Offset bottom) {
-    canvas.drawLine(top, bottom, _stroke(1.6));
-  }
-
-  void _helix(Canvas canvas, Offset top, Offset bottom) {
-    final path = Path();
-    const turns = 3;
-    for (var i = 0; i <= 36; i++) {
-      final t = i / 36;
-      final y = top.dy + (bottom.dy - top.dy) * t;
-      final x = top.dx + math.sin(t * turns * math.pi * 2) * 4.5;
-      if (i == 0) {
-        path.moveTo(x, y);
-      } else {
-        path.lineTo(x, y);
-      }
+    canvas.drawLine(Offset(x - 34, y), Offset(x + 34, y), _stroke(2));
+    for (var i = -28.0; i <= 28; i += 10) {
+      canvas.drawLine(
+        Offset(x + i, y),
+        Offset(x + i - 8, y - 8),
+        _stroke(1.3),
+      );
     }
-    canvas.drawPath(path, _stroke(1.6));
   }
 
   void _rod(Canvas canvas, Offset from, Offset to) {
-    canvas.drawLine(from, to, _stroke(2));
-  }
-
-  Paint _stroke(double width) {
-    return Paint()
-      ..color = _ink
-      ..strokeWidth = width
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round;
+    canvas.drawLine(from, to, _stroke(2.2));
   }
 
   void _smallBall(Canvas canvas, Offset center) {
-    canvas.drawCircle(center, _smallRadius, Paint()..color = _ink);
+    canvas.drawCircle(center, _smallR, Paint()..color = Colors.white);
+    canvas.drawCircle(center, _smallR, _stroke(1.6));
   }
 
   void _largeBall(Canvas canvas, Offset center) {
-    canvas.drawCircle(center, _largeRadius, Paint()..color = _largeFill);
-    canvas.drawCircle(center, _largeRadius, _stroke(1.5));
+    canvas.drawCircle(center, _largeR, Paint()..color = _largeFill);
+    canvas.drawCircle(center, _largeR, _stroke(1.6));
   }
 
   void _pivot(Canvas canvas, Offset center) {
-    canvas.drawCircle(center, 3.2, Paint()..color = Colors.white);
-    canvas.drawCircle(center, 3.2, _stroke(1.4));
+    canvas.drawCircle(center, 3.4, Paint()..color = Colors.white);
+    canvas.drawCircle(center, 3.4, _stroke(1.4));
+  }
+
+  void _forceArrow(Canvas canvas, Offset from, Offset toward) {
+    final delta = toward - from;
+    final length = delta.distance;
+    if (length < 1) return;
+    final dir = delta / length;
+    // 小球の縁から大球の手前まで。
+    final start = from + dir * (_smallR + 2);
+    final end = from + dir * (length - _largeR - 4);
+    if ((end - start).distance < 8) return;
+    canvas.drawLine(start, end, _stroke(1.6));
+    final across = Offset(-dir.dy, dir.dx);
+    final head = Path()
+      ..moveTo(end.dx, end.dy)
+      ..lineTo((end - dir * 8 + across * 4).dx, (end - dir * 8 + across * 4).dy)
+      ..lineTo((end - dir * 8 - across * 4).dx, (end - dir * 8 - across * 4).dy)
+      ..close();
+    canvas.drawPath(head, Paint()..color = _ink);
+  }
+
+  void _angleArc(Canvas canvas, Offset center, Offset fromVec, Offset toVec) {
+    final a0 = math.atan2(fromVec.dy, fromVec.dx);
+    final a1 = math.atan2(toVec.dy, toVec.dx);
+    var sweep = a1 - a0;
+    while (sweep > math.pi) {
+      sweep -= 2 * math.pi;
+    }
+    while (sweep < -math.pi) {
+      sweep += 2 * math.pi;
+    }
+    canvas.drawArc(
+      Rect.fromCircle(center: center, radius: 22),
+      a0,
+      sweep,
+      false,
+      _stroke(1.2),
+    );
   }
 
   void _dashed(Canvas canvas, Offset from, Offset to) {
@@ -193,24 +204,37 @@ class _CavendishTorsionPainter extends CustomPainter {
     final step = delta / length;
     var drawn = 0.0;
     while (drawn < length) {
-      final end = math.min(drawn + 4, length);
+      final end = math.min(drawn + 5, length);
       canvas.drawLine(from + step * drawn, from + step * end, paint);
-      drawn += 7;
+      drawn += 9;
     }
   }
 
-  void _arrow(Canvas canvas, Offset from, Offset to) {
-    canvas.drawLine(from, to - const Offset(8, 0), _stroke(1.4));
-    final head = Path()
-      ..moveTo(to.dx, to.dy)
-      ..lineTo(to.dx - 9, to.dy - 5)
-      ..lineTo(to.dx - 9, to.dy + 5)
-      ..close();
-    canvas.drawPath(head, Paint()..color = _ink);
+  void _dashedCircle(Canvas canvas, Offset center, double radius) {
+    final paint = Paint()
+      ..color = _ink.withValues(alpha: 0.45)
+      ..strokeWidth = 1.2
+      ..style = PaintingStyle.stroke;
+    const dashes = 18;
+    for (var i = 0; i < dashes; i += 2) {
+      final a0 = 2 * math.pi * i / dashes;
+      final a1 = 2 * math.pi * (i + 1) / dashes;
+      canvas.drawArc(
+        Rect.fromCircle(center: center, radius: radius),
+        a0,
+        a1 - a0,
+        false,
+        paint,
+      );
+    }
   }
 
-  void _caption(Canvas canvas, String text, Offset origin) {
-    _label(canvas, text, origin, size: 13, bold: true);
+  Paint _stroke(double width) {
+    return Paint()
+      ..color = _ink
+      ..strokeWidth = width
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round;
   }
 
   void _label(
@@ -218,25 +242,20 @@ class _CavendishTorsionPainter extends CustomPainter {
     String text,
     Offset origin, {
     double size = 13,
-    bool bold = false,
   }) {
     final painter = TextPainter(
       text: TextSpan(
         text: text,
-        style: figureLabelStyle(
-          color: _ink,
-          fontSize: size,
-          fontWeight: bold ? FontWeight.w600 : FontWeight.w400,
-        ),
+        style: figureLabelStyle(color: _ink, fontSize: size),
       ),
       textDirection: TextDirection.ltr,
     )..layout();
-    painter.paint(canvas, origin - Offset(painter.width / 2, painter.height / 2));
+    painter.paint(
+      canvas,
+      origin - Offset(painter.width / 2, painter.height / 2),
+    );
   }
 
   @override
-  bool shouldRepaint(covariant _CavendishTorsionPainter oldDelegate) =>
-      oldDelegate.before != before ||
-      oldDelegate.after != after ||
-      oldDelegate.side != side;
+  bool shouldRepaint(covariant _CavendishTorsionPainter oldDelegate) => false;
 }

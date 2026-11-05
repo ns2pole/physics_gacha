@@ -102,7 +102,10 @@ class _ProblemDetailPageState extends State<ProblemDetailPage> {
               DomainTintCard(
                 domains: problem.domains,
                 child: Padding(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 5,
+                    vertical: 16,
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [

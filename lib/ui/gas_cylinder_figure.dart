@@ -24,6 +24,7 @@ class GasCylinderFigure extends StatelessWidget {
     };
     final roomy =
         process == GasCylinderProcess.isothermal ||
+        process == GasCylinderProcess.isobaric ||
         process == GasCylinderProcess.isochoric;
     return SizedBox(
       height: roomy ? 196 : 170,
@@ -58,6 +59,7 @@ class _GasCylinderPainter extends CustomPainter {
   @override
   bool get _roomy =>
       process == GasCylinderProcess.isothermal ||
+      process == GasCylinderProcess.isobaric ||
       process == GasCylinderProcess.isochoric;
 
   void paint(Canvas canvas, Size size) {

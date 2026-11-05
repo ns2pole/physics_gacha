@@ -12,8 +12,8 @@ class LongThrowFigure extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const SizedBox(
-      height: 188,
-      width: 230,
+      height: 282,
+      width: 345,
       child: CustomPaint(painter: _LongThrowPainter()),
     );
   }
@@ -29,6 +29,7 @@ class _LongThrowPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    canvas.scale(1.5);
     final line = Paint()
       ..color = _ink
       ..strokeWidth = 1.5

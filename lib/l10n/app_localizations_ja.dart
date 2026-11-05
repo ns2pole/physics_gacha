@@ -13,6 +13,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get appTitle => '物理ガチャ';
 
   @override
+  String get formulaSheet => '公式集';
+
+  @override
   String get problemList => '問題一覧';
 
   @override
@@ -399,7 +402,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get figureAfter => 'あと';
 
   @override
-  String get figureCylinderHeight => '円柱の高さ\n0.318 m';
+  String get figureCylinderHeight => '0.318 m';
 
   @override
   String get figureCylinderRadius => '半径 0.050 m';
@@ -411,7 +414,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get figurePlacedAfter => '置いた後';
 
   @override
-  String get figureFromSide => '横から';
+  String get figureFromSide => 'やや斜め上から';
 
   @override
   String get figureIsothermal => '等温';

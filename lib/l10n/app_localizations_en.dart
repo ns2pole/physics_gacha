@@ -13,6 +13,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appTitle => 'Physics Gacha';
 
   @override
+  String get formulaSheet => 'Formula sheet';
+
+  @override
   String get problemList => 'Problem list';
 
   @override
@@ -408,7 +411,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get figureAfter => 'After';
 
   @override
-  String get figureCylinderHeight => 'height\n0.318 m';
+  String get figureCylinderHeight => '0.318 m';
 
   @override
   String get figureCylinderRadius => 'radius 0.050 m';
@@ -420,7 +423,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get figurePlacedAfter => 'Placed';
 
   @override
-  String get figureFromSide => 'From the side';
+  String get figureFromSide => 'From above, at an angle';
 
   @override
   String get figureIsothermal => 'Isothermal';

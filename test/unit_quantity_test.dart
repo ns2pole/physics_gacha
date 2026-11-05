@@ -36,6 +36,7 @@ void main() {
   test('空欄は無次元', () {
     expect(parseUnit('')!.isDimensionless, isTrue);
     expect(parseUnit('無次元')!.isDimensionless, isTrue);
+    expect(parseUnit('個')!.isDimensionless, isTrue);
   });
 
   test('同じ次元の候補は並べない', () {

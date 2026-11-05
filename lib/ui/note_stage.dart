@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 
 import '../utils/figure_clock.dart';
@@ -96,24 +98,36 @@ void noteMass(Canvas canvas, Offset center, {double radius = 11}) {
   canvas.drawCircle(center, radius, noteStroke());
 }
 
-void noteSpring(Canvas canvas, Offset from, Offset to, {int coils = 7}) {
+/// 横から見たコイルばね。振幅は小さめ、巻きは細かく。
+void noteSpring(
+  Canvas canvas,
+  Offset from,
+  Offset to, {
+  int coils = 12,
+  double amplitude = 3.2,
+}) {
   final delta = to - from;
   final length = delta.distance;
   if (length < 1) return;
   final dir = delta / length;
   final normal = Offset(-dir.dy, dir.dx);
+  final lead = math.min(5.0, length * 0.1);
+  final span = math.max(length - 2 * lead, 1.0);
   final path = Path()..moveTo(from.dx, from.dy);
-  final lead = length * 0.12;
-  path.lineTo(from.dx + dir.dx * lead, from.dy + dir.dy * lead);
-  final span = length - 2 * lead;
-  for (var i = 0; i < coils; i++) {
-    final along = lead + span * (i + 0.5) / coils;
-    final side = i.isEven ? 8.0 : -8.0;
-    final point = from + dir * along + normal * side;
+  path.lineTo((from + dir * lead).dx, (from + dir * lead).dy);
+  const stepsPerCoil = 16;
+  final steps = coils * stepsPerCoil;
+  // cos で軸方向に少し戻すと、丸い巻きに見える。
+  final loopDepth = (span / coils) * 0.22;
+  for (var i = 1; i <= steps; i++) {
+    final t = i / steps;
+    final phase = t * coils * 2 * math.pi;
+    final along = from + dir * (lead + span * t + loopDepth * math.cos(phase));
+    final point = along + normal * (amplitude * math.sin(phase));
     path.lineTo(point.dx, point.dy);
   }
   path.lineTo(to.dx, to.dy);
-  canvas.drawPath(path, noteStroke());
+  canvas.drawPath(path, noteStroke(noteInk, 1.3));
 }
 
 void noteArrow(Canvas canvas, Offset from, Offset to, {Color? color}) {

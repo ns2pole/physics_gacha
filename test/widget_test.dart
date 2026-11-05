@@ -31,8 +31,13 @@ void main() {
     expect(title.style?.fontSize, 26);
     final width = tester.view.physicalSize.width / tester.view.devicePixelRatio;
     expect(
-      (tester.getCenter(find.text('物理ガチャ')).dx - width / 2).abs(),
-      lessThan(24),
+      tester.getCenter(find.text('物理ガチャ')).dx,
+      lessThan(width / 2),
+    );
+    expect(find.byIcon(Icons.menu_book_outlined), findsOneWidget);
+    expect(
+      tester.getCenter(find.byIcon(Icons.menu_book_outlined)).dx,
+      lessThan(tester.getCenter(find.byIcon(Icons.cloud_outlined)).dx),
     );
     expect(
       tester.getCenter(find.text('問題一覧')).dx,

@@ -42,9 +42,10 @@ class _SeriesSpringsPainter extends CustomPainter {
       canvas.drawLine(Offset(x, ceiling), Offset(x - 8, ceiling - 8), line);
     }
 
-    _spring(canvas, const Offset(cx, ceiling), const Offset(cx, 78), line);
-    canvas.drawCircle(const Offset(cx, 84), 2.4, Paint()..color = _ink);
-    _spring(canvas, const Offset(cx, 90), const Offset(cx, 152), line);
+    const joint = Offset(cx, 84);
+    _spring(canvas, const Offset(cx, ceiling), joint, line);
+    _spring(canvas, joint, const Offset(cx, 152), line);
+    canvas.drawCircle(joint, 2.4, Paint()..color = _ink);
 
     final mass = Rect.fromLTWH(cx - 26, 152, 52, 34);
     canvas.drawRect(mass, line);

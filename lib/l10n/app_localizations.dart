@@ -104,6 +104,12 @@ abstract class AppLocalizations {
   /// **'物理ガチャ'**
   String get appTitle;
 
+  /// No description provided for @formulaSheet.
+  ///
+  /// In ja, this message translates to:
+  /// **'公式集'**
+  String get formulaSheet;
+
   /// No description provided for @problemList.
   ///
   /// In ja, this message translates to:
@@ -833,7 +839,7 @@ abstract class AppLocalizations {
   /// No description provided for @figureCylinderHeight.
   ///
   /// In ja, this message translates to:
-  /// **'円柱の高さ\n0.318 m'**
+  /// **'0.318 m'**
   String get figureCylinderHeight;
 
   /// No description provided for @figureCylinderRadius.
@@ -857,7 +863,7 @@ abstract class AppLocalizations {
   /// No description provided for @figureFromSide.
   ///
   /// In ja, this message translates to:
-  /// **'横から'**
+  /// **'やや斜め上から'**
   String get figureFromSide;
 
   /// No description provided for @figureIsothermal.

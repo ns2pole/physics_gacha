@@ -32,6 +32,7 @@ import 'math_expression_view.dart';
 import 'unit_expression_view.dart';
 import 'filter_bar.dart';
 import 'fixed_end_reflection_figure.dart';
+import 'formula_sheet_page.dart';
 import 'gas_cylinder_figure.dart';
 import 'incline_pull_figure.dart';
 import 'kepler_orbits_figure.dart';
@@ -348,6 +349,12 @@ class _GachaPageState extends State<GachaPage> with TickerProviderStateMixin {
     });
   }
 
+  void _openFormulaSheet() {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(builder: (_) => const FormulaSheetPage()),
+    );
+  }
+
   void _toggleAnswer() {
     setState(() {
       _showAnswer = !_showAnswer;
@@ -590,14 +597,25 @@ class _GachaPageState extends State<GachaPage> with TickerProviderStateMixin {
         elevation: 0,
         scrolledUnderElevation: 0,
         foregroundColor: const Color(0xFF1565C0),
-        centerTitle: true,
+        centerTitle: false,
         automaticallyImplyLeading: false,
+        // 左端から半角（タイトル字サイズの半分）内側。
+        titleSpacing: 13,
         title: Text(
           AppLocalizations.of(context)!.appTitle,
-          textAlign: TextAlign.center,
+          textAlign: TextAlign.left,
           style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
         ),
         actions: [
+          IconButton(
+            tooltip: AppLocalizations.of(context)!.formulaSheet,
+            onPressed: _openFormulaSheet,
+            icon: const Icon(
+              Icons.menu_book_outlined,
+              color: Color(0xFF1565C0),
+              size: 28,
+            ),
+          ),
           _buildAccountAction(),
           if (session != null)
             Padding(
@@ -1086,7 +1104,7 @@ class _ProblemCardState extends State<_ProblemCard>
           final progress = Curves.easeOutCubic.transform(_reveal.value);
           final open = _reveal.value > 0;
           return Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

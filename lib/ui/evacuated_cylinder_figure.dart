@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import '../utils/figure_label_style.dart';
 import '../utils/figure_labels.dart';
 import 'dial_meter.dart';
-import 'span_marker.dart';
 
 /// 秤に載せた円柱容器。27℃で空気を 1.0×10⁵ Pa からほぼ真空まで抜く。
 class EvacuatedCylinderFigure extends StatelessWidget {
@@ -15,8 +14,8 @@ class EvacuatedCylinderFigure extends StatelessWidget {
   Widget build(BuildContext context) {
     final labels = FigureLabels.of(context);
     return SizedBox(
-      height: 208,
-      width: 368,
+      height: 220,
+      width: 340,
       child: CustomPaint(
         painter: _EvacuatedCylinderPainter(
           before: labels.before,
@@ -54,12 +53,12 @@ class _EvacuatedCylinderPainter extends CustomPainter {
       ..strokeCap = StrokeCap.round
       ..strokeJoin = StrokeJoin.round;
 
-    const top = 56.0;
-    const bottom = 128.0;
-    const half = 34.0;
-    const rim = 7.0;
-    const leftX = 180.0;
-    const rightX = 308.0;
+    const top = 54.0;
+    const bottom = 138.0;
+    const half = 40.0;
+    const rim = 8.0;
+    const leftX = 128.0;
+    const rightX = 262.0;
 
     _vessel(
       canvas,
@@ -88,34 +87,43 @@ class _EvacuatedCylinderPainter extends CustomPainter {
       Offset(leftX + half + 8, (top + bottom) / 2),
       Offset(rightX - half - 8, (top + bottom) / 2),
     );
-    _label(canvas, '27°C', Offset((leftX + rightX) / 2, 18), size: 11);
+    _label(canvas, '27°C', Offset((leftX + rightX) / 2, 16), size: 11);
 
-    final spanX = leftX - half - 16;
-    canvas.drawLine(Offset(spanX, top), Offset(leftX - half, top), wire..color = _guide);
+    final spanX = leftX - half - 14;
+    canvas.drawLine(
+      Offset(spanX, top),
+      Offset(leftX - half, top),
+      wire..color = _guide,
+    );
     canvas.drawLine(
       Offset(spanX, bottom),
       Offset(leftX - half, bottom),
       wire..color = _guide,
     );
     wire.color = _ink;
-    paintSpanMarker(
-      canvas: canvas,
-      from: Offset(spanX, top),
-      to: Offset(spanX, bottom),
-      label: heightLabel,
-      color: _ink,
-      tick: const Offset(-8, 0),
+    _doubleArrow(canvas, Offset(spanX, top), Offset(spanX, bottom), wire);
+    // <-> のすぐ左に数値だけ置く。
+    _label(
+      canvas,
+      heightLabel,
+      Offset(spanX - 22, (top + bottom) / 2),
+      size: 11,
     );
 
-    final radiusY = bottom - 34;
+    final radiusY = bottom - 40;
     canvas.drawLine(
       Offset(leftX, radiusY - 7),
       Offset(leftX, radiusY + 7),
       wire..color = _guide,
     );
     wire.color = _ink;
-    _doubleArrow(canvas, Offset(leftX, radiusY), Offset(leftX + half, radiusY), wire);
-    _label(canvas, radiusLabel, Offset(leftX + 4, radiusY + 16), size: 11);
+    _doubleArrow(
+      canvas,
+      Offset(leftX, radiusY),
+      Offset(leftX + half, radiusY),
+      wire,
+    );
+    _label(canvas, radiusLabel, Offset(leftX + 8, radiusY + 16), size: 11);
   }
 
   void _vessel(
@@ -134,11 +142,19 @@ class _EvacuatedCylinderPainter extends CustomPainter {
     canvas.drawLine(Offset(left, top), Offset(left, bottom), wire);
     canvas.drawLine(Offset(right, top), Offset(right, bottom), wire);
     canvas.drawOval(
-      Rect.fromCenter(center: Offset(cx, top), width: half * 2, height: rim * 2),
+      Rect.fromCenter(
+        center: Offset(cx, top),
+        width: half * 2,
+        height: rim * 2,
+      ),
       wire,
     );
     canvas.drawArc(
-      Rect.fromCenter(center: Offset(cx, bottom), width: half * 2, height: rim * 2),
+      Rect.fromCenter(
+        center: Offset(cx, bottom),
+        width: half * 2,
+        height: rim * 2,
+      ),
       0,
       math.pi,
       false,
@@ -149,13 +165,18 @@ class _EvacuatedCylinderPainter extends CustomPainter {
       canvas,
       Offset(cx, bottom + rim + 6),
       color: _ink,
-      panHalf: half + 8,
-      bodyHeight: 36,
-      fraction: pressure.startsWith('7') ? 0.28 : 0.46,
+      panHalf: half + 10,
+      bodyHeight: 42,
+      fraction: pressure.startsWith('≈') ? 0.28 : 0.46,
     );
 
-    _label(canvas, caption, Offset(cx, 18), size: 13);
-    _label(canvas, pressure, Offset(cx, top + (bottom - top) * 0.38), size: 12);
+    _label(canvas, caption, Offset(cx, 16), size: 13);
+    _label(
+      canvas,
+      pressure,
+      Offset(cx, top + (bottom - top) * 0.38),
+      size: 12,
+    );
   }
 
   void _flowArrow(Canvas canvas, Offset from, Offset to) {
