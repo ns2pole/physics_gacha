@@ -92,7 +92,8 @@ class _GeostationaryPainter extends CustomPainter {
     canvas.drawLine(ground, craft, line);
     canvas.drawCircle(craft, 4.2, fill);
 
-    _label(canvas, earth, center + const Offset(0, earthR + 16));
+    // ラベル中心なので半径＋半幅ぶん外へ（「地球」が円に食い込まない）。
+    _label(canvas, earth, center + Offset(earthR + 30, 0));
     final outward = (craft - center) / orbitR;
     _label(canvas, satellite, craft + outward * 16);
   }

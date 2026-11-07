@@ -2,9 +2,8 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
-import '../utils/figure_label_style.dart';
-
 import '../utils/figure_clock.dart';
+import 'span_marker.dart';
 
 /// 微小な振れの単振り子。鉛直線の左右に小さく揺れる。
 class SimplePendulumFigure extends StatefulWidget {
@@ -41,8 +40,8 @@ class _SimplePendulumFigureState extends State<SimplePendulumFigure>
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 156,
-      width: 113,
+      height: 168,
+      width: 200,
       child: AnimatedBuilder(
         animation: _clock,
         builder: (context, _) {
@@ -64,13 +63,12 @@ class _SimplePendulumPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    canvas.translate(-57, 0);
     final line = Paint()
       ..color = _ink
       ..strokeWidth = 1.5
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round;
-    const pivot = Offset(100, 18);
+    const pivot = Offset(88, 18);
     const length = 118.0;
     const bobR = 14.0;
     final angle = 0.18 * math.sin(phase * 2 * math.pi);
@@ -78,19 +76,26 @@ class _SimplePendulumPainter extends CustomPainter {
       pivot.dx + length * math.sin(angle),
       pivot.dy + length * math.cos(angle),
     );
+    final restBottom = Offset(pivot.dx, pivot.dy + length);
 
-    canvas.drawLine(const Offset(70, 18), const Offset(130, 18), line);
-    for (var x = 78.0; x < 130; x += 10) {
+    canvas.drawLine(const Offset(58, 18), const Offset(118, 18), line);
+    for (var x = 66.0; x < 118; x += 10) {
       canvas.drawLine(Offset(x, 18), Offset(x - 7, 10), line);
     }
     canvas.drawCircle(pivot, 3.2, Paint()..color = _ink);
-    _dashed(canvas, pivot, Offset(pivot.dx, pivot.dy + length), line);
+    // 静止位置の鉛直（点線）。寸法 2.45 m はここ。
+    _dashed(canvas, pivot, restBottom, line);
     canvas.drawLine(pivot, bob, line);
     canvas.drawCircle(bob, bobR, line);
-    _label(
-      canvas,
-      '2.45 m',
-      Offset((pivot.dx + bob.dx) / 2 + 28, (pivot.dy + bob.dy) / 2),
+
+    paintSpanMarker(
+      canvas: canvas,
+      from: Offset(pivot.dx + 28, pivot.dy),
+      to: Offset(restBottom.dx + 28, restBottom.dy),
+      label: '2.45 m',
+      color: _ink,
+      tick: const Offset(14, 0),
+      guide: 20,
     );
   }
 
@@ -112,20 +117,6 @@ class _SimplePendulumPainter extends CustomPainter {
       canvas.drawLine(from + step * drawn, from + step * end, paint);
       drawn += dash + gap;
     }
-  }
-
-  void _label(Canvas canvas, String text, Offset origin) {
-    final painter = TextPainter(
-      text: TextSpan(
-        text: text,
-        style: figureLabelStyle(color: _ink),
-      ),
-      textDirection: TextDirection.ltr,
-    )..layout();
-    painter.paint(
-      canvas,
-      origin - Offset(painter.width / 2, painter.height / 2),
-    );
   }
 
   @override

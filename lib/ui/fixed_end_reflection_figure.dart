@@ -294,8 +294,8 @@ class _FixedEndPainter extends CustomPainter {
     Offset center,
     Color color, {
     double opacity = 1,
-    FontWeight weight = FontWeight.w600,
-    double size = 13,
+    FontWeight weight = FontWeight.w500,
+    double size = 15,
   }) {
     if (opacity <= 0) return;
     final painter = TextPainter(

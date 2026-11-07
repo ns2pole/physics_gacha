@@ -59,7 +59,7 @@ void paintPressureGauge(
   final painter = TextPainter(
     text: TextSpan(
       text: reading,
-      style: figureLabelStyle(color: color, fontSize: 11, fontWeight: FontWeight.w600),
+      style: figureLabelStyle(color: color, fontSize: 15),
     ),
     textDirection: TextDirection.ltr,
   )..layout();

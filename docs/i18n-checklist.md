@@ -123,7 +123,7 @@
 - [x] gasCylinders（はじめ／あと、等温／等圧／等積／断熱圧縮）
 - [x] verticalSpringOscillation（数値のみ）
 - [x] simplePendulum（数値のみ）
-- [x] keplerOrbits（太陽）
+- [x] keplerOrbits（太陽、1 yr）
 - [x] beats（100 Hz / 104 Hz、数値のみ）
 - [x] seriesSprings（数値のみ）
 - [x] parallelSprings（数値のみ）
@@ -138,14 +138,16 @@
 - [x] sunOrbit（太陽、地球）
 - [x] longThrow（45°、90 m、数値のみ）
 - [x] evacuatedCylinder（はじめ／あと、数値）
-- [x] note記事の39図（数値と単位。壁の速さ、スリット、回折格子、弦、円錐振り子、スピーカー、気柱、ばね、台車、振り子、ブロック、円盤、下敷き、滑りと傾き、浮き、山頂、摩擦、回転台、エレベーター、釘、水中、張力、階段、富士山、注射器、水深、逆さ容器、食塩水、ヘリウム、ニクロム、銅線、コイル、RC、ソレノイド、アルミ棒、立方体）
+- [x] note記事の39図（数値と単位。壁の速さ、スリット、回折格子、弦、円錐振り子、スピーカー、気柱、ばね、台車、振り子、ブロック、円盤、下敷き、滑りと傾き、浮き、山頂、摩擦、回転台、エレベーター、釘、水中、張力、階段、富士山、注射器、水深、逆さ容器、食塩水、ヘリウム、ニクロム、銅線、コイル、RC、ソレノイド、アルミ棒、立方体）— 文言ラベルは `FigureLabels`（詳細は [`figure-en-checklist.md`](figure-en-checklist.md)）
 
 ## その他アプリ内
 
 - [x] 無次元の表示ラベル（採点キーは変更しない）
-- [x] `getLocalizedAnswerUnitLabel`
+- [x] `getLocalizedAnswerUnitLabel`（`個`→count、`年`→yr）
 - [x] AI セッション title / category / question / explanation のローカライズ
-- [x] ドメイン・除外・履歴ラベル
+- [x] AI チャット chrome 文言を起動 context の locale で解決
+- [x] ドメイン・除外・履歴ラベル（英語の結合は `, `）
+- [x] 公式集アイコンは日本語時のみ表示（PDFは日本語のみ）
 
 ## ネイティブ
 
@@ -168,4 +170,4 @@
 
 - [x] `flutter gen-l10n` / `flutter test`（57 passed）
 - [ ] 実機・シミュレータで locale=ja / en の目視（任意）
-- [x] `lib` のユーザー向けハードコード日本語を確認（正本・採点キー・コメント以外は除去）
+- [x] `lib` のユーザー向けハードコード日本語を確認（正本・採点キー・コメント以外は除去）。図ラベルは [`english-coverage-audit.md`](english-coverage-audit.md) 参照

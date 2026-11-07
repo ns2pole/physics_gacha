@@ -93,13 +93,15 @@ class _CompressedSpringPainter extends CustomPainter {
       line,
     );
 
+    // 水平点線はおもりの側面まで届かせる。ラベルは外側。
     paintSpanMarker(
       canvas: canvas,
       from: Offset(40, naturalBottom),
       to: const Offset(40, _compressedTop + _massH),
       label: '0.20 m',
       color: _ink,
-      tick: const Offset(16, 0),
+      tick: const Offset(-16, 0),
+      guide: 52,
     );
     paintSpanMarker(
       canvas: canvas,
@@ -107,7 +109,8 @@ class _CompressedSpringPainter extends CustomPainter {
       to: const Offset(240, _compressedTop + _massH),
       label: '0.50 m',
       color: _ink,
-      tick: const Offset(-16, 0),
+      tick: const Offset(16, 0),
+      guide: 52,
     );
     canvas.restore();
   }

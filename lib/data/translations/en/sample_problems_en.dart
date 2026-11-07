@@ -349,17 +349,16 @@ const sampleProblemsTranslationsEn = <String, ProblemTranslation>{
     title: 'Voltage drop between points A and B',
     statement: 'As shown, find the magnitude of the voltage drop between points A and B.',
     hint:
-        'Points A and B are the two ends of the upper-left resistor. The '
-        'upper-left and lower-left resistors are one path, and its ends are '
-        'the battery.',
+        'Points A and B are the two ends of the upper-left resistor. Look at '
+        'the upper path that connects the battery terminals.',
     approach: "Use Ohm's law, V = RI.",
-    firstStep: 'On the left path, 6.0 = (4.0 + 8.0) I.',
+    firstStep: 'On the upper path, 6.0 = (4.0 + 6.0) I.',
     explanation:
         "Ohm's law is V = RI. "
-        'The upper-left 4.0 Ω and the lower-left 8.0 Ω are in series, and the '
-        'voltage across that path is the battery\'s 6.0 V, so 6.0 = (4.0 + 8.0) I. '
-        'I = 6.0 / 12 = 0.50 A. The voltage drop between A and B is '
-        'V = 4.0 × 0.50 = 2.0 V.',
+        'The upper-left 4.0 Ω and the upper-right 6.0 Ω are in series, and the '
+        'voltage across that path is the battery\'s 6.0 V, so 6.0 = (4.0 + 6.0) I. '
+        'I = 6.0 / 10 = 0.60 A. The voltage drop between A and B is '
+        'V = 4.0 × 0.60 = 2.4 V.',
   ),
   '059e9128-3c09-4e75-9a6b-8c401a807e7c': ProblemTranslation(
     theme: "Isothermal change (Boyle's law)",
@@ -533,11 +532,12 @@ const sampleProblemsTranslationsEn = <String, ProblemTranslation>{
     theme: "Kepler's third law",
     title: 'Orbital period of a body farther from the Sun',
     statement:
-        'As shown, two bodies orbit the Sun. Find the orbital period of the '
-        'body whose distance from the Sun is 4.0×10⁸ km.',
+        'Two bodies orbit the Sun. The body at 1.0×10⁸ km from the Sun has '
+        'an orbital period of 1 year. Find the orbital period, in years, of '
+        'the body at 4.0×10⁸ km from the Sun.',
     hint:
-        'The distances of the two orbits from the Sun are given, and so is '
-        'one of the periods.',
+        'You have the nearer distance and period, and the farther distance. '
+        'The period ratio is fixed by the distance ratio.',
     approach: "Use Kepler's third law, T² ∝ a³.",
     firstStep: '(T / 1)² = (4.0×10⁸ / 1.0×10⁸)³.',
     explanation:

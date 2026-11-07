@@ -122,6 +122,12 @@ abstract class AppLocalizations {
   /// **'ガチャを回す'**
   String get spinGacha;
 
+  /// No description provided for @next.
+  ///
+  /// In ja, this message translates to:
+  /// **'次へ'**
+  String get next;
+
   /// No description provided for @hint.
   ///
   /// In ja, this message translates to:
@@ -137,7 +143,7 @@ abstract class AppLocalizations {
   /// No description provided for @showAnswer.
   ///
   /// In ja, this message translates to:
-  /// **'答えを見る'**
+  /// **'答え'**
   String get showAnswer;
 
   /// No description provided for @hideAnswer.
@@ -200,6 +206,12 @@ abstract class AppLocalizations {
   /// **'詳細'**
   String get detail;
 
+  /// No description provided for @historyUpdatedAt.
+  ///
+  /// In ja, this message translates to:
+  /// **'更新 {time}'**
+  String historyUpdatedAt(String time);
+
   /// No description provided for @noMatchingProblems.
   ///
   /// In ja, this message translates to:
@@ -241,6 +253,12 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'ならガチャから外す'**
   String get exclusionThenRemoveFromGacha;
+
+  /// No description provided for @exclusionThenRemoveFromList.
+  ///
+  /// In ja, this message translates to:
+  /// **'なら一覧から外す'**
+  String get exclusionThenRemoveFromList;
 
   /// No description provided for @exclusionThenExcludeProblems.
   ///
@@ -851,13 +869,13 @@ abstract class AppLocalizations {
   /// No description provided for @figurePlacedBefore.
   ///
   /// In ja, this message translates to:
-  /// **'置く前'**
+  /// **'置く前（真上から）'**
   String get figurePlacedBefore;
 
   /// No description provided for @figurePlacedAfter.
   ///
   /// In ja, this message translates to:
-  /// **'置いた後'**
+  /// **'置いた後（真上から）'**
   String get figurePlacedAfter;
 
   /// No description provided for @figureFromSide.
@@ -887,7 +905,7 @@ abstract class AppLocalizations {
   /// No description provided for @figureAdiabatic.
   ///
   /// In ja, this message translates to:
-  /// **'断熱圧縮'**
+  /// **'断熱'**
   String get figureAdiabatic;
 
   /// No description provided for @figureSun.
@@ -925,6 +943,60 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'断熱'**
   String get figureInsulated;
+
+  /// No description provided for @figureNaturalLength.
+  ///
+  /// In ja, this message translates to:
+  /// **'自然長'**
+  String get figureNaturalLength;
+
+  /// No description provided for @figureDiameterCm.
+  ///
+  /// In ja, this message translates to:
+  /// **'直径 {value} cm'**
+  String figureDiameterCm(String value);
+
+  /// No description provided for @figureAirTemp.
+  ///
+  /// In ja, this message translates to:
+  /// **'空気 {temp}'**
+  String figureAirTemp(String temp);
+
+  /// No description provided for @figureHundredTurnsCompact.
+  ///
+  /// In ja, this message translates to:
+  /// **'100回巻'**
+  String get figureHundredTurnsCompact;
+
+  /// No description provided for @figureHundredTurns.
+  ///
+  /// In ja, this message translates to:
+  /// **'100 巻き'**
+  String get figureHundredTurns;
+
+  /// No description provided for @figureCurrentI.
+  ///
+  /// In ja, this message translates to:
+  /// **'電流 I'**
+  String get figureCurrentI;
+
+  /// No description provided for @figureOneYear.
+  ///
+  /// In ja, this message translates to:
+  /// **'1 年'**
+  String get figureOneYear;
+
+  /// No description provided for @unitCount.
+  ///
+  /// In ja, this message translates to:
+  /// **'個'**
+  String get unitCount;
+
+  /// No description provided for @unitYear.
+  ///
+  /// In ja, this message translates to:
+  /// **'年'**
+  String get unitYear;
 
   /// No description provided for @hintUnavailableEn.
   ///

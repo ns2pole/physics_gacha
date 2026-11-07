@@ -168,7 +168,7 @@ class _OpenPipePainter extends CustomPainter {
     String text,
     Offset origin,
     Color color, {
-    FontWeight weight = FontWeight.w600,
+    FontWeight weight = FontWeight.w500,
   }) {
     final painter = TextPainter(
       text: TextSpan(

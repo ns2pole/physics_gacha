@@ -160,9 +160,9 @@ const noteArticleTranslationsEn = <String, ProblemTranslation>{
     title: 'Temperature coefficient of the speed of sound',
     statement:
         'As shown, a 500 Hz tuning fork resonates in a closed pipe. The length '
-        'from the water surface to the antinode is 16.0 cm at 10°C and 16.9 cm '
-        'at 40°C. Find how many m/s the speed of sound increases when the '
-        'temperature rises by 1°C.\n'
+        'from the water surface to the antinode is 16.0 cm at an air temperature '
+        'of 10°C and 16.9 cm at 40°C. Find how many m/s the speed of sound '
+        'increases when the air temperature rises by 1°C.\n'
         '※The end correction does not depend on temperature. Use the fundamental mode.',
     hint:
         'In the fundamental mode of a closed pipe, the corrected length is a '
@@ -177,7 +177,7 @@ const noteArticleTranslationsEn = <String, ProblemTranslation>{
         'v₂ − v₁ = 4 f (L₂ − L₁). '
         'L₂ − L₁ = 0.169 − 0.160 = 0.0090 m. '
         'v₂ − v₁ = 4 × 500 × 0.0090 = 18 m/s. '
-        'The temperature difference is 40 − 10 = 30°C. '
+        'The air temperature difference is 40 − 10 = 30°C. '
         'The increase per 1°C is 18 / 30 = 0.60 m/s.',
   ),
   'c903ff0f-db40-4916-8ed4-5c4a656dc9f1': ProblemTranslation(
@@ -479,21 +479,24 @@ const noteArticleTranslationsEn = <String, ProblemTranslation>{
   ),
   '264dc236-782b-4ba0-9d39-13c94f7ea889': ProblemTranslation(
     theme: 'Tension decrease in water',
-    title: 'How much a spring scale drops in water',
+    title: 'How much a spring scale drops in salt water',
     statement:
         'As shown, an object of mass 100 g and volume 40 cm³ hangs from a '
-        'spring scale and is lowered into water. By how many grams does the '
-        'reading drop compared with air?\n'
-        '※Take the density of water to be 1.0 g/cm³. The object is fully '
-        'under water. Ignore buoyancy in air.',
-    hint: 'In water, an upward force equal to the weight of the displaced water is added.',
+        'spring scale and is lowered into salt water. By how many grams does '
+        'the reading drop compared with air?\n'
+        '※Take the density of the salt water to be 1.25 g/cm³. The object is '
+        'fully under the liquid. Ignore buoyancy in air.',
+    hint:
+        'In the liquid, an upward force equal to the weight of the displaced '
+        'salt water is added.',
     approach:
-        'Buoyancy equals the weight of the displaced water, and the scale reading drops by that amount.',
-    firstStep: 'Δm = 1.0 × 40.',
+        'Buoyancy equals the weight of the displaced salt water, and the scale '
+        'reading drops by that amount.',
+    firstStep: 'Δm = 1.25 × 40.',
     explanation:
-        'Buoyancy equals the weight of the displaced water. '
-        'The mass of displaced water is 1.0 × 40 = 40 g. '
-        'The scale reading drops by the corresponding 40 g.',
+        'Buoyancy equals the weight of the displaced salt water. '
+        'The mass of displaced salt water is 1.25 × 40 = 50 g. '
+        'The scale reading drops by the corresponding 50 g.',
   ),
   'fb52940c-6b53-4c80-a4a3-639e2aa650ef': ProblemTranslation(
     theme: 'Tension of a pendulum at the bottom',
@@ -517,7 +520,7 @@ const noteArticleTranslationsEn = <String, ProblemTranslation>{
     theme: 'Pressure in a fluid',
     title: 'Pressure difference between two floors',
     statement:
-        'As shown, the height difference between the first and second floors '
+        'The height difference between the first and second floors '
         'is 5.0 m. Find the difference in air pressure, in hPa.\n'
         '※Take the density of air to be 1.0 kg/m³ and g = 9.8 m/s². '
         'Treat the density as constant over this height.',
@@ -652,7 +655,7 @@ const noteArticleTranslationsEn = <String, ProblemTranslation>{
     theme: 'Electrical resistance of a conductor',
     title: 'Resistance of 0.785 m of nichrome wire',
     statement:
-        'As shown, find the resistance of a nichrome wire of diameter 0.50 mm '
+        'Find the resistance of a nichrome wire of diameter 0.50 mm '
         'and length 0.785 m, in Ω.\n'
         '※Take the resistivity to be 1.0×10⁻⁶ Ω·m and π = 3.14.',
     hint: 'For the same material, a thinner and longer wire has a larger resistance. The cross section is a circle.',

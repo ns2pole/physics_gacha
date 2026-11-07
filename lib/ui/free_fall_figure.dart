@@ -94,6 +94,7 @@ class _FreeFallPainter extends CustomPainter {
       label: heightLabel,
       color: _ink,
       tick: const Offset(16, 0),
+      guide: 22,
     );
 
     canvas.drawRect(Rect.fromLTWH(objectX, top, objectSize, objectSize), line);

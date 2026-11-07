@@ -1,7 +1,9 @@
 import 'package:ai_chat_kit/ai_chat_kit.dart';
 import 'package:flutter/material.dart';
 
+import '../../l10n/app_localizations.dart';
 import '../../models/physics_problem.dart';
+import '../../ui/math/ai_chat_math_text.dart';
 import 'physics_ai_chat_client_factory.dart';
 import 'physics_ai_chat_ports.dart';
 import 'physics_session_mapper.dart';
@@ -27,7 +29,10 @@ class PhysicsAiChatLauncher {
       context: context,
       session: session,
       client: client ?? PhysicsAiChatClientFactory.createDefault(),
-      host: const PhysicsAiChatPorts(),
+      host: PhysicsAiChatPorts(l10n: AppLocalizations.of(context)!),
+      // ヘッダの問題文は textRenderer を通すと折り返さないので、そのまま Text にする。
+      // 吹き出し側の数式表示は assistantTextRenderer だけ使う。
+      assistantTextRenderer: buildAiChatAssistantMathText,
     );
   }
 }

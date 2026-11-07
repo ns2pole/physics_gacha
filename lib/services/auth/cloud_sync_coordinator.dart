@@ -76,6 +76,7 @@ class CloudSyncCoordinator {
       exclusion: snapshot.exclusion,
       recordMode: AutoRecordMode.both,
       histories: snapshot.histories,
+      historyUpdated: snapshot.historyUpdated,
     );
   }
 

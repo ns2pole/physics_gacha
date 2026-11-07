@@ -7,7 +7,10 @@ import 'physics_ai_chat_client_factory.dart';
 
 /// Localized AI chrome strings. Billing UI is not shown.
 class PhysicsAiChatPorts implements AiChatHostPorts {
-  const PhysicsAiChatPorts();
+  const PhysicsAiChatPorts({this.l10n});
+
+  /// 起動時の画面 locale。無いときだけ端末 locale にフォールバック。
+  final AppLocalizations? l10n;
 
   static AiChatStrings stringsFor(AppLocalizations l10n) {
     return AiChatStrings(
@@ -31,7 +34,8 @@ class PhysicsAiChatPorts implements AiChatHostPorts {
   }
 
   @override
-  AiChatStrings get strings => stringsFor(appL10nWithoutContext());
+  AiChatStrings get strings =>
+      stringsFor(l10n ?? appL10nWithoutContext());
 
   @override
   Future<Map<String, String>> authHeaders() =>

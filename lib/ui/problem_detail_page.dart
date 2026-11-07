@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../integrations/ai_chat/physics_ai_chat_launcher.dart';
 import '../l10n/app_localizations.dart';
 import '../models/physics_problem.dart';
 import '../state/gacha_session.dart';
@@ -87,6 +88,36 @@ class _ProblemDetailPageState extends State<ProblemDetailPage> {
         scrolledUnderElevation: 0,
         foregroundColor: const Color(0xFF1565C0),
         title: Text('No. ${widget.number}'),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 12),
+            child: ElevatedButton(
+              onPressed: () {
+                PhysicsAiChatLauncher.open(
+                  context: context,
+                  problem: problem,
+                  hintShown: true,
+                  answerShown: true,
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
+                foregroundColor: const Color(0xFF1565C0),
+                elevation: 0,
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                minimumSize: const Size(0, 36),
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                textStyle: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                ),
+                side: const BorderSide(color: Color(0xFF1565C0)),
+                shape: const StadiumBorder(),
+              ),
+              child: Text(l10n.askAi),
+            ),
+          ),
+        ],
       ),
       body: Stack(
         children: [
@@ -103,8 +134,8 @@ class _ProblemDetailPageState extends State<ProblemDetailPage> {
                 domains: problem.domains,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 5,
-                    vertical: 16,
+                    horizontal: 16,
+                    vertical: 18,
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

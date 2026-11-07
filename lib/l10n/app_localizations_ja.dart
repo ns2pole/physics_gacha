@@ -22,13 +22,16 @@ class AppLocalizationsJa extends AppLocalizations {
   String get spinGacha => 'ガチャを回す';
 
   @override
+  String get next => '次へ';
+
+  @override
   String get hint => 'ヒント';
 
   @override
   String get hideHint => 'ヒントを隠す';
 
   @override
-  String get showAnswer => '答えを見る';
+  String get showAnswer => '答え';
 
   @override
   String get hideAnswer => '答えを隠す';
@@ -63,6 +66,11 @@ class AppLocalizationsJa extends AppLocalizations {
   String get detail => '詳細';
 
   @override
+  String historyUpdatedAt(String time) {
+    return '更新 $time';
+  }
+
+  @override
   String get noMatchingProblems => '該当する問題がありません';
 
   @override
@@ -86,6 +94,9 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get exclusionThenRemoveFromGacha => 'ならガチャから外す';
+
+  @override
+  String get exclusionThenRemoveFromList => 'なら一覧から外す';
 
   @override
   String get exclusionThenExcludeProblems => 'の問題を除く';
@@ -408,10 +419,10 @@ class AppLocalizationsJa extends AppLocalizations {
   String get figureCylinderRadius => '半径 0.050 m';
 
   @override
-  String get figurePlacedBefore => '置く前';
+  String get figurePlacedBefore => '置く前（真上から）';
 
   @override
-  String get figurePlacedAfter => '置いた後';
+  String get figurePlacedAfter => '置いた後（真上から）';
 
   @override
   String get figureFromSide => 'やや斜め上から';
@@ -426,7 +437,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get figureIsochoric => '等積';
 
   @override
-  String get figureAdiabatic => '断熱圧縮';
+  String get figureAdiabatic => '断熱';
 
   @override
   String get figureSun => '太陽';
@@ -445,6 +456,37 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get figureInsulated => '断熱';
+
+  @override
+  String get figureNaturalLength => '自然長';
+
+  @override
+  String figureDiameterCm(String value) {
+    return '直径 $value cm';
+  }
+
+  @override
+  String figureAirTemp(String temp) {
+    return '空気 $temp';
+  }
+
+  @override
+  String get figureHundredTurnsCompact => '100回巻';
+
+  @override
+  String get figureHundredTurns => '100 巻き';
+
+  @override
+  String get figureCurrentI => '電流 I';
+
+  @override
+  String get figureOneYear => '1 年';
+
+  @override
+  String get unitCount => '個';
+
+  @override
+  String get unitYear => '年';
 
   @override
   String get hintUnavailableEn => '英語のヒントはまだありません。';

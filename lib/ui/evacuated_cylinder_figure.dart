@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../utils/figure_label_style.dart';
 import '../utils/figure_labels.dart';
 import 'dial_meter.dart';
+import 'span_marker.dart';
 
 /// 秤に載せた円柱容器。27℃で空気を 1.0×10⁵ Pa からほぼ真空まで抜く。
 class EvacuatedCylinderFigure extends StatelessWidget {
@@ -87,7 +88,7 @@ class _EvacuatedCylinderPainter extends CustomPainter {
       Offset(leftX + half + 8, (top + bottom) / 2),
       Offset(rightX - half - 8, (top + bottom) / 2),
     );
-    _label(canvas, '27°C', Offset((leftX + rightX) / 2, 16), size: 11);
+    _label(canvas, '27°C', Offset((leftX + rightX) / 2, 16), size: 15);
 
     final spanX = leftX - half - 14;
     canvas.drawLine(
@@ -107,7 +108,7 @@ class _EvacuatedCylinderPainter extends CustomPainter {
       canvas,
       heightLabel,
       Offset(spanX - 22, (top + bottom) / 2),
-      size: 11,
+      size: 15,
     );
 
     final radiusY = bottom - 40;
@@ -123,7 +124,7 @@ class _EvacuatedCylinderPainter extends CustomPainter {
       Offset(leftX + half, radiusY),
       wire,
     );
-    _label(canvas, radiusLabel, Offset(leftX + 8, radiusY + 16), size: 11);
+    _label(canvas, radiusLabel, Offset(leftX + 8, radiusY + 16), size: 15);
   }
 
   void _vessel(
@@ -170,12 +171,11 @@ class _EvacuatedCylinderPainter extends CustomPainter {
       fraction: pressure.startsWith('≈') ? 0.28 : 0.46,
     );
 
-    _label(canvas, caption, Offset(cx, 16), size: 13);
+    _label(canvas, caption, Offset(cx, 16), size: 15);
     _label(
       canvas,
       pressure,
       Offset(cx, top + (bottom - top) * 0.38),
-      size: 12,
     );
   }
 
@@ -206,16 +206,28 @@ class _EvacuatedCylinderPainter extends CustomPainter {
     canvas.drawLine(from, from + along * head - across * wing, paint);
     canvas.drawLine(to, to - along * head + across * wing, paint);
     canvas.drawLine(to, to - along * head - across * wing, paint);
+    const guide = 16.0;
+    paintDashedGuide(
+      canvas: canvas,
+      from: from - across * guide,
+      to: from + across * guide,
+      color: paint.color,
+    );
+    paintDashedGuide(
+      canvas: canvas,
+      from: to - across * guide,
+      to: to + across * guide,
+      color: paint.color,
+    );
   }
 
-  void _label(Canvas canvas, String text, Offset origin, {double size = 12}) {
+  void _label(Canvas canvas, String text, Offset origin, {double size = 15}) {
     final painter = TextPainter(
       text: TextSpan(
         text: text,
         style: figureLabelStyle(
           color: _ink,
           fontSize: size,
-          fontWeight: FontWeight.w600,
         ),
       ),
       textDirection: TextDirection.ltr,

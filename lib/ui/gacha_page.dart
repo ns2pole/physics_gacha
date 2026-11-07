@@ -93,8 +93,9 @@ class _GachaPageState extends State<GachaPage> with TickerProviderStateMixin {
   final _store = GachaStore();
   late final _sync = CloudSyncCoordinator(store: _store);
   final _expression = ExpressionEditor();
-  GachaSession? _session;
-  _Phase _phase = _Phase.closed;
+  /// 起動直後からナビできるように仮で持ち、ローカル／クラウド読込後に差し替える。
+  GachaSession? _session = GachaSession()..ensureCurrent();
+  _Phase _phase = _Phase.value;
   String _unitText = '';
   List<String> _symbolOrder = [];
   String? _choice;
@@ -204,20 +205,16 @@ class _GachaPageState extends State<GachaPage> with TickerProviderStateMixin {
   Future<void> _bootstrap() async {
     await CloudSyncPreferenceService.refreshForUser(FirebaseAuthService.userId);
     await _sync.refreshAuthAndMaybeSwitch();
-    if (FirebaseAuthService.isAuthenticated &&
-        await CloudSyncPreferenceService.isEnabledForCurrentUser()) {
-      try {
-        final merged = await _sync.pullMergeAndSave();
-        if (merged != null) {
-          await _applySnapshot(merged);
-          _maybeStartStoreShotTour();
-          return;
-        }
-      } catch (e) {
-        debugPrint('Initial cloud pull failed: $e');
-      }
-    }
+    // クラウド取得を待たず、先にローカルで画面を出してナビ（公式集・問題一覧・クラウド）を使えるようにする。
     await _loadLocal();
+    if (!FirebaseAuthService.isAuthenticated) return;
+    if (!await CloudSyncPreferenceService.isEnabledForCurrentUser()) return;
+    try {
+      final merged = await _sync.pullMergeAndSave();
+      if (merged != null) await _applySnapshot(merged);
+    } catch (e) {
+      debugPrint('Initial cloud pull failed: $e');
+    }
   }
 
   Future<void> _loadLocal() async {
@@ -229,6 +226,7 @@ class _GachaPageState extends State<GachaPage> with TickerProviderStateMixin {
       // recordMode: snapshot?.recordMode ?? AutoRecordMode.both,
       recordMode: AutoRecordMode.both,
       histories: snapshot?.histories,
+      historyUpdated: snapshot?.historyUpdated,
     );
     session.ensureCurrent();
     if (!mounted) return;
@@ -255,7 +253,7 @@ class _GachaPageState extends State<GachaPage> with TickerProviderStateMixin {
   }
 
   void _resetAttempt() {
-    _phase = _Phase.closed;
+    _phase = _Phase.value;
     _expression.clear();
     _unitText = '';
     _symbolOrder = [];
@@ -599,50 +597,54 @@ class _GachaPageState extends State<GachaPage> with TickerProviderStateMixin {
         foregroundColor: const Color(0xFF1565C0),
         centerTitle: false,
         automaticallyImplyLeading: false,
-        // 左端から半角（タイトル字サイズの半分）内側。
-        titleSpacing: 13,
+        // 左端から全角1つ（タイトル字サイズ）分、中央寄り。
+        titleSpacing: 26,
         title: Text(
           AppLocalizations.of(context)!.appTitle,
           textAlign: TextAlign.left,
           style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
         ),
         actions: [
-          IconButton(
-            tooltip: AppLocalizations.of(context)!.formulaSheet,
-            onPressed: _openFormulaSheet,
-            icon: const Icon(
-              Icons.menu_book_outlined,
-              color: Color(0xFF1565C0),
-              size: 28,
+          if (!isEnglishLocale(context))
+            IconButton(
+              tooltip: AppLocalizations.of(context)!.formulaSheet,
+              onPressed: _openFormulaSheet,
+              icon: const Icon(
+                Icons.menu_book_outlined,
+                color: Color(0xFF1565C0),
+                size: 28,
+              ),
             ),
-          ),
           _buildAccountAction(),
-          if (session != null)
-            Padding(
-              padding: const EdgeInsets.only(right: 16),
-              child: Align(
-                alignment: Alignment.centerRight,
-                child: OutlinedButton(
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: const Color(0xFF1565C0),
-                    backgroundColor: Colors.white.withValues(alpha: 0.9),
-                    side: const BorderSide(color: Color(0xFF1565C0)),
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    minimumSize: const Size(0, 40),
-                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    visualDensity: VisualDensity.compact,
-                  ),
-                  onPressed: () => _openProblemList(session),
-                  child: Text(
-                    AppLocalizations.of(context)!.problemList,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    ),
+          Padding(
+            padding: const EdgeInsets.only(right: 16),
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: OutlinedButton(
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: const Color(0xFF1565C0),
+                  backgroundColor: Colors.white.withValues(alpha: 0.9),
+                  side: const BorderSide(color: Color(0xFF1565C0)),
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  minimumSize: const Size(0, 40),
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  visualDensity: VisualDensity.compact,
+                ),
+                onPressed: () {
+                  final open = _session;
+                  if (open == null) return;
+                  _openProblemList(open);
+                },
+                child: Text(
+                  AppLocalizations.of(context)!.problemList,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
                   ),
                 ),
               ),
             ),
+          ),
         ],
       ),
       body: Stack(
@@ -818,7 +820,8 @@ class _GachaBody extends StatelessWidget {
   final VoidCallback onBackToValue;
   final VoidCallback? onConfirm;
 
-  bool get _keypadOpen => phase == _Phase.value || phase == _Phase.unit;
+  bool get _keypadOpen =>
+      !rolling && (phase == _Phase.value || phase == _Phase.unit);
 
   @override
   Widget build(BuildContext context) {
@@ -837,12 +840,15 @@ class _GachaBody extends StatelessWidget {
                 remaining: session.eligible.length,
                 total: session.problems
                     .where(
-                      (problem) => acceptsDomains(problem, session.enabled),
+                      (problem) =>
+                          isAvailableProblem(problem, session.enabled),
                     )
                     .length,
                 enabled: session.enabled,
                 onDomain: onDomain,
                 onChanged: onExclusion,
+                removeLabel:
+                    AppLocalizations.of(context)!.exclusionThenRemoveFromGacha,
               ),
               const SizedBox(height: 10),
               if (problem == null)
@@ -883,14 +889,29 @@ class _GachaBody extends StatelessWidget {
                           color: _keypadOpen ? Colors.teal : _actionBlue,
                         ),
                       ),
-                      ElevatedButton(
-                        onPressed: rolling ? null : onHint,
-                        style: _problemActionStyle,
-                        child: Text(
-                          showHint
-                              ? AppLocalizations.of(context)!.hideHint
-                              : AppLocalizations.of(context)!.hint,
+                      IconButton(
+                        tooltip: showHint
+                            ? AppLocalizations.of(context)!.hideHint
+                            : AppLocalizations.of(context)!.hint,
+                        style: IconButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          foregroundColor: showHint
+                              ? Colors.orange
+                              : _actionBlue,
+                          side: BorderSide(
+                            color: showHint ? Colors.orange : _actionBlue,
+                          ),
                         ),
+                        onPressed: rolling ? null : onHint,
+                        icon: Icon(
+                          Icons.lightbulb_outline,
+                          color: showHint ? Colors.orange : _actionBlue,
+                        ),
+                      ),
+                      ElevatedButton(
+                        onPressed: rolling ? null : onAi,
+                        style: _problemActionStyle,
+                        child: Text(AppLocalizations.of(context)!.askAi),
                       ),
                       ElevatedButton(
                         onPressed: rolling ? null : onAnswer,
@@ -901,11 +922,6 @@ class _GachaBody extends StatelessWidget {
                               : AppLocalizations.of(context)!.showAnswer,
                         ),
                       ),
-                      ElevatedButton(
-                        onPressed: rolling ? null : onAi,
-                        style: _problemActionStyle,
-                        child: Text(AppLocalizations.of(context)!.askAi),
-                      ),
                     ],
                   ),
                 ),
@@ -913,7 +929,7 @@ class _GachaBody extends StatelessWidget {
                   const SizedBox(height: 8),
                   _AnswerCard(problem: problem),
                 ],
-                if (phase == _Phase.value) ...[
+                if (!rolling && phase == _Phase.value) ...[
                   const SizedBox(height: 8),
                   if (problem.isSymbolOrder)
                     SymbolKeypad(
@@ -938,7 +954,7 @@ class _GachaBody extends StatelessWidget {
                           : (problem.unitObvious ? onConfirm : onNextToUnit),
                     ),
                 ],
-                if (phase == _Phase.unit) ...[
+                if (!rolling && phase == _Phase.unit) ...[
                   const SizedBox(height: 8),
                   UnitKeypad(
                     problem: problem,
@@ -962,6 +978,7 @@ class _GachaBody extends StatelessWidget {
               problem: problem,
               grade: grade!,
               submitted: submittedAnswer,
+              onNext: onRedraw,
             ),
           ),
       ],
@@ -1104,7 +1121,7 @@ class _ProblemCardState extends State<_ProblemCard>
           final progress = Curves.easeOutCubic.transform(_reveal.value);
           final open = _reveal.value > 0;
           return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -1230,11 +1247,13 @@ class _Verdict extends StatelessWidget {
     required this.problem,
     required this.grade,
     required this.submitted,
+    this.onNext,
   });
 
   final PhysicsProblem problem;
   final AnswerGrade grade;
   final String submitted;
+  final VoidCallback? onNext;
 
   static const _answerStyle = TextStyle(
     fontSize: 40,
@@ -1261,23 +1280,36 @@ class _Verdict extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    _AnswerLine(text: submitted, style: _answerStyle),
-                    if (correction != null) ...[
-                      const SizedBox(height: 8),
-                      _AnswerLine(
-                        text: correction,
-                        style: _answerStyle.copyWith(
-                          color: const Color(0xFFD32F2F),
-                        ),
-                      ),
-                    ],
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (grade.passed && onNext != null) ...[
+                    ElevatedButton(
+                      onPressed: onNext,
+                      style: _problemActionStyle,
+                      child: Text(AppLocalizations.of(context)!.next),
+                    ),
+                    const SizedBox(height: 12),
                   ],
-                ),
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        _AnswerLine(text: submitted, style: _answerStyle),
+                        if (correction != null) ...[
+                          const SizedBox(height: 8),
+                          _AnswerLine(
+                            text: correction,
+                            style: _answerStyle.copyWith(
+                              color: const Color(0xFFD32F2F),
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
           ],

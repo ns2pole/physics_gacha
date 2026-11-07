@@ -46,12 +46,16 @@ class _KeplerOrbitsFigureState extends State<KeplerOrbitsFigure>
     final labels = FigureLabels.of(context);
     return SizedBox(
       height: 240,
-      width: 300,
+      width: 340,
       child: AnimatedBuilder(
         animation: _clock,
         builder: (context, _) {
           return CustomPaint(
-            painter: _KeplerOrbitsPainter(sun: labels.sun, phase: _clock.value),
+            painter: _KeplerOrbitsPainter(
+              sun: labels.sun,
+              oneYear: labels.oneYear,
+              phase: _clock.value,
+            ),
           );
         },
       ),
@@ -60,9 +64,14 @@ class _KeplerOrbitsFigureState extends State<KeplerOrbitsFigure>
 }
 
 class _KeplerOrbitsPainter extends CustomPainter {
-  const _KeplerOrbitsPainter({required this.sun, required this.phase});
+  const _KeplerOrbitsPainter({
+    required this.sun,
+    required this.oneYear,
+    required this.phase,
+  });
 
   final String sun;
+  final String oneYear;
   final double phase;
 
   static const _ink = Color(0xFF37474F);
@@ -80,8 +89,8 @@ class _KeplerOrbitsPainter extends CustomPainter {
       ..strokeWidth = 1
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round;
-    // キャンバス中央寄り。外側軌道の左右余白が揃う位置。
-    const center = Offset(150, 112);
+    // 左に内側半径の寸法を置くので、中心を少し右へ。
+    const center = Offset(168, 112);
     const sunR = 4.0;
     const inner = 24.0;
     const outer = 96.0;
@@ -94,7 +103,11 @@ class _KeplerOrbitsPainter extends CustomPainter {
 
     canvas.drawCircle(center, outer, wire);
     canvas.drawCircle(center, inner, wire);
-    canvas.drawLine(center + const Offset(sunR, 0), center + const Offset(outer, 0), radiusLine);
+    canvas.drawLine(
+      center + const Offset(sunR, 0),
+      center + const Offset(outer, 0),
+      radiusLine,
+    );
 
     canvas.drawCircle(center, sunR, sunFill);
     _label(canvas, sun, center + const Offset(0, 14), color: _sun);
@@ -110,17 +123,18 @@ class _KeplerOrbitsPainter extends CustomPainter {
       Paint()..color = _ink,
     );
 
-    // 半径線の上側に内側、下側に外側の距離。周期は内側軌道のすぐ右外。
-    _label(
+    // 内側半径は左サイドの寸法線。外側は右の半径線の下。
+    _leftRadiusSpan(
       canvas,
-      '1.0×10⁸ km',
-      Offset(center.dx + inner * 0.55, center.dy - 12),
+      from: center + const Offset(-inner, 0),
+      to: center + const Offset(-sunR, 0),
+      label: '1.0×10⁸ km',
     );
-    _label(canvas, '1 年', Offset(center.dx + inner + 22, center.dy - 12));
+    _label(canvas, oneYear, Offset(center.dx + inner + 30, center.dy - 22));
     _label(
       canvas,
       '4.0×10⁸ km',
-      Offset(center.dx + (inner + outer) * 0.5, center.dy + 12),
+      Offset(center.dx + (inner + outer) * 0.5, center.dy + 18),
     );
   }
 
@@ -128,6 +142,45 @@ class _KeplerOrbitsPainter extends CustomPainter {
     return Offset(
       center.dx + radius * math.cos(angle),
       center.dy + radius * math.sin(angle),
+    );
+  }
+
+  /// 左向きの短い半径。数値は線のさらに左へ出して被らないようにする。
+  void _leftRadiusSpan(
+    Canvas canvas, {
+    required Offset from,
+    required Offset to,
+    required String label,
+  }) {
+    final paint = Paint()
+      ..color = _ink
+      ..strokeWidth = 1.2
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round;
+    final delta = to - from;
+    final length = delta.distance;
+    if (length < 1) return;
+    final along = delta / length;
+    final across = Offset(-along.dy, along.dx);
+    canvas.drawLine(from, to, paint);
+    const head = 6.0;
+    const wing = 3.5;
+    canvas.drawLine(from, from + along * head + across * wing, paint);
+    canvas.drawLine(from, from + along * head - across * wing, paint);
+    canvas.drawLine(to, to - along * head + across * wing, paint);
+    canvas.drawLine(to, to - along * head - across * wing, paint);
+
+    final painter = TextPainter(
+      text: TextSpan(
+        text: label,
+        style: figureLabelStyle(color: _ink, fontWeight: FontWeight.w600),
+      ),
+      textDirection: TextDirection.ltr,
+    )..layout();
+    final left = math.min(from.dx, to.dx);
+    painter.paint(
+      canvas,
+      Offset(left - painter.width - 6, (from.dy + to.dy) / 2 - painter.height / 2),
     );
   }
 
@@ -152,5 +205,7 @@ class _KeplerOrbitsPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _KeplerOrbitsPainter oldDelegate) =>
-      oldDelegate.sun != sun || oldDelegate.phase != phase;
+      oldDelegate.sun != sun ||
+      oldDelegate.oneYear != oneYear ||
+      oldDelegate.phase != phase;
 }

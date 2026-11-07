@@ -93,7 +93,7 @@ class _SunOrbitPainter extends CustomPainter {
     canvas.drawCircle(center, 2.4, fill);
     canvas.drawCircle(earthCenter, 5.5, fill);
 
-    _label(canvas, sun, center + const Offset(0, 11));
+    _label(canvas, sun, center + const Offset(0, sunR + 14));
     final outward = (earthCenter - center) / orbitR;
     _label(canvas, earth, earthCenter + outward * 16);
   }

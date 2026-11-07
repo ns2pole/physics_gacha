@@ -4,9 +4,10 @@
   "formulaSheet": "Formula sheet",
   "problemList": "Problem list",
   "spinGacha": "Spin",
+  "next": "Next",
   "hint": "Hint",
   "hideHint": "Hide hint",
-  "showAnswer": "Show answer",
+  "showAnswer": "Answer",
   "hideAnswer": "Hide answer",
   "askAi": "Ask AI",
   "calculator": "Calculator",
@@ -22,6 +23,12 @@
   "firstStep": "First step",
   "explanation": "Solution",
   "detail": "Details",
+  "historyUpdatedAt": "Updated {time}",
+  "@historyUpdatedAt": {
+    "placeholders": {
+      "time": {"type": "String"}
+    }
+  },
   "noMatchingProblems": "No matching problems",
   "noProblemsAvailable": "No problems available. Turn a topic on or ease the exclusion filter.",
   "filterSettings": "Filter",
@@ -39,6 +46,7 @@
     }
   },
   "exclusionThenRemoveFromGacha": "are green, exclude from gacha",
+  "exclusionThenRemoveFromList": "are green, exclude from list",
   "exclusionThenExcludeProblems": "exclude those problems",
   "totalProblems": "{total} total",
   "@totalProblems": {
@@ -181,18 +189,37 @@
   "figureAfter": "After",
   "figureCylinderHeight": "0.318 m",
   "figureCylinderRadius": "radius 0.050 m",
-  "figurePlacedBefore": "Before",
-  "figurePlacedAfter": "Placed",
+  "figurePlacedBefore": "Before (top view)",
+  "figurePlacedAfter": "After placing (top view)",
   "figureFromSide": "From above, at an angle",
   "figureIsothermal": "Isothermal",
   "figureIsobaric": "Isobaric",
   "figureIsochoric": "Isochoric",
-  "figureAdiabatic": "Adiabatic compression",
+  "figureAdiabatic": "Adiabatic",
   "figureSun": "Sun",
   "figureEarth": "Earth",
   "figureMoon": "Moon",
   "figureSatellite": "Satellite",
   "figureWater": "Water",
   "figureInsulated": "Insulated",
+  "figureNaturalLength": "Natural length",
+  "figureDiameterCm": "diameter {value} cm",
+  "@figureDiameterCm": {
+    "placeholders": {
+      "value": { "type": "String" }
+    }
+  },
+  "figureAirTemp": "Air {temp}",
+  "@figureAirTemp": {
+    "placeholders": {
+      "temp": { "type": "String" }
+    }
+  },
+  "figureHundredTurnsCompact": "100 turns",
+  "figureHundredTurns": "100 turns",
+  "figureCurrentI": "Current I",
+  "figureOneYear": "1 yr",
+  "unitCount": "count",
+  "unitYear": "yr",
   "hintUnavailableEn": "Hint is not available in English yet."
 }

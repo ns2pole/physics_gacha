@@ -149,6 +149,7 @@ class ExclusionFilterCard extends StatefulWidget {
     required this.enabled,
     required this.onDomain,
     required this.onChanged,
+    required this.removeLabel,
   });
 
   final ExclusionMode mode;
@@ -157,6 +158,9 @@ class ExclusionFilterCard extends StatefulWidget {
   final Set<PhysicsDomain> enabled;
   final void Function(PhysicsDomain domain, bool selected) onDomain;
   final ValueChanged<ExclusionMode> onChanged;
+
+  /// ガチャ画面は「ならガチャから外す」、一覧は「なら一覧から外す」。
+  final String removeLabel;
 
   @override
   State<ExclusionFilterCard> createState() => _ExclusionFilterCardState();
@@ -178,7 +182,14 @@ class _ExclusionFilterCardState extends State<ExclusionFilterCard> {
       ),
       items: [
         for (final mode in ExclusionMode.values)
-          PopupMenuItem(value: mode, child: _ExclusionLabel(mode: mode, compact: true)),
+          PopupMenuItem(
+            value: mode,
+            child: _ExclusionLabel(
+              mode: mode,
+              compact: true,
+              removeLabel: widget.removeLabel,
+            ),
+          ),
       ],
     );
     if (selected != null) widget.onChanged(selected);
@@ -244,7 +255,11 @@ class _ExclusionFilterCardState extends State<ExclusionFilterCard> {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  _ExclusionLabel(mode: widget.mode, compact: false),
+                  _ExclusionLabel(
+                    mode: widget.mode,
+                    compact: false,
+                    removeLabel: widget.removeLabel,
+                  ),
                   const SizedBox(width: 4),
                   Icon(Icons.expand_more, size: 20, color: Colors.blue[600]),
                 ],
@@ -258,10 +273,15 @@ class _ExclusionFilterCardState extends State<ExclusionFilterCard> {
 }
 
 class _ExclusionLabel extends StatelessWidget {
-  const _ExclusionLabel({required this.mode, required this.compact});
+  const _ExclusionLabel({
+    required this.mode,
+    required this.compact,
+    required this.removeLabel,
+  });
 
   final ExclusionMode mode;
   final bool compact;
+  final String removeLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -281,7 +301,7 @@ class _ExclusionLabel extends StatelessWidget {
         const SizedBox(width: 4),
         const _SolvedBadge(),
         const SizedBox(width: 4),
-        Text(l10n.exclusionThenRemoveFromGacha, style: style),
+        Text(removeLabel, style: style),
       ],
     );
   }

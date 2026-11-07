@@ -189,7 +189,7 @@ const noteArticleProblems = <PhysicsProblem>[
     figure: ProblemFigure.soundSpeedColumn,
     statement:
         '図のように、500 Hz の音叉で閉管を共鳴させると、水面から腹までの長さは '
-        '10℃ で 16.0 cm、40℃ で 16.9 cm だった。'
+        '空気の温度 10℃ で 16.0 cm、40℃ で 16.9 cm だった。'
         '温度が 1℃ 上がったときの音速の増え方を m/s で答えよ。\n'
         '※開口端補正は温度によらない。基本振動とする。',
     answerValue: 0.60,
@@ -582,25 +582,25 @@ const noteArticleProblems = <PhysicsProblem>[
   PhysicsProblem(
     id: '264dc236-782b-4ba0-9d39-13c94f7ea889',
     theme: '水中で減る張力',
-    title: '水中で減るばねはかりの読み',
+    title: '食塩水中で減るばねはかりの読み',
     domains: {PhysicsDomain.mechanics},
     figure: ProblemFigure.underwaterScale,
     statement:
-        '図のように、質量 100 g、体積 40 cm³ の物体をばねはかりにつるし、水中へ沈めた。'
+        '図のように、質量 100 g、体積 40 cm³ の物体をばねはかりにつるし、食塩水へ沈めた。'
         'ばねはかりの読みは、空気中より何 g 減るか。\n'
-        '※水の密度を 1.0 g/cm³ とする。物体はすべて水中にあり、空気の浮力は無視する。',
-    answerValue: 40,
+        '※食塩水の密度を 1.25 g/cm³ とする。物体はすべて液中にあり、空気の浮力は無視する。',
+    answerValue: 50,
     answerUnit: 'g',
-    answerDisplay: '40',
+    answerDisplay: '50',
     unitChoices: [],
     unitObvious: true,
-    hint: '水中では、物体が押しのけた水の重さだけ上向きの力が加わる。',
-    approach: '浮力は押しのけた水の重さに等しく、ばねの読みはその分だけ減る。',
-    firstStep: 'Δm = 1.0 × 40 である。',
+    hint: '液中では、物体が押しのけた食塩水の重さだけ上向きの力が加わる。',
+    approach: '浮力は押しのけた食塩水の重さに等しく、ばねの読みはその分だけ減る。',
+    firstStep: 'Δm = 1.25 × 40 である。',
     explanation:
-        '浮力は、押しのけた水の重さに等しい。'
-        '押しのけた水の質量は 1.0 × 40 = 40 g。'
-        'ばねの読みの減りは、この質量に相当する 40 g である。',
+        '浮力は、押しのけた食塩水の重さに等しい。'
+        '押しのけた食塩水の質量は 1.25 × 40 = 50 g。'
+        'ばねの読みの減りは、この質量に相当する 50 g である。',
   ),
   PhysicsProblem(
     id: 'fb52940c-6b53-4c80-a4a3-639e2aa650ef',
@@ -632,9 +632,8 @@ const noteArticleProblems = <PhysicsProblem>[
     theme: '流体中の圧力',
     title: '1階と2階の気圧差',
     domains: {PhysicsDomain.mechanics},
-    figure: ProblemFigure.stairPressure,
     statement:
-        '図のように、1階と2階の高さの差は 5.0 m である。気圧の差を hPa で答えよ。\n'
+        '1階と2階の高さの差は 5.0 m である。気圧の差を hPa で答えよ。\n'
         '※空気の密度を 1.0 kg/m³、重力加速度の大きさを 9.8 m/s² とする。'
         'この高さのあいだで密度は一定とみなす。',
     answerValue: 0.49,
@@ -808,9 +807,8 @@ const noteArticleProblems = <PhysicsProblem>[
     theme: '導体の電気抵抗',
     title: 'ニクロム線 0.785 m の抵抗',
     domains: {PhysicsDomain.electromagnetism},
-    figure: ProblemFigure.nichromeWire,
     statement:
-        '図のように、直径 0.50 mm、長さ 0.785 m のニクロム線の抵抗を Ω で答えよ。\n'
+        '直径 0.50 mm、長さ 0.785 m のニクロム線の抵抗を Ω で答えよ。\n'
         '※抵抗率を 1.0×10⁻⁶ Ω·m、π = 3.14 とする。',
     answerValue: 4.0,
     answerUnit: 'Ω',

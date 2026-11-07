@@ -93,7 +93,8 @@ class _MoonOrbitPainter extends CustomPainter {
     canvas.drawLine(center, moonCenter - outward * (moonR + 2), line);
     _crescent(canvas, moonCenter, moonR);
 
-    _label(canvas, earth, center + const Offset(0, earthR + 14));
+    // ラベル中心なので半径＋半幅ぶん外へ（「地球」が円に食い込まない）。
+    _label(canvas, earth, center + Offset(earthR + 30, 0));
     _label(canvas, moon, moonCenter + outward * 20);
   }
 

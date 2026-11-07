@@ -9,6 +9,12 @@ bool acceptsDomains(PhysicsProblem problem, Set<PhysicsDomain> enabled) {
   return enabled.containsAll(problem.domains);
 }
 
+/// 修正待ちで止めている問題は、ガチャにも一覧にも出さない。
+bool isAvailableProblem(PhysicsProblem problem, Set<PhysicsDomain> enabled) {
+  return !gachaSuspendedProblemIds.contains(problem.id) &&
+      acceptsDomains(problem, enabled);
+}
+
 List<PhysicsProblem> eligibleProblems({
   required List<PhysicsProblem> problems,
   required Set<PhysicsDomain> enabled,
@@ -17,8 +23,7 @@ List<PhysicsProblem> eligibleProblems({
 }) {
   return [
     for (final problem in problems)
-      if (!gachaSuspendedProblemIds.contains(problem.id) &&
-          acceptsDomains(problem, enabled) &&
+      if (isAvailableProblem(problem, enabled) &&
           !isExcluded(histories[problem.id] ?? History.empty(), exclusion))
         problem,
   ];

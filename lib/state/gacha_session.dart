@@ -14,11 +14,13 @@ class GachaSession {
     this.exclusion = ExclusionMode.latest1,
     this.recordMode = AutoRecordMode.both,
     Map<String, History>? histories,
+    Map<String, DateTime>? historyUpdated,
     this.current,
   }) : problems = List.unmodifiable(problems ?? sampleProblems),
        random = random ?? Random(),
        enabled = {...(enabled ?? PhysicsDomain.values)},
-       histories = {...?histories};
+       histories = {...?histories},
+       historyUpdated = {...?historyUpdated};
 
   final List<PhysicsProblem> problems;
   final Random random;
@@ -26,6 +28,7 @@ class GachaSession {
   ExclusionMode exclusion;
   AutoRecordMode recordMode;
   final Map<String, History> histories;
+  final Map<String, DateTime> historyUpdated;
   PhysicsProblem? current;
 
   List<PhysicsProblem> get eligible => eligibleProblems(
@@ -37,6 +40,10 @@ class GachaSession {
 
   History historyOf(PhysicsProblem problem) =>
       histories[problem.id] ?? History.empty();
+
+  /// 3枠のどれかを最後に変えた時刻。未更新なら null。
+  DateTime? historyUpdatedAt(PhysicsProblem problem) =>
+      historyUpdated[problem.id];
 
   /// 今の問題が候補に残っていればそのまま、外れていれば引き直す。
   void ensureCurrent() {
@@ -86,6 +93,9 @@ class GachaSession {
       alreadyRecorded: already,
     );
     histories[problem.id] = result.history;
+    if (result.wrote) {
+      historyUpdated[problem.id] = DateTime.now();
+    }
     return result;
   }
 
@@ -93,6 +103,7 @@ class GachaSession {
     final next = cycleSlot(historyOf(problem), index);
     if (next == null) return;
     histories[problem.id] = next;
+    historyUpdated[problem.id] = DateTime.now();
     if (!eligible.any((item) => item.id == problem.id)) {
       ensureCurrent();
     }

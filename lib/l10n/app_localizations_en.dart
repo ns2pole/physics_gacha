@@ -22,13 +22,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get spinGacha => 'Spin';
 
   @override
+  String get next => 'Next';
+
+  @override
   String get hint => 'Hint';
 
   @override
   String get hideHint => 'Hide hint';
 
   @override
-  String get showAnswer => 'Show answer';
+  String get showAnswer => 'Answer';
 
   @override
   String get hideAnswer => 'Hide answer';
@@ -63,6 +66,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get detail => 'Details';
 
   @override
+  String historyUpdatedAt(String time) {
+    return 'Updated $time';
+  }
+
+  @override
   String get noMatchingProblems => 'No matching problems';
 
   @override
@@ -87,6 +95,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get exclusionThenRemoveFromGacha => 'are green, exclude from gacha';
+
+  @override
+  String get exclusionThenRemoveFromList => 'are green, exclude from list';
 
   @override
   String get exclusionThenExcludeProblems => 'exclude those problems';
@@ -417,10 +428,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get figureCylinderRadius => 'radius 0.050 m';
 
   @override
-  String get figurePlacedBefore => 'Before';
+  String get figurePlacedBefore => 'Before (top view)';
 
   @override
-  String get figurePlacedAfter => 'Placed';
+  String get figurePlacedAfter => 'After placing (top view)';
 
   @override
   String get figureFromSide => 'From above, at an angle';
@@ -435,7 +446,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get figureIsochoric => 'Isochoric';
 
   @override
-  String get figureAdiabatic => 'Adiabatic compression';
+  String get figureAdiabatic => 'Adiabatic';
 
   @override
   String get figureSun => 'Sun';
@@ -454,6 +465,37 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get figureInsulated => 'Insulated';
+
+  @override
+  String get figureNaturalLength => 'Natural length';
+
+  @override
+  String figureDiameterCm(String value) {
+    return 'diameter $value cm';
+  }
+
+  @override
+  String figureAirTemp(String temp) {
+    return 'Air $temp';
+  }
+
+  @override
+  String get figureHundredTurnsCompact => '100 turns';
+
+  @override
+  String get figureHundredTurns => '100 turns';
+
+  @override
+  String get figureCurrentI => 'Current I';
+
+  @override
+  String get figureOneYear => '1 yr';
+
+  @override
+  String get unitCount => 'count';
+
+  @override
+  String get unitYear => 'yr';
 
   @override
   String get hintUnavailableEn => 'Hint is not available in English yet.';

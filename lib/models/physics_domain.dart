@@ -24,12 +24,16 @@ extension PhysicsDomainLabel on PhysicsDomain {
   }
 }
 
-/// フィルタと同じ順。融合は「力学・熱力学」。
+/// フィルタと同じ順。融合は「力学・熱力学」（英語はカンマ区切り）。
 String joinedDomainLabels(BuildContext context, Set<PhysicsDomain> domains) {
+  final sep =
+      Localizations.localeOf(context).languageCode.toLowerCase() == 'ja'
+      ? '・'
+      : ', ';
   return [
     for (final domain in PhysicsDomain.values)
       if (domains.contains(domain)) domain.label(context),
-  ].join('・');
+  ].join(sep);
 }
 
 /// フィルタの単元色を、一覧カード用に薄くした塗り。

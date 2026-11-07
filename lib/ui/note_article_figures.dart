@@ -3,18 +3,20 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import '../models/physics_problem.dart';
+import '../utils/figure_clock.dart';
+import '../utils/figure_labels.dart';
 import 'dial_meter.dart';
 import 'note_stage.dart';
 import 'span_marker.dart';
 
 Widget noteArticleFigure(ProblemFigure figure) {
   return switch (figure) {
-    ProblemFigure.dopplerWall => const _ArticleImage(
-      'assets/figures/doppler_wall.png',
+    ProblemFigure.dopplerWall => const _Fig(
+      _Kind.doppler,
+      animate: true,
+      width: 260,
     ),
-    ProblemFigure.singleSlit => const _ArticleImage(
-      'assets/figures/single_slit.png',
-    ),
+    ProblemFigure.singleSlit => const _Fig(_Kind.slit, width: 260, height: 220),
     ProblemFigure.diffractionGrating => const _Fig(_Kind.grating),
     ProblemFigure.toothbrushString => const _Fig(
       _Kind.brush,
@@ -27,51 +29,74 @@ Widget noteArticleFigure(ProblemFigure figure) {
       duration: Duration(milliseconds: 1730),
     ),
     ProblemFigure.conicalPendulum => const _Fig(_Kind.cone, animate: true),
-    ProblemFigure.twoSpeakers => const _Fig(_Kind.speakers),
-    ProblemFigure.soundSpeedColumn => const _ArticleImage(
-      'assets/figures/sound_column.png',
+    ProblemFigure.twoSpeakers => const _Fig(
+      _Kind.speakers,
+      width: 250,
+      height: 200,
     ),
-    ProblemFigure.verticalSpringRelease => const _ArticleImage(
-      'assets/figures/vertical_spring.png',
+    ProblemFigure.soundSpeedColumn => const _Fig(
+      _Kind.column,
+      width: 280,
+      height: 220,
     ),
-    ProblemFigure.tensionCart => const _ArticleImage(
-      'assets/figures/tension_cart.png',
+    ProblemFigure.verticalSpringRelease => const _Fig(
+      _Kind.vSpring,
+      animate: true,
+      height: 220,
     ),
-    ProblemFigure.horizontalSpringRelease => const _ArticleImage(
-      'assets/figures/horizontal_spring.png',
+    ProblemFigure.tensionCart => const _Fig(
+      _Kind.cart,
+      animate: true,
+      width: 270,
+      height: 210,
     ),
-    ProblemFigure.pendulumBottomSpeed =>
-        const _Fig(_Kind.swing, animate: true),
-    ProblemFigure.blockEndLift => const _ArticleImage(
-      'assets/figures/block_end_lift.png',
-      scale: 0.75,
+    ProblemFigure.horizontalSpringRelease => const _Fig(
+      _Kind.hSpring,
+      animate: true,
+      height: 210,
+      width: 280,
     ),
-    ProblemFigure.diskHoleCenter => const _Fig(_Kind.disk),
-    ProblemFigure.cutSheetCenter => const _Fig(_Kind.sheet),
-    ProblemFigure.slideTipHeight => const _ArticleImage(
-      'assets/figures/slide_tip.png',
+    ProblemFigure.pendulumBottomSpeed => const _Fig(
+      _Kind.swing,
+      animate: true,
+      duration: Duration(milliseconds: 4800),
     ),
+    ProblemFigure.blockEndLift => const _Fig(_Kind.endLift, height: 210),
+    ProblemFigure.diskHoleCenter => const _Fig(_Kind.disk, height: 210),
+    ProblemFigure.cutSheetCenter => const _Fig(_Kind.sheet, width: 260),
+    ProblemFigure.slideTipHeight => const _Fig(_Kind.slide, height: 220),
     ProblemFigure.floatingWood => const _Fig(_Kind.wood),
-    ProblemFigure.kineticFrictionSlide => const _ArticleImage(
-      'assets/figures/kinetic_friction.png',
+    ProblemFigure.kineticFrictionSlide => const _Fig(
+      _Kind.slideMu,
+      animate: true,
+      scale: 1.25,
     ),
-    ProblemFigure.staticFrictionHold => const _ArticleImage(
-      'assets/figures/static_friction.png',
-    ),
+    ProblemFigure.staticFrictionHold => const _Fig(_Kind.hold, scale: 1.25),
     ProblemFigure.turntableSpring => const _Fig(_Kind.turn, animate: true),
-    ProblemFigure.elevatorScale => const _Fig(_Kind.lift, animate: true),
+    ProblemFigure.elevatorScale => const _Fig(
+      _Kind.lift,
+      animate: true,
+      scale: 1.2,
+      height: 300,
+    ),
     ProblemFigure.nailPendulum => const _Fig(_Kind.nail, animate: true),
-    ProblemFigure.underwaterScale => const _ArticleImage(
-      'assets/figures/underwater_scale.png',
+    ProblemFigure.underwaterScale => const _Fig(
+      _Kind.dip,
+      animate: true,
+      height: 220,
+      width: 260,
+      // 約1.5 s で沈め、約3 s 止めてからループ。
+      duration: Duration(milliseconds: 4500),
     ),
     ProblemFigure.pendulumBottomTension =>
       const _Fig(_Kind.tension, animate: true),
     ProblemFigure.stairPressure => const _Fig(_Kind.stairs, scale: 1.5),
-    ProblemFigure.fujiPressure => const _Fig(_Kind.fuji),
+    ProblemFigure.fujiPressure => const _Fig(_Kind.fuji, width: 280),
     ProblemFigure.syringePiston => const _Fig(
       _Kind.syringe,
       animate: true,
       scale: 1.5,
+      duration: Duration(milliseconds: 4500),
     ),
     ProblemFigure.waterDepthPressure => const _Fig(_Kind.depth, scale: 1.25),
     ProblemFigure.invertedColumn => const _Fig(_Kind.invert, scale: 1.25),
@@ -87,10 +112,12 @@ Widget noteArticleFigure(ProblemFigure figure) {
       height: 220,
       width: 280,
     ),
-    ProblemFigure.currentLoop => const _Fig(_Kind.loop),
-    ProblemFigure.rcDecay => const _ArticleImage(
-      'assets/figures/rc_decay.jpg',
+    ProblemFigure.currentLoop => const _Fig(
+      _Kind.loop,
+      height: 220,
+      width: 260,
     ),
+    ProblemFigure.rcDecay => const _Fig(_Kind.rc, width: 280, height: 210),
     ProblemFigure.solenoidCoil => const _Fig(
       _Kind.coil,
       height: 220,
@@ -104,31 +131,6 @@ Widget noteArticleFigure(ProblemFigure figure) {
     ProblemFigure.aluminumCube => const _Fig(_Kind.cube),
     _ => throw StateError('図がない: $figure'),
   };
-}
-
-class _ArticleImage extends StatelessWidget {
-  const _ArticleImage(this.asset, {this.scale = 1});
-
-  final String asset;
-  final double scale;
-
-  @override
-  Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        // 問題カードでは横幅いっぱいに広げる。
-        // 問題一覧は FittedBox が子に無限幅を渡すので、元画像サイズで測らせる。
-        if (constraints.hasBoundedWidth) {
-          return Image.asset(
-            asset,
-            width: constraints.maxWidth * scale,
-            fit: BoxFit.contain,
-          );
-        }
-        return Image.asset(asset, fit: BoxFit.contain);
-      },
-    );
-  }
 }
 
 enum _Kind {
@@ -147,6 +149,7 @@ enum _Kind {
   disk,
   sheet,
   slide,
+  endLift,
   wood,
   slideMu,
   hold,
@@ -190,20 +193,28 @@ class _Fig extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final labels = FigureLabels.of(context);
     return NoteStage(
       animate: animate,
       duration: duration,
       height: height * scale,
       width: width * scale,
-      painter: (progress) => _Paint(kind, progress, scale: scale),
+      painter: (progress) =>
+          _Paint(kind, progress, labels: labels, scale: scale),
     );
   }
 }
 
 class _Paint extends NotePainter {
-  const _Paint(this.kind, super.progress, {this.scale = 1});
+  const _Paint(
+    this.kind,
+    super.progress, {
+    required this.labels,
+    this.scale = 1,
+  });
 
   final _Kind kind;
+  final FigureLabels labels;
   final double scale;
 
   @override
@@ -242,6 +253,8 @@ class _Paint extends NotePainter {
         _sheet(canvas, size);
       case _Kind.slide:
         _slide(canvas, size);
+      case _Kind.endLift:
+        _endLift(canvas, size);
       case _Kind.wood:
         _wood(canvas, size);
       case _Kind.slideMu:
@@ -293,7 +306,8 @@ class _Paint extends NotePainter {
   bool shouldRepaint(covariant _Paint oldDelegate) =>
       oldDelegate.progress != progress ||
       oldDelegate.kind != kind ||
-      oldDelegate.scale != scale;
+      oldDelegate.scale != scale ||
+      oldDelegate.labels.naturalLength != labels.naturalLength;
 
   void _span(
     Canvas canvas,
@@ -301,6 +315,7 @@ class _Paint extends NotePainter {
     Offset to,
     String label, {
     Offset tick = Offset.zero,
+    double guide = 18,
   }) {
     paintSpanMarker(
       canvas: canvas,
@@ -309,10 +324,11 @@ class _Paint extends NotePainter {
       label: label,
       color: noteInk,
       tick: tick,
+      guide: guide,
     );
   }
 
-  void _doubleArrow(Canvas canvas, Offset from, Offset to) {
+  void _doubleArrow(Canvas canvas, Offset from, Offset to, {double guide = 18}) {
     noteLine(canvas, from, to);
     final delta = to - from;
     final length = delta.distance;
@@ -325,32 +341,43 @@ class _Paint extends NotePainter {
     noteLine(canvas, from, from + along * head - across * wing);
     noteLine(canvas, to, to - along * head + across * wing);
     noteLine(canvas, to, to - along * head - across * wing);
+    if (guide > 0) {
+      paintDashedGuide(
+        canvas: canvas,
+        from: from - across * guide,
+        to: from + across * guide,
+        color: noteInk,
+      );
+      paintDashedGuide(
+        canvas: canvas,
+        from: to - across * guide,
+        to: to + across * guide,
+        color: noteInk,
+      );
+    }
   }
 
   void _doppler(Canvas canvas, Size size) {
-    final wallX = 168 + 36 * progress;
-    noteMass(canvas, const Offset(36, 96), radius: 14);
-    noteText(canvas, '340 m/s', const Offset(70, 28));
-    canvas.drawRRect(
-      RRect.fromRectAndRadius(
-        Rect.fromLTWH(wallX, 48, 10, 100),
-        const Radius.circular(2),
-      ),
-      noteSolid(noteFill),
+    // 静止音源 3405 Hz、遠ざかる壁、反射音 3395 Hz、音速 340 m/s。
+    final wallX = 168 + 28 * progress;
+    noteLine(canvas, const Offset(16, 160), const Offset(250, 160));
+    const source = Offset(48, 108);
+    noteMass(canvas, source, radius: 12);
+    noteText(canvas, '3405 Hz', const Offset(48, 48));
+    noteText(canvas, '340 m/s', const Offset(130, 28));
+    final wall = RRect.fromRectAndRadius(
+      Rect.fromLTWH(wallX, 48, 12, 110),
+      const Radius.circular(2),
     );
-    canvas.drawRRect(
-      RRect.fromRectAndRadius(
-        Rect.fromLTWH(wallX, 48, 10, 100),
-        const Radius.circular(2),
-      ),
-      noteStroke(),
-    );
-    noteArrow(canvas, Offset(wallX + 16, 70), Offset(wallX + 36, 70));
+    canvas.drawRRect(wall, noteSolid(const Color(0xFFFFE0B2)));
+    canvas.drawRRect(wall, noteStroke());
+    noteArrow(canvas, Offset(wallX + 22, 72), Offset(wallX + 48, 72));
+    noteText(canvas, '3395 Hz', Offset(wallX + 6, 184));
     for (var i = 1; i <= 3; i++) {
       canvas.drawArc(
-        Rect.fromCircle(center: const Offset(36, 96), radius: 18.0 + i * 16),
-        -0.7,
-        1.4,
+        Rect.fromCircle(center: source, radius: 20.0 + i * 18),
+        -0.55,
+        1.1,
         false,
         noteStroke(noteSoft, 1.2),
       );
@@ -358,15 +385,58 @@ class _Paint extends NotePainter {
   }
 
   void _slit(Canvas canvas, Size size) {
-    noteLine(canvas, const Offset(28, 40), const Offset(28, 78));
-    noteLine(canvas, const Offset(28, 110), const Offset(28, 150));
-    noteLine(canvas, const Offset(190, 30), const Offset(190, 160));
-    noteLine(canvas, const Offset(68, 94), const Offset(190, 94), noteStroke(noteSoft));
-    noteLine(canvas, const Offset(68, 94), const Offset(190, 62), noteStroke(noteAccent));
-    canvas.drawCircle(const Offset(190, 62), 4, noteSolid(noteInk));
-    _span(canvas, const Offset(42, 78), const Offset(42, 110), 'd', tick: const Offset(8, 0));
-    _span(canvas, const Offset(28, 172), const Offset(190, 172), 'L');
-    _span(canvas, const Offset(204, 94), const Offset(204, 62), 'x', tick: const Offset(10, 0));
+    // スリット幅 0.10 mm、スクリーンまで 0.50 m。暗線位置は答えなので寸法値は置かない。
+    const slitX = 96.0;
+    const screenX = 236.0;
+    const axisY = 112.0;
+    const slitTop = 94.0;
+    const slitBottom = 130.0;
+    const darkY = 76.0;
+    noteLine(canvas, const Offset(slitX, 28), const Offset(slitX, slitTop));
+    noteLine(canvas, const Offset(slitX, slitBottom), const Offset(slitX, 176));
+    noteLine(canvas, const Offset(screenX, 24), const Offset(screenX, 180));
+    noteLine(
+      canvas,
+      const Offset(slitX, axisY),
+      const Offset(screenX, axisY),
+      noteStroke(noteSoft),
+    );
+    noteLine(
+      canvas,
+      const Offset(slitX, axisY),
+      const Offset(screenX, darkY),
+      noteStroke(noteAccent),
+    );
+    canvas.drawCircle(const Offset(screenX, darkY), 4, noteSolid(noteInk));
+    // θ は軸と暗線への光線のあいだ。弧は実角に合わせる。
+    final theta = math.atan2(darkY - axisY, screenX - slitX);
+    canvas.drawArc(
+      Rect.fromCircle(center: const Offset(slitX, axisY), radius: 34),
+      theta,
+      -theta,
+      false,
+      noteStroke(noteSoft, 1.2),
+    );
+    noteText(
+      canvas,
+      'θ',
+      Offset(slitX + 44, axisY + (darkY - axisY) * 0.28),
+    );
+    // 0.10 mm は寸法線の左（光線帯に入れない）。
+    _span(
+      canvas,
+      const Offset(78, slitTop),
+      const Offset(78, slitBottom),
+      '0.10 mm',
+      tick: const Offset(-10, 0),
+      guide: 10,
+    );
+    _span(
+      canvas,
+      const Offset(slitX, 204),
+      const Offset(screenX, 204),
+      '0.50 m',
+    );
   }
 
   void _grating(Canvas canvas, Size size) {
@@ -416,7 +486,8 @@ class _Paint extends NotePainter {
     const tableRight = 148.0;
     const tableBottom = 160.0;
     const table = Rect.fromLTRB(tableLeft, tableTop, tableRight, tableBottom);
-    const pulleyR = 10.0;
+    // 定滑車を少し大きく、おもりを少し小さくして、台との被りを避ける。
+    const pulleyR = 13.0;
     const pulley = Offset(tableRight, tableTop);
     const stringY = tableTop - pulleyR;
     const stringLeft = tableLeft + 18.0;
@@ -454,14 +525,14 @@ class _Paint extends NotePainter {
     // 定滑車（台の右上隅）。
     canvas.drawCircle(pulley, pulleyR, noteSolid(const Color(0xFFFFFFFF)));
     canvas.drawCircle(pulley, pulleyR, noteStroke());
-    canvas.drawCircle(pulley, 2.0, noteSolid(noteInk));
+    canvas.drawCircle(pulley, 2.2, noteSolid(noteInk));
 
     final path = Path()..moveTo(stringLeft, stringY);
     const segments = 20;
     for (var i = 1; i <= segments; i++) {
       final t = i / segments;
       final x = stringLeft + (pulley.dx - stringLeft) * t;
-      final y = stringY + math.sin(t * math.pi) * 12 * wave;
+      final y = stringY + math.sin(t * math.pi) * 8 * wave;
       path.lineTo(x, y);
     }
     canvas.drawPath(path, noteStroke(noteAccent));
@@ -475,7 +546,8 @@ class _Paint extends NotePainter {
 
     final hangX = pulley.dx + pulleyR;
     const massTop = 118.0;
-    const massH = 22.0;
+    const massH = 18.0;
+    const massW = 18.0;
     noteLine(
       canvas,
       Offset(hangX, pulley.dy),
@@ -486,7 +558,7 @@ class _Paint extends NotePainter {
       RRect.fromRectAndRadius(
         Rect.fromCenter(
           center: Offset(hangX, massTop + massH / 2),
-          width: 24,
+          width: massW,
           height: massH,
         ),
         const Radius.circular(3),
@@ -509,11 +581,12 @@ class _Paint extends NotePainter {
   }
 
   void _cone(Canvas canvas, Size size) {
-    // 斜め上から見た円軌道。おもりの中心が灰色の楕円をなぞる。
+    // 斜め上から見た円軌道。鉛直との角 60° を点線で示す。
     const pivot = Offset(115, 28);
     const orbit = Offset(115, 150);
     const rx = 54.0;
     const ry = 9.0;
+    final soft = noteStroke(noteSoft, 1.3);
     final angle = progress * math.pi * 2;
     final bob = Offset(
       orbit.dx + rx * math.cos(angle),
@@ -521,22 +594,43 @@ class _Paint extends NotePainter {
     );
     final along = bob - pivot;
     final normal = Offset(-along.dy, along.dx) / along.distance * 14;
-    // 接線方向（角速度と同じ向き）
     final tangent = Offset(-rx * math.sin(angle), ry * math.cos(angle));
     final tangentDir = tangent / tangent.distance;
 
     noteLine(canvas, const Offset(40, 28), const Offset(190, 28));
-    canvas.drawOval(
+    // 水平な円軌道は点線のみ（塗りなし）。
+    _dashedOval(
+      canvas,
       Rect.fromCenter(center: orbit, width: rx * 2, height: ry * 2),
-      noteSolid(const Color(0xFFCFD8DC)),
+      soft,
     );
-    canvas.drawOval(
-      Rect.fromCenter(center: orbit, width: rx * 2, height: ry * 2),
-      noteStroke(noteSoft, 1.4),
+    // 鉛直の点線と、糸とのあいだの 60°。
+    _dashedLine(canvas, pivot, orbit, soft);
+    const arcR = 28.0;
+    const aVertical = math.pi / 2;
+    final aString = math.atan2(bob.dy - pivot.dy, bob.dx - pivot.dx);
+    var sweep = aString - aVertical;
+    while (sweep > math.pi) {
+      sweep -= 2 * math.pi;
+    }
+    while (sweep < -math.pi) {
+      sweep += 2 * math.pi;
+    }
+    canvas.drawArc(
+      Rect.fromCircle(center: pivot, radius: arcR),
+      aVertical,
+      sweep,
+      false,
+      soft,
+    );
+    final mid = aVertical + sweep / 2;
+    noteText(
+      canvas,
+      '60°',
+      pivot + Offset(math.cos(mid) * (arcR + 24), math.sin(mid) * (arcR + 14)),
     );
     noteLine(canvas, pivot, bob);
     noteMass(canvas, bob);
-    // 軌道上の速度の向き
     noteArrow(
       canvas,
       bob + tangentDir * 14,
@@ -544,11 +638,11 @@ class _Paint extends NotePainter {
       color: noteInk,
     );
     _span(canvas, pivot + normal, bob + normal, '2.0 m');
-    noteText(canvas, '60°', const Offset(176, 56));
   }
 
   void _speakers(Canvas canvas, Size size) {
     // 点までの距離が 120 : 150 = 2.0 : 2.5 になる位置。
+    // 寸法線は経路の全長に平行に置く（途中の短い区間を測らない）。
     const near = Offset(46, 50);
     const far = Offset(46, 140);
     const ear = Offset(166, 50);
@@ -570,8 +664,11 @@ class _Paint extends NotePainter {
     noteMass(canvas, ear, radius: radius);
     noteLine(canvas, near, _rim(near, ear, radius), noteStroke(noteAccent));
     noteLine(canvas, far, _rim(far, ear, radius), noteStroke(noteAccent));
-    _span(canvas, const Offset(58, 26), const Offset(154, 26), '2.0 m');
-    _span(canvas, const Offset(88, 156), const Offset(168, 96), '2.5 m');
+    _span(canvas, Offset(near.dx, 26), Offset(ear.dx, 26), '2.0 m');
+    final farDelta = ear - far;
+    final farLen = farDelta.distance;
+    final across = Offset(-farDelta.dy, farDelta.dx) / farLen * 22;
+    _span(canvas, far + across, ear + across, '2.5 m');
   }
 
   Offset _rim(Offset from, Offset to, double radius) {
@@ -580,76 +677,225 @@ class _Paint extends NotePainter {
   }
 
   void _column(Canvas canvas, Size size) {
-    const left = 102.0;
-    const right = 146.0;
-    const top = 22.0;
-    const bottom = 168.0;
-    const markShort = 98.0;
-    const markLong = 104.0;
-    noteLine(canvas, const Offset(left, top), const Offset(left, bottom));
-    noteLine(canvas, const Offset(right, top), const Offset(right, bottom));
-    noteLine(canvas, const Offset(left, bottom), const Offset(right, bottom));
-    canvas.drawRect(
-      const Rect.fromLTRB(left + 1, markLong, right - 1, bottom),
-      noteSolid(const Color(0xFFBBDEFB)),
+    // 左 空気 10℃・16.0 cm、右 空気 40℃・16.9 cm。水面〜開口（腹）。
+    void tube({
+      required double x,
+      required double waterFromTop,
+      required String length,
+      required String temp,
+      required Color water,
+      required bool labelLeft,
+    }) {
+      const top = 36.0;
+      const bottom = 176.0;
+      const w = 36.0;
+      final waterY = top + waterFromTop;
+      noteLine(canvas, Offset(x, top), Offset(x, bottom));
+      noteLine(canvas, Offset(x + w, top), Offset(x + w, bottom));
+      noteLine(canvas, Offset(x, bottom), Offset(x + w, bottom));
+      canvas.drawRect(
+        Rect.fromLTRB(x + 1, waterY, x + w - 1, bottom),
+        noteSolid(water),
+      );
+      noteLine(
+        canvas,
+        Offset(x - 6, top),
+        Offset(x + w + 6, top),
+        noteStroke(noteSoft),
+      );
+      noteLine(
+        canvas,
+        Offset(x - 6, waterY),
+        Offset(x + w + 6, waterY),
+        noteStroke(noteAccent),
+      );
+      final spanX = labelLeft ? x - 22 : x + w + 22;
+      _span(
+        canvas,
+        Offset(spanX, top),
+        Offset(spanX, waterY),
+        length,
+        tick: Offset(labelLeft ? -10 : 10, 0),
+        guide: 12,
+      );
+      noteText(canvas, temp, Offset(x + w / 2, 22));
+    }
+
+    noteText(canvas, '500 Hz', const Offset(140, 208));
+    tube(
+      x: 48,
+      waterFromTop: 88,
+      length: '16.0 cm',
+      temp: labels.airTemp('10℃'),
+      water: const Color(0xFFBBDEFB),
+      labelLeft: true,
     );
-    noteLine(canvas, const Offset(80, top), const Offset(left, top), noteStroke(noteSoft));
-    noteLine(canvas, const Offset(right, top), const Offset(164, top), noteStroke(noteSoft));
-    noteLine(canvas, const Offset(80, markShort), const Offset(right, markShort), noteStroke(noteAccent));
-    noteLine(canvas, const Offset(left, markLong), const Offset(164, markLong), noteStroke(noteSoft));
-    _span(canvas, const Offset(80, top), const Offset(80, markShort), '16.0 cm', tick: const Offset(-8, 0));
-    _span(canvas, const Offset(164, top), const Offset(164, markLong), '16.9 cm', tick: const Offset(8, 0));
+    tube(
+      x: 168,
+      waterFromTop: 96,
+      length: '16.9 cm',
+      temp: labels.airTemp('40℃'),
+      water: const Color(0xFFFFCDD2),
+      labelLeft: false,
+    );
   }
 
   void _vSpring(Canvas canvas, Size size) {
-    final y = 118 + math.cos(progress * math.pi * 2) * 36;
+    // 自然長から 0.20 m 引き下げて放す。おもり 100 g。
+    // 自然長は折り返しにしない（通過時に速さがある）。少し上まで行き、戻る。
+    const naturalY = 100.0;
+    const pull = 48.0; // 図上の 0.20 m
+    const overshoot = 28.0;
+    final mid = naturalY + (pull - overshoot) / 2;
+    final amp = (pull + overshoot) / 2;
+    final y = mid + amp * math.cos(progress * math.pi * 2);
     noteLine(canvas, const Offset(70, 16), const Offset(160, 16));
     noteSpring(canvas, const Offset(115, 16), Offset(115, y - 12));
     noteMass(canvas, Offset(115, y));
-    noteLine(canvas, const Offset(100, 118), const Offset(206, 118), noteStroke(noteSoft));
-    noteLine(canvas, const Offset(126, 154), const Offset(206, 154), noteStroke(noteSoft));
-    _span(canvas, const Offset(206, 118), const Offset(206, 154), '0.30 m', tick: const Offset(-10, 0));
+    noteText(canvas, '100 g', Offset(115 + 40, y + 2));
+    paintDashedGuide(
+      canvas: canvas,
+      from: const Offset(150, naturalY),
+      to: const Offset(190, naturalY),
+      color: noteInk,
+    );
+    paintDashedGuide(
+      canvas: canvas,
+      from: Offset(150, naturalY + pull),
+      to: Offset(190, naturalY + pull),
+      color: noteInk,
+    );
+    noteText(canvas, labels.naturalLength, const Offset(168, naturalY - 14));
+    _span(
+      canvas,
+      const Offset(196, naturalY),
+      Offset(196, naturalY + pull),
+      '0.20 m',
+      tick: const Offset(10, 0),
+      guide: 0,
+    );
   }
 
   void _cart(Canvas canvas, Size size) {
-    final x = 48 + progress * 70;
-    noteLine(canvas, const Offset(20, 110), const Offset(210, 110));
-    canvas.drawRRect(
-      RRect.fromRectAndRadius(
-        Rect.fromLTWH(x, 86, 36, 22),
-        const Radius.circular(3),
-      ),
-      noteStroke(),
+    // No.50 と同じ：定滑車は台の右上隅、糸は上面の接線で物体の右側面中央へ。
+    const tableLeft = 24.0;
+    const tableTop = 90.0;
+    const tableRight = 168.0;
+    const tableBottom = 156.0;
+    const pulleyR = 13.0;
+    const pulley = Offset(tableRight, tableTop);
+    const stringY = tableTop - pulleyR;
+    const blockW = 40.0;
+    const blockH = 26.0;
+    final x = tableLeft + 10 + progress * 72;
+    final hangX = pulley.dx + pulleyR;
+    final hangY = 128 + progress * 36;
+    noteLine(
+      canvas,
+      const Offset(16, 176),
+      const Offset(220, 176),
+      noteStroke(noteSoft, 1.4),
     );
-    noteLine(canvas, Offset(x + 36, 96), const Offset(198, 96));
-    canvas.drawCircle(const Offset(198, 96), 8, noteStroke());
-    noteLine(canvas, const Offset(198, 104), Offset(198, 128 + progress * 28));
-    noteMass(canvas, Offset(198, 140 + progress * 28), radius: 9);
-    noteLine(canvas, const Offset(84, 110), const Offset(84, 128), noteStroke(noteSoft));
-    noteLine(canvas, const Offset(154, 110), const Offset(154, 128), noteStroke(noteSoft));
-    _span(canvas, const Offset(84, 128), const Offset(154, 128), '0.50 m');
+    canvas.drawRect(
+      const Rect.fromLTRB(tableLeft, tableTop, tableRight, tableBottom),
+      noteStroke(noteInk, 1.8),
+    );
+    final block = RRect.fromRectAndRadius(
+      Rect.fromLTWH(x, tableTop - blockH, blockW, blockH),
+      const Radius.circular(3),
+    );
+    canvas.drawRRect(block, noteSolid(const Color(0xFFFFF59D)));
+    canvas.drawRRect(block, noteStroke());
+    noteText(canvas, '200 g', Offset(x + blockW / 2, tableTop - blockH - 14));
+    noteLine(
+      canvas,
+      Offset(x + blockW, stringY),
+      Offset(pulley.dx, stringY),
+      noteStroke(noteAccent),
+    );
+    canvas.drawCircle(pulley, pulleyR, noteSolid(const Color(0xFFFFFFFF)));
+    canvas.drawCircle(pulley, pulleyR, noteStroke());
+    canvas.drawCircle(pulley, 2.2, noteSolid(noteInk));
+    canvas.drawArc(
+      Rect.fromCircle(center: pulley, radius: pulleyR),
+      -math.pi / 2,
+      math.pi / 2,
+      false,
+      noteStroke(noteAccent),
+    );
+    noteLine(
+      canvas,
+      Offset(hangX, pulley.dy),
+      Offset(hangX, hangY - 10),
+      noteStroke(noteAccent),
+    );
+    noteMass(canvas, Offset(hangX, hangY), radius: 10);
+    noteText(canvas, '200 g', Offset(hangX + 36, hangY + 2));
+    _span(
+      canvas,
+      const Offset(36, 192),
+      const Offset(36 + 72, 192),
+      '0.80 m',
+    );
   }
 
   void _hSpring(Canvas canvas, Size size) {
-    final x = 78 + progress * 70;
-    noteLine(canvas, const Offset(16, 50), const Offset(16, 140));
-    noteSpring(canvas, const Offset(16, 96), Offset(x - 16, 96), coils: 6);
-    noteMass(canvas, Offset(x, 96));
-    noteLine(canvas, const Offset(78, 108), const Offset(78, 136), noteStroke(noteSoft));
-    noteLine(canvas, const Offset(148, 78), const Offset(148, 136), noteStroke(noteSoft));
-    _span(canvas, const Offset(78, 136), const Offset(148, 136), '0.30 m');
+    // 壁＋ばね＋おもり。縮み 0.30 m から放す。自然長の両側を通る（鉛直ばねと同じ）。
+    // ↔️ は縮めた側だけ。錘は床を掠る高さ。
+    const wallX = 24.0;
+    const naturalX = 140.0;
+    const compress = 64.0;
+    const floor = 152.0;
+    const massR = 11.0;
+    const massY = floor - massR - 1;
+    final x = naturalX - compress * math.cos(progress * math.pi * 2);
+    noteLine(canvas, const Offset(wallX, 36), const Offset(wallX, floor));
+    noteLine(canvas, const Offset(16, floor), const Offset(268, floor));
+    noteSpring(canvas, const Offset(wallX, massY), Offset(x - 14, massY), coils: 6);
+    noteMass(canvas, Offset(x, massY), radius: massR);
+    noteText(canvas, '40 g', Offset(x + 28, massY - 22));
+    noteText(canvas, labels.naturalLength, const Offset(naturalX + 36, 48));
+    _span(
+      canvas,
+      Offset(naturalX - compress, floor + 28),
+      const Offset(naturalX, floor + 28),
+      '0.30 m',
+      tick: const Offset(0, 12),
+      guide: 22,
+    );
   }
 
   void _swing(Canvas canvas, Size size) {
-    final angle = math.sin(progress * math.pi * 2) * 1.05;
+    // 鉛直から 60° まで上げて放す。最大振れは点線で示す。
+    const release = math.pi / 3;
+    const length = 100.0;
+    final angle = math.sin(progress * math.pi * 2) * release;
     final pivot = const Offset(115, 24);
-    final bob = pivot + Offset(math.sin(angle) * 100, math.cos(angle) * 100);
+    final bob = pivot + Offset(math.sin(angle) * length, math.cos(angle) * length);
+    final releaseBob =
+        pivot + Offset(math.sin(release) * length, math.cos(release) * length);
+    final soft = noteStroke(noteSoft, 1.3);
     noteLine(canvas, const Offset(40, 24), const Offset(190, 24));
+    _dashedLine(canvas, pivot, Offset(pivot.dx, pivot.dy + length), soft);
+    _dashedLine(canvas, pivot, releaseBob, soft);
+    canvas.drawCircle(releaseBob, 9, soft);
+    canvas.drawArc(
+      Rect.fromCircle(center: pivot, radius: 28),
+      math.pi / 2,
+      -release,
+      false,
+      soft,
+    );
+    noteText(canvas, '60°', pivot + const Offset(34, 22));
     noteLine(canvas, pivot, bob);
     noteMass(canvas, bob);
-    noteLine(canvas, const Offset(64, 124), const Offset(115, 124), noteStroke(noteSoft));
-    _span(canvas, const Offset(64, 24), const Offset(64, 124), '0.20 m', tick: const Offset(-8, 0));
-    noteText(canvas, '60°', const Offset(150, 48));
+    _span(
+      canvas,
+      const Offset(64, 24),
+      Offset(64, 24 + length),
+      '0.20 m',
+      tick: const Offset(-8, 0),
+    );
   }
 
   void _disk(Canvas canvas, Size size) {
@@ -657,52 +903,127 @@ class _Paint extends NotePainter {
     const radius = 74.0;
     const holeRadius = radius / 2;
     final hole = center + const Offset(holeRadius, 0);
+    final holeRight = hole + const Offset(holeRadius, 0);
     const board = Color(0xFFFDAF00);
     canvas.drawCircle(center, radius, noteSolid(board));
     canvas.drawCircle(center, radius, noteStroke(noteInk, 2));
     canvas.drawCircle(hole, holeRadius, noteSolid(const Color(0xFFFFFFFF)));
     canvas.drawCircle(hole, holeRadius, noteStroke(noteInk, 2));
     final leftRim = center + const Offset(-radius, 0);
-    _doubleArrow(canvas, leftRim, center);
-    noteText(canvas, '10.2 cm', center + const Offset(-holeRadius, 16), size: 11);
-    _doubleArrow(canvas, hole, hole + const Offset(holeRadius, 0));
-    noteText(canvas, '5.1 cm', hole + const Offset(holeRadius / 2, 16), size: 11);
+    // 横寸法。縦の点線はラベル付近まで長く伸ばす。
+    _doubleArrow(canvas, leftRim, center, guide: 0);
+    _doubleArrow(canvas, hole, holeRight, guide: 0);
+    final labelY = center.dy + radius + 10;
+    for (final tip in [leftRim, center, hole, holeRight]) {
+      paintDashedGuide(
+        canvas: canvas,
+        from: Offset(tip.dx, tip.dy - 10),
+        to: Offset(tip.dx, labelY),
+        color: noteInk,
+      );
+    }
+    noteText(
+      canvas,
+      '10.2 cm',
+      Offset(center.dx - holeRadius, center.dy + radius + 16),
+    );
+    noteText(
+      canvas,
+      '5.1 cm',
+      Offset(hole.dx + holeRadius / 2, center.dy + radius + 16),
+    );
   }
 
   void _sheet(Canvas canvas, Size size) {
+    // 左に 16 cm 寸法を置くため、下敷きを右へずらす。
+    const dx = 40.0;
     final sheet = Path()
-      ..moveTo(28, 32)
-      ..lineTo(188, 32)
-      ..lineTo(188, 92)
-      ..lineTo(108, 92)
-      ..lineTo(108, 152)
-      ..lineTo(28, 152)
+      ..moveTo(28 + dx, 32)
+      ..lineTo(188 + dx, 32)
+      ..lineTo(188 + dx, 92)
+      ..lineTo(108 + dx, 92)
+      ..lineTo(108 + dx, 152)
+      ..lineTo(28 + dx, 152)
       ..close();
     canvas.drawPath(sheet, noteSolid(noteFill));
     canvas.drawPath(sheet, noteStroke());
-    canvas.drawCircle(const Offset(72, 112), 3, noteSolid(noteAccent));
-    _span(canvas, const Offset(28, 16), const Offset(188, 16), '24 cm');
-    _span(canvas, const Offset(40, 32), const Offset(40, 152), '16 cm', tick: const Offset(8, 0));
+    canvas.drawCircle(Offset(72 + dx, 112), 3, noteSolid(noteAccent));
+    _span(canvas, Offset(28 + dx, 16), Offset(188 + dx, 16), '24 cm');
+    // 16 cm の矢印・数値は下敷きの左外。
+    _span(
+      canvas,
+      const Offset(18, 32),
+      const Offset(18, 152),
+      '16 cm',
+      tick: const Offset(-10, 0),
+    );
   }
 
   void _slide(Canvas canvas, Size size) {
-    const left = 72.0;
-    const top = 20.0;
-    const width = 56.0;
-    const floor = 160.0;
-    canvas.drawRRect(
-      RRect.fromRectAndRadius(
-        const Rect.fromLTWH(left, top, width, floor - top),
-        const Radius.circular(3),
-      ),
-      noteStroke(),
+    // 幅 6.0 cm、μ = 0.20。境の高さは答えなので寸法値は置かず、押す高さを矢印だけ示す。
+    const left = 88.0;
+    const top = 24.0;
+    const width = 52.0;
+    const floor = 150.0;
+    const pushY = 64.0;
+    final block = RRect.fromRectAndRadius(
+      const Rect.fromLTWH(left, top, width, floor - top),
+      const Radius.circular(3),
     );
-    noteLine(canvas, const Offset(24, floor), const Offset(200, floor));
-    noteArrow(canvas, const Offset(28, 64), const Offset(left, 64));
-    noteLine(canvas, const Offset(128, top), const Offset(156, top), noteStroke(noteSoft));
-    noteLine(canvas, const Offset(128, floor), const Offset(156, floor), noteStroke(noteSoft));
-    _span(canvas, const Offset(156, top), const Offset(156, floor), 'h', tick: const Offset(12, 0));
-    _span(canvas, const Offset(left, 174), Offset(left + width, 174), '6.0 cm');
+    canvas.drawRRect(block, noteSolid(const Color(0xFFFFE0B2)));
+    canvas.drawRRect(block, noteStroke());
+    noteLine(canvas, const Offset(24, floor), const Offset(210, floor));
+    noteArrow(canvas, const Offset(36, pushY), const Offset(left, pushY));
+    // 床〜押す位置（値なしの両矢印）。
+    _doubleArrow(
+      canvas,
+      const Offset(left + width + 28, pushY),
+      const Offset(left + width + 28, floor),
+      guide: 14,
+    );
+    // 幅は床下。短いのでラベルを線上に置かず、下へ離す。
+    _doubleArrow(
+      canvas,
+      const Offset(left, floor + 20),
+      Offset(left + width, floor + 20),
+      guide: 16,
+    );
+    noteText(canvas, '6.0 cm', Offset(left + width / 2, floor + 38));
+    // μ は寸法と紛らわしいので、地面の右下へ。
+    noteText(canvas, 'μ = 0.20', const Offset(188, floor + 38));
+  }
+
+  void _endLift(Canvas canvas, Size size) {
+    // 一端を床につけ、他端を鉛直に持ち上げて静止。質量 200 g。力の値は答えなので置かない。
+    // 棒ではなく厚みのあるブロック。角度は地面スレスレ。力は端の上から上向き。
+    const floor = 172.0;
+    noteLine(canvas, const Offset(24, floor), const Offset(220, floor));
+    const theta = 0.12; // 約 7°
+    const length = 150.0;
+    const height = 30.0;
+    const pivot = Offset(200, floor);
+    final cosT = math.cos(theta);
+    final sinT = math.sin(theta);
+    final along = Offset(-cosT, -sinT);
+    final normal = Offset(sinT, -cosT);
+    final bottomTip = pivot + along * length;
+    final topPivot = pivot + normal * height;
+    final topTip = bottomTip + normal * height;
+    final block = Path()
+      ..moveTo(pivot.dx, pivot.dy)
+      ..lineTo(bottomTip.dx, bottomTip.dy)
+      ..lineTo(topTip.dx, topTip.dy)
+      ..lineTo(topPivot.dx, topPivot.dy)
+      ..close();
+    canvas.drawPath(block, noteSolid(const Color(0xFFFFE0B2)));
+    canvas.drawPath(block, noteStroke());
+    final center = Offset(
+      (pivot.dx + bottomTip.dx + topTip.dx + topPivot.dx) / 4,
+      (pivot.dy + bottomTip.dy + topTip.dy + topPivot.dy) / 4,
+    );
+    noteText(canvas, '200 g', center);
+    final liftFrom = topTip + const Offset(0, -4);
+    noteArrow(canvas, liftFrom, liftFrom + const Offset(0, -34));
   }
 
   void _wood(Canvas canvas, Size size) {
@@ -734,7 +1055,12 @@ class _Paint extends NotePainter {
     );
     canvas.drawRRect(stick, noteSolid(const Color(0xFFFFE0B2)));
     canvas.drawRRect(stick, noteStroke(const Color(0xFF8D6E63), 1.4));
-    noteArrow(canvas, const Offset(78, waterY), Offset(stickLeft - 2, waterY), color: noteInk);
+    paintDashedGuide(
+      canvas: canvas,
+      from: Offset(tube.left - 6, waterY),
+      to: const Offset(176, waterY),
+      color: noteInk,
+    );
     _span(
       canvas,
       const Offset(64, stickTop),
@@ -742,37 +1068,73 @@ class _Paint extends NotePainter {
       '20 cm',
       tick: const Offset(-8, 0),
     );
+    _span(
+      canvas,
+      const Offset(168, waterY),
+      const Offset(168, stickBottom),
+      '',
+      tick: const Offset(8, 0),
+    );
   }
 
   void _slideMu(Canvas canvas, Size size) {
-    _pulledBlock(canvas, 28 + progress * 52, '0.98 N');
+    _pulledBlock(canvas, 28 + progress * 52, '0.98 N', walk: true);
   }
 
   void _hold(Canvas canvas, Size size) {
     _pulledBlock(canvas, 64, '1.96 N');
   }
 
-  void _pulledBlock(Canvas canvas, double x, String force) {
+  void _pulledBlock(
+    Canvas canvas,
+    double x,
+    String force, {
+    bool walk = false,
+  }) {
     const top = 92.0;
-    const height = 26.0;
-    const width = 40.0;
-    noteLine(canvas, const Offset(16, 120), const Offset(214, 120));
-    canvas.drawRRect(
-      RRect.fromRectAndRadius(
-        Rect.fromLTWH(x, top, width, height),
-        const Radius.circular(3),
-      ),
-      noteStroke(),
+    const height = 28.0;
+    const width = 44.0;
+    const floorY = 122.0;
+    noteLine(canvas, const Offset(16, floorY), const Offset(228, floorY));
+    final block = RRect.fromRectAndRadius(
+      Rect.fromLTWH(x, top, width, height),
+      const Radius.circular(3),
     );
+    canvas.drawRRect(block, noteSolid(const Color(0xFFFFF59D)));
+    canvas.drawRRect(block, noteStroke());
     final midY = top + height / 2;
     final knot = Offset(x + width, midY);
-    final center = knot + const Offset(46, 0);
+    final center = knot + const Offset(44, 0);
     noteLine(canvas, knot, center - const Offset(16, 0));
-    canvas.drawCircle(knot, 2.4, noteSolid(noteInk));
-    paintDialMeter(canvas, center, 16, color: noteInk, fraction: 0.46);
-    canvas.drawCircle(center + const Offset(22, 0), 4.5, noteStroke());
-    noteText(canvas, '400 g', Offset(x + width / 2, top - 16));
-    noteText(canvas, force, center + const Offset(0, -28), size: 11);
+    paintDialMeter(canvas, center, 15, color: noteInk, fraction: walk ? 0.38 : 0.62);
+    final handle = center + const Offset(18, 0);
+    noteLine(canvas, center + const Offset(15, 0), handle);
+    canvas.drawCircle(handle, 3.2, noteStroke());
+    noteText(canvas, '400 g', Offset(x + width / 2, top - 18));
+    noteText(canvas, force, center + const Offset(0, -28));
+    _stickPuller(canvas, handle, floorY, walk: walk, phase: x);
+  }
+
+  void _stickPuller(
+    Canvas canvas,
+    Offset hand,
+    double floorY, {
+    required bool walk,
+    required double phase,
+  }) {
+    final paint = noteStroke(noteInk, 1.5);
+    final lean = walk ? 14.0 : 20.0;
+    final hip = Offset(hand.dx + lean, floorY - 24);
+    final shoulder = Offset(hip.dx - 2, hip.dy - 20);
+    final head = Offset(shoulder.dx, shoulder.dy - 10);
+    canvas.drawCircle(head, 6.5, noteSolid(noteFill));
+    canvas.drawCircle(head, 6.5, paint);
+    noteLine(canvas, shoulder, hip, paint);
+    noteLine(canvas, shoulder, hand, paint);
+    noteLine(canvas, shoulder, Offset(hip.dx + 8, hip.dy - 6), paint);
+    final gait = walk ? math.sin(phase * 0.4) * 7 : 0.0;
+    noteLine(canvas, hip, Offset(hip.dx - 6 - gait, floorY), paint);
+    noteLine(canvas, hip, Offset(hip.dx + 9 + gait, floorY), paint);
   }
 
   void _turn(Canvas canvas, Size size) {
@@ -783,25 +1145,48 @@ class _Paint extends NotePainter {
     final bob = center + Offset(math.cos(angle) * 48, math.sin(angle) * 48);
     noteSpring(canvas, center, bob, coils: 14, amplitude: 2.8);
     noteMass(canvas, bob, radius: 8);
-    _span(canvas, center, center + const Offset(0, -48), '0.20 m', tick: const Offset(12, 0));
+    _span(
+      canvas,
+      center + const Offset(56, 0),
+      center + const Offset(56, -48),
+      '0.20 m',
+      tick: const Offset(12, 0),
+    );
     noteText(canvas, '0.628 s', const Offset(176, 168));
   }
 
   void _lift(Canvas canvas, Size size) {
-    final y = 40 - progress * 36;
+    // カゴは小さめ。浮上距離は幅の約 1.75 倍。
+    const cabinW = 84.0;
+    const cabinH = 100.0;
+    const rise = cabinW * 1.75;
+    const left = 72.0;
+    const topAtPeak = 24.0;
+    final top = topAtPeak + (1 - progress) * rise;
+    final cx = left + cabinW / 2;
     canvas.drawRRect(
       RRect.fromRectAndRadius(
-        Rect.fromLTWH(60, 40 + y, 110, 120),
+        Rect.fromLTWH(left, top, cabinW, cabinH),
         const Radius.circular(6),
       ),
       noteStroke(),
     );
-    noteArrow(canvas, Offset(40, 90 + y), Offset(40, 50 + y));
-    noteLine(canvas, Offset(115, 46 + y), Offset(115, 58 + y));
-    paintDialMeter(canvas, Offset(115, 74 + y), 16, color: noteInk, fraction: 0.62);
-    noteLine(canvas, Offset(115, 90 + y), Offset(115, 112 + y));
-    noteMass(canvas, Offset(115, 122 + y), radius: 9);
-    noteText(canvas, '1.0 m/s^2', const Offset(40, 168), size: 11);
+    noteArrow(
+      canvas,
+      Offset(left - 28, top + cabinH * 0.62),
+      Offset(left - 28, top + cabinH * 0.28),
+    );
+    noteLine(canvas, Offset(cx, top + 6), Offset(cx, top + 18));
+    paintDialMeter(
+      canvas,
+      Offset(cx, top + 34),
+      16,
+      color: noteInk,
+      fraction: 0.62,
+    );
+    noteLine(canvas, Offset(cx, top + 50), Offset(cx, top + 72));
+    noteMass(canvas, Offset(cx, top + 82), radius: 9);
+    noteText(canvas, '1.0 m/s²', Offset(left - 28, top + cabinH + 22));
   }
 
   void _nail(Canvas canvas, Size size) {
@@ -828,29 +1213,47 @@ class _Paint extends NotePainter {
     canvas.drawCircle(nail, 3.5, noteSolid(noteInk));
     noteLine(canvas, nail, caught, noteStroke(noteAccent));
     noteMass(canvas, caught, radius: 8);
-    _doubleArrow(canvas, Offset(18, release.dy), Offset(18, bottom.dy));
-    noteText(canvas, '12 cm', Offset(40, (release.dy + bottom.dy) / 2), size: 11);
+    // 12 cm = 放す高さから最下点まで。水平点線は天井の右端まで。
+    _span(
+      canvas,
+      Offset(18, release.dy),
+      Offset(18, bottom.dy),
+      '12 cm',
+      tick: const Offset(10, 0),
+      guide: 0,
+    );
+    for (final y in [release.dy, bottom.dy]) {
+      paintDashedGuide(
+        canvas: canvas,
+        from: Offset(18, y),
+        to: Offset(200, y),
+        color: noteInk,
+      );
+    }
   }
 
   void _dip(Canvas canvas, Size size) {
-    final y = 78 + progress * 62;
+    // 100 g・40 cm³ のおもりを食塩水へ。ばねはかりは天井から。
+    // サイクル前1/3で沈め、残り約3 sは沈めたまま。
+    const tank = Rect.fromLTWH(78, 88, 100, 100);
+    final dip = playPauseProgress(progress, motion: 1 / 3);
+    final y = 64 + dip * 70;
     canvas.drawRRect(
-      RRect.fromRectAndRadius(
-        const Rect.fromLTWH(70, 78, 100, 96),
-        const Radius.circular(4),
-      ),
+      RRect.fromRectAndRadius(tank, const Radius.circular(4)),
       noteStroke(),
     );
     canvas.drawRect(
-      const Rect.fromLTWH(72, 112, 96, 60),
-      noteSolid(const Color(0xFFBBDEFB)),
+      Rect.fromLTRB(tank.left + 2, 120, tank.right - 2, tank.bottom - 2),
+      noteSolid(const Color(0xFFB3E5FC)),
     );
-    noteLine(canvas, const Offset(100, 8), const Offset(130, 8));
-    noteLine(canvas, const Offset(115, 8), const Offset(115, 14));
-    paintDialMeter(canvas, const Offset(115, 30), 16, color: noteInk);
-    noteLine(canvas, const Offset(115, 46), Offset(115, y - 12));
-    noteMass(canvas, Offset(115, y), radius: 10);
-    noteText(canvas, '40 cm^3', const Offset(42, 48), size: 11);
+    noteLine(canvas, const Offset(100, 12), const Offset(136, 12));
+    noteLine(canvas, const Offset(118, 12), const Offset(118, 20));
+    paintDialMeter(canvas, const Offset(118, 36), 16, color: noteInk);
+    noteLine(canvas, const Offset(118, 52), Offset(118, y - 12));
+    noteMass(canvas, Offset(118, y), radius: 11);
+    noteText(canvas, '100 g', const Offset(48, 64));
+    noteText(canvas, '40 cm³', const Offset(48, 86));
+    noteText(canvas, '1.25 g/cm^3', const Offset(186, 140));
   }
 
   void _tension(Canvas canvas, Size size) {
@@ -860,7 +1263,26 @@ class _Paint extends NotePainter {
     final pivot = const Offset(115, 22);
     const length = 96.0;
     final bob = pivot + Offset(math.sin(angle) * length, math.cos(angle) * length);
+    final startBob =
+        pivot + Offset(-math.sin(release) * length, math.cos(release) * length);
+    final releaseBob =
+        pivot + Offset(math.sin(release) * length, math.cos(release) * length);
+    final soft = noteStroke(noteSoft, 1.3);
     noteLine(canvas, const Offset(40, 22), const Offset(190, 22));
+    // 鉛直と、左右の最大振れ（60°）の糸・球は点線。
+    _dashedLine(canvas, pivot, Offset(pivot.dx, pivot.dy + length), soft);
+    _dashedLine(canvas, pivot, startBob, soft);
+    _dashedLine(canvas, pivot, releaseBob, soft);
+    canvas.drawCircle(startBob, 9, soft);
+    canvas.drawCircle(releaseBob, 9, soft);
+    canvas.drawArc(
+      Rect.fromCircle(center: pivot, radius: 28),
+      math.pi / 2 - release,
+      release,
+      false,
+      soft,
+    );
+    noteText(canvas, '60°', pivot + const Offset(34, 22));
     noteLine(canvas, pivot, bob);
     noteMass(canvas, bob);
     // おもりから支点向きが張力。長さは最下点 T = 2mg を 36 px にする。
@@ -873,10 +1295,62 @@ class _Paint extends NotePainter {
         canvas,
         'T',
         bob + toPivot * (9 * tensionOverMg) + Offset(-toPivot.dy, toPivot.dx) * 12,
-        size: 11,
       );
     }
-    noteText(canvas, '60°', const Offset(180, 48));
+  }
+
+  void _dashedLine(Canvas canvas, Offset from, Offset to, Paint paint) {
+    final delta = to - from;
+    final length = delta.distance;
+    if (length < 1) return;
+    final step = delta / length;
+    const dash = 4.0;
+    const gap = 3.5;
+    var drawn = 0.0;
+    while (drawn < length) {
+      final end = math.min(drawn + dash, length);
+      canvas.drawLine(from + step * drawn, from + step * end, paint);
+      drawn += dash + gap;
+    }
+  }
+
+  void _dashedOval(Canvas canvas, Rect rect, Paint paint) {
+    const steps = 72;
+    const dash = 4.0;
+    const gap = 3.5;
+    var drawn = 0.0;
+    var draw = true;
+    var budget = dash;
+    Offset? prev;
+    for (var i = 0; i <= steps; i++) {
+      final t = i / steps * math.pi * 2;
+      final p = Offset(
+        rect.center.dx + rect.width / 2 * math.cos(t),
+        rect.center.dy + rect.height / 2 * math.sin(t),
+      );
+      if (prev != null) {
+        var a = prev;
+        var remain = (p - a).distance;
+        if (remain > 1e-6) {
+          final dir = (p - a) / remain;
+          while (remain > 1e-6) {
+            final take = math.min(budget, remain);
+            final next = a + dir * take;
+            if (draw) {
+              canvas.drawLine(a, next, paint);
+            }
+            a = next;
+            remain -= take;
+            budget -= take;
+            if (budget <= 1e-6) {
+              draw = !draw;
+              budget = draw ? dash : gap;
+            }
+          }
+        }
+      }
+      prev = p;
+    }
   }
 
   void _stairs(Canvas canvas, Size size) {
@@ -887,8 +1361,19 @@ class _Paint extends NotePainter {
       ..lineTo(180, 70);
     canvas.drawPath(path, noteStroke());
     _span(canvas, const Offset(118, 70), const Offset(118, 140), '5.0 m', tick: const Offset(10, 0));
-    paintPressureGauge(canvas, const Offset(58, 118), radius: 12);
-    paintPressureGauge(canvas, const Offset(148, 48), radius: 12);
+    // ゲージは段の線から離し、広い ??? hPa は盤の外横へ。
+    paintPressureGauge(
+      canvas,
+      const Offset(58, 82),
+      radius: 11,
+      labelShift: const Offset(-62, -14),
+    );
+    paintPressureGauge(
+      canvas,
+      const Offset(160, 28),
+      radius: 11,
+      labelShift: const Offset(62, -14),
+    );
   }
 
   void _fuji(Canvas canvas, Size size) {
@@ -900,16 +1385,26 @@ class _Paint extends NotePainter {
     noteLine(canvas, const Offset(22, 26), const Offset(158, 26), noteStroke(noteSoft));
     noteLine(canvas, const Offset(22, 156), const Offset(108, 156), noteStroke(noteSoft));
     _span(canvas, const Offset(22, 26), const Offset(22, 156), '3000 m', tick: const Offset(8, 0));
-    noteText(canvas, '1013 hPa', const Offset(164, 174), size: 11);
-    paintPressureGauge(canvas, const Offset(186, 26), radius: 12);
+    noteText(canvas, '1013 hPa', const Offset(164, 174));
+    // 頂点ゲージは斜面の右外・数値は盤の上へ。
+    paintPressureGauge(
+      canvas,
+      const Offset(236, 52),
+      radius: 11,
+      labelShift: const Offset(0, -42),
+    );
   }
 
   void _syringe(Canvas canvas, Size size) {
-    final pull = progress * 10;
     const cx = 108.0;
     const half = 20.0;
     const barrelTop = 48.0;
     const barrelBottom = 150.0;
+    // 先を塞いだ筒の底からピストンを引くと、中が真空に近づく。
+    const pistonStart = barrelBottom - 16;
+    const pistonEnd = barrelTop + 22;
+    final pull = playPauseProgress(progress, motion: 2500 / 4500);
+    final piston = pistonStart + (pistonEnd - pistonStart) * pull;
     canvas.drawRRect(
       RRect.fromRectAndRadius(
         const Rect.fromLTRB(cx - 30, barrelTop - 8, cx + 30, barrelTop + 6),
@@ -924,14 +1419,25 @@ class _Paint extends NotePainter {
       ),
       noteStroke(noteInk, 2),
     );
-    canvas.drawRRect(
-      RRect.fromRectAndRadius(
-        const Rect.fromLTRB(cx - 6, barrelBottom, cx + 6, barrelBottom + 14),
-        const Radius.circular(2),
-      ),
+    // 先端のノズルを、四角い蓋で塞ぐ。
+    canvas.drawRect(
+      const Rect.fromLTRB(cx - 6, barrelBottom, cx + 6, barrelBottom + 6),
       noteStroke(noteInk, 2),
     );
-    final piston = barrelTop + 18 - pull;
+    const cap = Rect.fromLTRB(cx - 14, barrelBottom + 5, cx + 14, barrelBottom + 21);
+    canvas.drawRect(cap, noteSolid(noteFill));
+    canvas.drawRect(cap, noteStroke(noteInk, 2));
+    noteLine(
+      canvas,
+      const Offset(cx - 8, barrelBottom + 13),
+      const Offset(cx + 8, barrelBottom + 13),
+      noteStroke(noteInk, 1.4),
+    );
+    // ピストン下の真空領域。
+    canvas.drawRect(
+      Rect.fromLTRB(cx - half + 2, piston + 8, cx + half - 2, barrelBottom - 1),
+      noteSolid(const Color(0xFFECEFF1)),
+    );
     canvas.drawRect(
       Rect.fromLTRB(cx - half + 3, piston, cx + half - 3, piston + 8),
       noteSolid(noteFill),
@@ -940,11 +1446,11 @@ class _Paint extends NotePainter {
       Rect.fromLTRB(cx - half + 3, piston, cx + half - 3, piston + 8),
       noteStroke(noteAccent),
     );
-    noteLine(canvas, Offset(cx, piston), Offset(cx, 18));
+    noteLine(canvas, Offset(cx, piston), const Offset(cx, 18));
     noteArrow(canvas, Offset(cx + 16, 30), Offset(cx + 16, 12));
     const mark = 112.0;
     _doubleArrow(canvas, const Offset(cx - half, mark), const Offset(cx + half, mark));
-    noteText(canvas, '直径 2.0 cm', const Offset(178, 78), size: 11);
+    noteText(canvas, labels.diameterCm('2.0'), const Offset(178, 78));
   }
 
   void _depth(Canvas canvas, Size size) {
@@ -988,7 +1494,7 @@ class _Paint extends NotePainter {
     paintPressureGauge(canvas, gauge, radius: 12);
     noteLine(canvas, const Offset(22, surface), const Offset(left, surface), noteStroke(noteSoft));
     _span(canvas, const Offset(22, surface), const Offset(22, depthY), '30 cm', tick: const Offset(8, 0));
-    noteText(canvas, '1013 hPa', const Offset(137, 36), size: 11);
+    noteText(canvas, '1013 hPa', const Offset(137, 36));
   }
 
   void _invert(Canvas canvas, Size size) {
@@ -1042,7 +1548,7 @@ class _Paint extends NotePainter {
     _span(canvas, const Offset(62, innerY), const Offset(62, mouthY), '28 cm', tick: const Offset(-10, 0));
     _span(canvas, const Offset(184, openY), const Offset(184, mouthY), '3 cm', tick: const Offset(10, 0));
     paintPressureGauge(canvas, const Offset(123, 34), radius: 11);
-    noteText(canvas, '1013 hPa', const Offset(186, 108), size: 11);
+    noteText(canvas, '1013 hPa', const Offset(186, 108));
   }
 
   void _salt(Canvas canvas, Size size) {
@@ -1080,8 +1586,8 @@ class _Paint extends NotePainter {
     noteLine(canvas, const Offset(24, surface), const Offset(left, surface), noteStroke(noteSoft));
     noteLine(canvas, const Offset(24, 156), const Offset(146, 156), noteStroke(noteSoft));
     _span(canvas, const Offset(24, surface), const Offset(24, 156), '50 cm', tick: const Offset(8, 0));
-    noteText(canvas, '1.20 g/cm^3', const Offset(146, 16), size: 11);
-    noteText(canvas, '1013 hPa', const Offset(146, 52), size: 11);
+    noteText(canvas, '1.20 g/cm^3', const Offset(146, 16));
+    noteText(canvas, '1013 hPa', const Offset(146, 52));
   }
 
   void _helium(Canvas canvas, Size size) {
@@ -1111,7 +1617,7 @@ class _Paint extends NotePainter {
       noteStroke(noteAccent, 1.8),
     );
 
-    noteText(canvas, 'He', const Offset(115, 96), size: 20);
+    noteText(canvas, 'He', const Offset(40, 96), size: 20);
     noteText(canvas, '2.493 L', const Offset(115, 174));
     noteText(canvas, '1.0 g', const Offset(196, 96));
   }
@@ -1177,19 +1683,19 @@ class _Paint extends NotePainter {
     _span(canvas, const Offset(cx - rx, 32), const Offset(far + tip, 32), length);
     final markX = cx - rx - 20;
     _doubleArrow(canvas, Offset(markX, cy - ry), Offset(markX, cy + ry));
-    noteText(canvas, diameter, Offset(markX + 8, cy + ry + 22), size: 14);
+    noteText(canvas, diameter, Offset(markX + 8, cy + ry + 22));
     if (extra != null) {
-      noteText(canvas, extra, Offset(far - 4, cy + ry + 34), size: 14);
+      noteText(canvas, extra, Offset(far - 4, cy + ry + 34));
     }
   }
 
   void _loop(Canvas canvas, Size size) {
-    // 斜めから見た多巻き円形コイル。奥から手前へ少しずらしてぐるぐる感を出す。
-    const center = Offset(108, 108);
-    const turns = 7;
+    // 楕円の巻きを縦にまっすぐ重ねた多巻き円形コイル（斜めずらしはしない）。
+    const center = Offset(115, 112);
+    const turns = 10;
     const width = 150.0;
-    const height = 78.0;
-    const step = Offset(3.2, -2.4);
+    const height = 48.0;
+    const step = Offset(0, -3.2);
     final start = center - step * ((turns - 1) / 2);
     for (var i = 0; i < turns; i++) {
       final c = start + step * i.toDouble();
@@ -1199,41 +1705,65 @@ class _Paint extends NotePainter {
       );
     }
     final front = start + step * (turns - 1);
-    noteArrow(
+    // 各巻きの右端に上向き。同じ向きの電流がどの導線にも流れている。
+    for (var i = 0; i < turns; i++) {
+      final c = start + step * i.toDouble();
+      final at = c + const Offset(width / 2, 0);
+      final head = Path()
+        ..moveTo(at.dx, at.dy - 5)
+        ..lineTo(at.dx - 3.5, at.dy + 3)
+        ..lineTo(at.dx + 3.5, at.dy + 3)
+        ..close();
+      canvas.drawPath(head, noteSolid(noteInk));
+    }
+    noteText(
       canvas,
-      front + const Offset(0, height * 0.28),
-      front - const Offset(0, height * 0.28),
+      '1.0 A',
+      start + step * ((turns - 1) / 2) + const Offset(width / 2 + 32, 0),
     );
-    _span(
+    final spanY = front.dy + height / 2 + 22;
+    final spanFrom = Offset(front.dx, spanY);
+    final spanTo = Offset(front.dx + width / 2, spanY);
+    _doubleArrow(canvas, spanFrom, spanTo);
+    // 寸法値は線の下へ（楕円に乗せない）。
+    noteText(
       canvas,
-      front,
-      front + const Offset(width / 2, 0),
       '6.28 cm',
+      Offset((spanFrom.dx + spanTo.dx) / 2, spanY + 18),
     );
-    noteText(canvas, '100', const Offset(196, 36));
-    noteText(canvas, '1.0 A', const Offset(196, 168));
+    noteText(
+      canvas,
+      labels.hundredTurnsCompact,
+      Offset(center.dx, front.dy - height / 2 - 14),
+    );
   }
 
   void _rc(Canvas canvas, Size size) {
-    noteLine(canvas, const Offset(36, 150), const Offset(200, 150));
-    noteLine(canvas, const Offset(36, 150), const Offset(36, 28));
-    final path = Path();
-    for (var i = 0; i <= 40; i++) {
-      final x = 36.0 + i * 4;
-      final y = 150 - 110 * math.exp(-i / 14);
-      if (i == 0) {
-        path.moveTo(x, y);
-      } else {
-        path.lineTo(x, y);
-      }
+    // 放電: 5000 μF、2000 Ω、初期 3.0 V。V が半分になる時刻を聞く。
+    const left = 48.0;
+    const right = 190.0;
+    const top = 56.0;
+    const bottom = 148.0;
+    noteLine(canvas, const Offset(left, top), const Offset(96, top));
+    noteLine(canvas, const Offset(118, top), const Offset(right, top));
+    noteLine(canvas, const Offset(left, bottom), const Offset(right, bottom));
+    noteLine(canvas, const Offset(left, top), const Offset(left, bottom));
+    noteLine(canvas, const Offset(right, top), const Offset(right, 78));
+    noteLine(canvas, const Offset(right, 130), const Offset(right, bottom));
+    // コンデンサー（上辺）
+    noteLine(canvas, const Offset(96, top - 12), const Offset(96, top + 12));
+    noteLine(canvas, const Offset(112, top - 12), const Offset(112, top + 12));
+    noteText(canvas, '5000 μF', const Offset(104, 30));
+    // 抵抗（右辺のジグザグ）
+    final zig = Path()..moveTo(right, 78);
+    for (var i = 0; i < 6; i++) {
+      zig.lineTo(right + (i.isEven ? 10 : -10), 86.0 + i * 7);
     }
-    canvas.drawPath(path, noteStroke(noteAccent));
-    final mark = progress;
-    final x = 36 + mark * 120;
-    final y = 150 - 110 * math.exp(-(x - 36) / 56);
-    canvas.drawCircle(Offset(x, y), 4, noteSolid(noteInk));
-    noteLine(canvas, const Offset(36, 95), const Offset(70, 95), noteStroke(noteSoft));
-    noteText(canvas, 'V/2', const Offset(24, 95), size: 11);
+    zig.lineTo(right, 130);
+    canvas.drawPath(zig, noteStroke());
+    noteText(canvas, '2000 Ω', const Offset(218, 104));
+    noteText(canvas, '3.0 V', const Offset(90, 178));
+    noteText(canvas, '→ V/2', const Offset(150, 178));
   }
 
   void _coil(Canvas canvas, Size size) {
@@ -1312,7 +1842,7 @@ class _Paint extends NotePainter {
       Offset(firstX, cy + windR + 16),
       Offset(firstX, leadY - 2),
     );
-    noteText(canvas, '電流 I', Offset(lastX + 30, cy + windR + 34), size: 11);
+    noteText(canvas, labels.currentI, Offset(lastX + 30, cy + windR + 34));
 
     // 長さは今までどおり寸法線
     _span(
@@ -1331,12 +1861,10 @@ class _Paint extends NotePainter {
     noteText(
       canvas,
       'r',
-      const Offset(tubeLeft - 14, cy - faceRy * 0.5),
-      size: 12,
-    );
+      const Offset(tubeLeft - 14, cy - faceRy * 0.5), );
 
     // 透磁率
-    noteText(canvas, 'μ₀', const Offset(24, cy), size: 13);
+    noteText(canvas, 'μ₀', const Offset(24, cy));
     noteArrow(
       canvas,
       const Offset(34, cy),
@@ -1346,13 +1874,13 @@ class _Paint extends NotePainter {
 
     noteText(
       canvas,
-      '100 巻き',
+      labels.hundredTurns,
       Offset((firstX + lastX) / 2, leadY + 18),
-      size: 11,
     );
   }
 
   void _bar(Canvas canvas, Size size) {
+    // 電池は底辺（左+・右−）。棒の電流は上→下。B は紙面向こう（×）で F は右。
     const left = 96.0;
     const right = 214.0;
     const top = 32.0;
@@ -1362,19 +1890,10 @@ class _Paint extends NotePainter {
     final wire = noteStroke();
 
     noteLine(canvas, const Offset(left, top), const Offset(right, top), wire);
-    noteLine(canvas, const Offset(left, bottom), const Offset(right, bottom), wire);
     noteLine(canvas, const Offset(left, top), const Offset(left, bottom), wire);
+    noteLine(canvas, const Offset(left, bottom), const Offset(118, bottom), wire);
+    noteLine(canvas, const Offset(136, bottom), const Offset(right, bottom), wire);
 
-    canvas.drawRect(
-      const Rect.fromLTRB(left - 10, 58, left + 10, 96),
-      noteSolid(const Color(0xFFFFFFFF)),
-    );
-    canvas.drawRect(const Rect.fromLTRB(left - 10, 58, left + 10, 96), wire);
-
-    canvas.drawRect(
-      const Rect.fromLTRB(118, bottom - 16, 136, bottom + 16),
-      noteSolid(const Color(0xFFFFFFFF)),
-    );
     noteLine(canvas, const Offset(122, bottom - 13), const Offset(122, bottom + 13), wire);
     noteLine(
       canvas,
@@ -1393,13 +1912,29 @@ class _Paint extends NotePainter {
     );
     canvas.drawRRect(bar, noteSolid(noteFill));
     canvas.drawRRect(bar, noteStroke(noteInk, 1.8));
-    noteArrow(canvas, const Offset(barX, bottom - 16), const Offset(barX, top + 16));
-    noteText(canvas, '1.0 A', const Offset(barX - 26, mid));
+    noteArrow(
+      canvas,
+      const Offset(118, top),
+      const Offset(150, top),
+      color: noteInk,
+    );
+    noteText(canvas, '1.0 A', Offset((left + right) / 2, top - 18));
 
     const field = Offset(192, 58);
     canvas.drawCircle(field, 8, wire);
-    canvas.drawCircle(field, 2.2, noteSolid(noteInk));
-    noteText(canvas, '0.20 T', const Offset(192, 80));
+    noteLine(
+      canvas,
+      field + const Offset(-3.6, -3.6),
+      field + const Offset(3.6, 3.6),
+      noteStroke(noteInk, 1.5),
+    );
+    noteLine(
+      canvas,
+      field + const Offset(-3.6, 3.6),
+      field + const Offset(3.6, -3.6),
+      noteStroke(noteInk, 1.5),
+    );
+    noteText(canvas, '0.20 T', const Offset(222, 58));
 
     noteLine(canvas, const Offset(28, top), const Offset(left, top), noteStroke(noteSoft));
     noteLine(canvas, const Offset(28, bottom), const Offset(left, bottom), noteStroke(noteSoft));
@@ -1412,8 +1947,8 @@ class _Paint extends NotePainter {
     );
     noteArrow(
       canvas,
-      const Offset(barX + 12, 112),
-      const Offset(right - 8, 112),
+      const Offset(barX + 10, mid),
+      const Offset(barX + 52, mid),
       color: noteInk,
     );
   }

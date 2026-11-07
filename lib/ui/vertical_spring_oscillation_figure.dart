@@ -93,7 +93,7 @@ class _VerticalSpringOscillationPainter extends CustomPainter {
     final mass = Rect.fromLTWH(cx - massW / 2, massTop, massW, massH);
     canvas.drawRect(mass, line);
     _label(canvas, '1.0 kg', mass.center);
-    _label(canvas, '4.0 N/m', const Offset(148, 70));
+    _label(canvas, '4.0 N/m', const Offset(168, 70));
   }
 
   void _spring(Canvas canvas, Offset a, Offset b, Paint paint) {

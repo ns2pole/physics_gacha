@@ -130,7 +130,7 @@ class _SpringPulleysPainter extends CustomPainter {
     String text,
     Offset center,
     Color color, {
-    FontWeight weight = FontWeight.w600,
+    FontWeight weight = FontWeight.w500,
   }) {
     final painter = TextPainter(
       text: TextSpan(

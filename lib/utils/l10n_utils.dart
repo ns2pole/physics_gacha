@@ -68,9 +68,13 @@ extension PhysicsProblemLocalization on PhysicsProblem {
 
   String getLocalizedAnswerUnitLabel(BuildContext context) {
     if (isSymbolOrder) return '';
+    final l10n = AppLocalizations.of(context)!;
     if (isDimensionless) {
-      return AppLocalizations.of(context)!.dimensionless;
+      return l10n.dimensionless;
     }
+    // 採点キーは JA のまま。表示だけ locale に合わせる。
+    if (answerUnit == '個') return l10n.unitCount;
+    if (answerUnit == '年') return l10n.unitYear;
     return answerUnit;
   }
 }

@@ -51,8 +51,8 @@ class _ParallelSpringsPainter extends CustomPainter {
 
     final mass = Rect.fromLTWH(94, 120, 56, 34);
     canvas.drawRect(mass, line);
-    _label(canvas, '49 N/m', const Offset(42, 62));
-    _label(canvas, '147 N/m', const Offset(206, 62));
+    _label(canvas, '49 N/m', const Offset(28, 62));
+    _label(canvas, '147 N/m', const Offset(220, 62));
     _label(canvas, '2.0 kg', mass.center);
   }
 

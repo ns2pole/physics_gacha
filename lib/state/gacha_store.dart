@@ -70,11 +70,13 @@ class GachaStore {
     final historyUpdated = Map<String, DateTime>.from(
       previous?.historyUpdated ?? const {},
     );
+    historyUpdated.addAll(session.historyUpdated);
     for (final entry in session.histories.entries) {
       final prevHistory = previous?.histories[entry.key];
       if (prevHistory == null ||
           !_sameSlots(prevHistory.slots, entry.value.slots)) {
-        historyUpdated[entry.key] = now;
+        historyUpdated[entry.key] =
+            session.historyUpdated[entry.key] ?? now;
       } else {
         historyUpdated.putIfAbsent(
           entry.key,

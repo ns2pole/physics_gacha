@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../logic/problem_pool.dart';
 import '../models/learning_record.dart';
@@ -75,7 +76,7 @@ class _ProblemListPageState extends State<ProblemListPage> {
     var domainTotal = 0;
     for (var i = 0; i < problems.length; i++) {
       final problem = problems[i];
-      if (!acceptsDomains(problem, session.enabled)) continue;
+      if (!isAvailableProblem(problem, session.enabled)) continue;
       domainTotal += 1;
       if (isExcluded(session.historyOf(problem), session.exclusion)) continue;
       visible.add((number: i + 1, problem: problem));
@@ -115,6 +116,9 @@ class _ProblemListPageState extends State<ProblemListPage> {
                     enabled: session.enabled,
                     onDomain: _setDomain,
                     onChanged: _setExclusion,
+                    removeLabel: AppLocalizations.of(
+                      context,
+                    )!.exclusionThenRemoveFromList,
                   );
                 }
                 if (visible.isEmpty) {
@@ -128,6 +132,7 @@ class _ProblemListPageState extends State<ProblemListPage> {
                   number: row.number,
                   problem: row.problem,
                   history: session.historyOf(row.problem),
+                  updatedAt: session.historyUpdatedAt(row.problem),
                   onCycle: (slot) => _cycle(row.problem, slot),
                   onOpen: () => _openDetail(row.problem, row.number),
                 );
@@ -145,6 +150,7 @@ class _ProblemRow extends StatelessWidget {
     required this.number,
     required this.problem,
     required this.history,
+    required this.updatedAt,
     required this.onCycle,
     required this.onOpen,
   });
@@ -152,75 +158,104 @@ class _ProblemRow extends StatelessWidget {
   final int number;
   final PhysicsProblem problem;
   final History history;
+  final DateTime? updatedAt;
   final ValueChanged<int> onCycle;
   final VoidCallback onOpen;
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final updatedAt = this.updatedAt;
+    final updatedLabel = updatedAt == null
+        ? null
+        : l10n.historyUpdatedAt(
+            DateFormat.yMd(
+              Localizations.localeOf(context).toString(),
+            ).add_Hm().format(updatedAt),
+          );
     return DomainTintCard(
       domains: problem.domains,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(12, 4, 8, 12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'No. $number(${joinedDomainLabels(context, problem.domains)})',
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                            height: 1.15,
-                          ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'No. $number(${joinedDomainLabels(context, problem.domains)})',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          height: 1.15,
                         ),
-                        Text(
-                          problem.getLocalizedTitle(context),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            height: 1.25,
-                            color: Color(0xFF263238),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  HistorySlots(
-                    problemId: problem.id,
-                    history: history,
-                    onCycle: onCycle,
-                    iconSize: 33,
-                  ),
-                  ElevatedButton.icon(
-                    key: ValueKey('detail-${problem.id}'),
-                    onPressed: onOpen,
-                    icon: const Icon(Icons.open_in_new, size: 16),
-                    label: Text(AppLocalizations.of(context)!.detail),
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 8,
                       ),
-                      minimumSize: const Size(0, 32),
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    ),
+                      Text(
+                        problem.getLocalizedTitle(context),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontSize: 13,
+                          height: 1.25,
+                          color: Color(0xFF263238),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-              _ProblemStatement(
-                text: problem.getLocalizedStatement(context),
-                figure: _listFigure(problem),
-              ),
-            ],
-          ),
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    HistorySlots(
+                      problemId: problem.id,
+                      history: history,
+                      onCycle: onCycle,
+                      iconSize: 33,
+                    ),
+                    if (updatedLabel != null)
+                      Text(
+                        updatedLabel,
+                        style: const TextStyle(
+                          fontSize: 11,
+                          height: 1.2,
+                          color: Color(0xFF78909C),
+                        ),
+                      ),
+                  ],
+                ),
+                ElevatedButton.icon(
+                  key: ValueKey('detail-${problem.id}'),
+                  onPressed: onOpen,
+                  icon: const Icon(Icons.open_in_new, size: 16),
+                  label: Text(l10n.detail),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
+                    minimumSize: const Size(0, 32),
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
+                ),
+              ],
+            ),
+            const Divider(
+              height: 12,
+              thickness: 1,
+              color: Color(0xFFCFD8DC),
+            ),
+            _ProblemStatement(
+              text: problem.getLocalizedStatement(context),
+              figure: _listFigure(problem),
+            ),
+          ],
         ),
+      ),
     );
   }
 }

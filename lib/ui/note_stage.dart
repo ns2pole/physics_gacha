@@ -74,14 +74,14 @@ Paint noteStroke([Color color = noteInk, double width = 1.6]) {
 
 Paint noteSolid(Color color) => Paint()..color = color;
 
-void noteText(Canvas canvas, String text, Offset center, {double size = 12}) {
+void noteText(Canvas canvas, String text, Offset center, {double size = 15}) {
   final painter = TextPainter(
     text: TextSpan(
       text: text,
       style: figureLabelStyle(
         color: noteInk,
         fontSize: size,
-        fontWeight: FontWeight.w600,
+        fontWeight: FontWeight.w500,
       ),
     ),
     textDirection: TextDirection.ltr,

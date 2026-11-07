@@ -111,8 +111,8 @@ class _InclinePullPainter extends CustomPainter {
     canvas.drawLine(const Offset(18, -17), const Offset(72, -17), line);
     canvas.restore();
 
-    _label(canvas, smallMass, block + outward * 48);
-    _label(canvas, string, block + along * 48 + outward * 34);
+    _label(canvas, smallMass, block + outward * 58);
+    _label(canvas, string, block + along * 52 + outward * 42);
   }
 
   void _dashed(Canvas canvas, Offset from, Offset to, Paint paint) {

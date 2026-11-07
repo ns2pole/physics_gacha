@@ -110,7 +110,6 @@ class _BeatsPainter extends CustomPainter {
     _fork(canvas, 288, ink);
     _point(canvas);
     _label(canvas, '100 Hz', const Offset(32, 142));
-    _label(canvas, '×1/${_playback.toInt()}', const Offset(160, 142));
     _label(canvas, '104 Hz', const Offset(288, 142));
   }
 

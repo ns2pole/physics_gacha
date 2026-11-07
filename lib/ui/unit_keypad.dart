@@ -9,9 +9,7 @@ import 'unit_expression_view.dart';
 
 const _unitLabelStyle = TextStyle(fontSize: 18, color: Colors.black87);
 
-const _unitPrefixes = ['p', 'n', 'μ', 'm', 'k'];
-
-class UnitKeypad extends StatefulWidget {
+class UnitKeypad extends StatelessWidget {
   const UnitKeypad({
     super.key,
     required this.problem,
@@ -34,57 +32,26 @@ class UnitKeypad extends StatefulWidget {
   final VoidCallback? onConfirm;
 
   @override
-  State<UnitKeypad> createState() => _UnitKeypadState();
-}
-
-class _UnitKeypadState extends State<UnitKeypad> {
-  String _prefix = '';
-
-  @override
-  void initState() {
-    super.initState();
-    _prefix = _prefixOf(widget.selectedChoice);
-  }
-
-  @override
-  void didUpdateWidget(UnitKeypad oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    final problemChanged = widget.problem.id != oldWidget.problem.id;
-    final choiceChanged = widget.selectedChoice != oldWidget.selectedChoice;
-    if (problemChanged || (choiceChanged && widget.selectedChoice != null)) {
-      _prefix = _prefixOf(widget.selectedChoice);
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
     final preview = _preview(context);
-    final selectedBase = _baseOf(widget.selectedChoice);
     return CalculatorFrame(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           _UnitPreview(
-            value: widget.value.trim(),
+            value: value.trim(),
             unit: preview.unit,
             hint: preview.hint,
           ),
           const SizedBox(height: 12),
-          if (widget.problem.unitInputKind == UnitInputKind.base)
-            _BaseKeys(text: widget.text, onTextChanged: widget.onTextChanged)
-          else ...[
-            _PrefixKeys(
-              selected: _prefix,
-              onPrefix: _tapPrefix,
-              onClear: _prefix.isEmpty ? null : _clearPrefix,
-            ),
-            const SizedBox(height: 6),
+          if (problem.unitInputKind == UnitInputKind.base)
+            _BaseKeys(text: text, onTextChanged: onTextChanged)
+          else
             _ChoiceKeys(
-              choices: widget.problem.unitChoices,
-              selected: selectedBase,
-              onChoice: _tapChoice,
+              choices: problem.unitChoices,
+              selected: selectedChoice,
+              onChoice: onChoice,
             ),
-          ],
           const SizedBox(height: 12),
           Row(
             children: [
@@ -104,7 +71,7 @@ class _UnitKeypadState extends State<UnitKeypad> {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    onPressed: widget.onBack,
+                    onPressed: onBack,
                     child: Text(AppLocalizations.of(context)!.backToNumbers),
                   ),
                 ),
@@ -115,7 +82,7 @@ class _UnitKeypadState extends State<UnitKeypad> {
                   height: 52,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: widget.onConfirm == null
+                      backgroundColor: onConfirm == null
                           ? Colors.grey.shade300
                           : Colors.blue,
                       foregroundColor: Colors.white,
@@ -128,7 +95,7 @@ class _UnitKeypadState extends State<UnitKeypad> {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    onPressed: widget.onConfirm,
+                    onPressed: onConfirm,
                     child: Text(AppLocalizations.of(context)!.confirm),
                   ),
                 ),
@@ -140,59 +107,15 @@ class _UnitKeypadState extends State<UnitKeypad> {
     );
   }
 
-  void _tapPrefix(String prefix) {
-    if (_prefix == prefix) return;
-    setState(() => _prefix = prefix);
-    final base = _baseOf(widget.selectedChoice);
-    if (base != null) widget.onChoice(_compose(prefix, base));
-  }
-
-  void _clearPrefix() {
-    if (_prefix.isEmpty) return;
-    setState(() => _prefix = '');
-    final base = _baseOf(widget.selectedChoice);
-    if (base != null) widget.onChoice(base);
-  }
-
-  void _tapChoice(String choice) {
-    widget.onChoice(_compose(_prefix, choice));
-  }
-
   ({String unit, String hint}) _preview(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    if (widget.problem.unitInputKind == UnitInputKind.choices) {
-      final selected = widget.selectedChoice;
+    if (problem.unitInputKind == UnitInputKind.choices) {
+      final selected = selectedChoice;
       if (selected == null) return (unit: '', hint: l10n.selectUnit);
       return (unit: selected, hint: '');
     }
-    if (widget.text.isEmpty) return (unit: '', hint: l10n.assembleUnitHint);
-    return (unit: widget.text, hint: '');
-  }
-
-  String _compose(String prefix, String base) {
-    if (prefix.isEmpty || base == '1' || base == '無次元') return base;
-    return '$prefix$base';
-  }
-
-  String _prefixOf(String? selected) {
-    final base = _baseOf(selected);
-    if (selected == null || base == null || selected == base) return '';
-    for (final prefix in _unitPrefixes) {
-      if (selected == '$prefix$base') return prefix;
-    }
-    return '';
-  }
-
-  String? _baseOf(String? selected) {
-    if (selected == null || selected.isEmpty) return null;
-    final choices = widget.problem.unitChoices;
-    if (choices.contains(selected)) return selected;
-    for (final prefix in _unitPrefixes) {
-      if (!selected.startsWith(prefix)) continue;
-      final base = selected.substring(prefix.length);
-      if (choices.contains(base)) return base;
-    }
-    return null;
+    if (text.isEmpty) return (unit: '', hint: l10n.assembleUnitHint);
+    return (unit: text, hint: '');
   }
 }
 
@@ -241,63 +164,6 @@ class _UnitPreview extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-class _PrefixKeys extends StatelessWidget {
-  const _PrefixKeys({
-    required this.selected,
-    required this.onPrefix,
-    required this.onClear,
-  });
-
-  final String selected;
-  final ValueChanged<String> onPrefix;
-  final VoidCallback? onClear;
-
-  @override
-  Widget build(BuildContext context) {
-    const perRow = 4;
-    final labels = [..._unitPrefixes, '×'];
-    while (labels.length % perRow != 0) {
-      labels.insert(labels.length - 1, '');
-    }
-    final rowCount = labels.length ~/ perRow;
-    return Column(
-      children: [
-        for (var row = 0; row < rowCount; row++) ...[
-          if (row > 0) const SizedBox(height: 6),
-          Row(
-            children: [
-              for (var column = 0; column < perRow; column++) ...[
-                if (column > 0) const SizedBox(width: 6),
-                Expanded(child: _cell(labels[row * perRow + column])),
-              ],
-            ],
-          ),
-        ],
-      ],
-    );
-  }
-
-  Widget _cell(String label) {
-    if (label.isEmpty) return const SizedBox(height: 48);
-    if (label == '×') {
-      return _UnitButton(
-        key: const ValueKey('unit-prefix-clear'),
-        label: '×',
-        background: onClear == null ? Colors.grey.shade300 : Colors.orange,
-        foreground: Colors.white,
-        bold: true,
-        onPressed: onClear,
-      );
-    }
-    return _UnitButton(
-      key: ValueKey('unit-prefix-$label'),
-      label: label,
-      background: selected == label ? Colors.lightBlue.shade300 : Colors.white,
-      onPressed: () => onPrefix(label),
     );
   }
 }

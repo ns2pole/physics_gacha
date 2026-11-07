@@ -43,4 +43,11 @@ class FigureLabels {
   String get satellite => _l10n.figureSatellite;
   String get water => _l10n.figureWater;
   String get insulated => _l10n.figureInsulated;
+  String get naturalLength => _l10n.figureNaturalLength;
+  String diameterCm(String value) => _l10n.figureDiameterCm(value);
+  String airTemp(String temp) => _l10n.figureAirTemp(temp);
+  String get hundredTurnsCompact => _l10n.figureHundredTurnsCompact;
+  String get hundredTurns => _l10n.figureHundredTurns;
+  String get currentI => _l10n.figureCurrentI;
+  String get oneYear => _l10n.figureOneYear;
 }

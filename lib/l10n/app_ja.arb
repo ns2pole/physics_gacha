@@ -4,9 +4,10 @@
   "formulaSheet": "公式集",
   "problemList": "問題一覧",
   "spinGacha": "ガチャを回す",
+  "next": "次へ",
   "hint": "ヒント",
   "hideHint": "ヒントを隠す",
-  "showAnswer": "答えを見る",
+  "showAnswer": "答え",
   "hideAnswer": "答えを隠す",
   "askAi": "AIに聞く",
   "calculator": "電卓",
@@ -22,6 +23,12 @@
   "firstStep": "最初の一手",
   "explanation": "解説",
   "detail": "詳細",
+  "historyUpdatedAt": "更新 {time}",
+  "@historyUpdatedAt": {
+    "placeholders": {
+      "time": {"type": "String"}
+    }
+  },
   "noMatchingProblems": "該当する問題がありません",
   "noProblemsAvailable": "出題できる問題がありません。単元をオンにするか、除外を緩めてください。",
   "filterSettings": "フィルタ設定",
@@ -39,6 +46,7 @@
     }
   },
   "exclusionThenRemoveFromGacha": "ならガチャから外す",
+  "exclusionThenRemoveFromList": "なら一覧から外す",
   "exclusionThenExcludeProblems": "の問題を除く",
   "totalProblems": "全{total}問",
   "@totalProblems": {
@@ -181,18 +189,37 @@
   "figureAfter": "あと",
   "figureCylinderHeight": "0.318 m",
   "figureCylinderRadius": "半径 0.050 m",
-  "figurePlacedBefore": "置く前",
-  "figurePlacedAfter": "置いた後",
+  "figurePlacedBefore": "置く前（真上から）",
+  "figurePlacedAfter": "置いた後（真上から）",
   "figureFromSide": "やや斜め上から",
   "figureIsothermal": "等温",
   "figureIsobaric": "等圧",
   "figureIsochoric": "等積",
-  "figureAdiabatic": "断熱圧縮",
+  "figureAdiabatic": "断熱",
   "figureSun": "太陽",
   "figureEarth": "地球",
   "figureMoon": "月",
   "figureSatellite": "衛星",
   "figureWater": "水",
   "figureInsulated": "断熱",
+  "figureNaturalLength": "自然長",
+  "figureDiameterCm": "直径 {value} cm",
+  "@figureDiameterCm": {
+    "placeholders": {
+      "value": { "type": "String" }
+    }
+  },
+  "figureAirTemp": "空気 {temp}",
+  "@figureAirTemp": {
+    "placeholders": {
+      "temp": { "type": "String" }
+    }
+  },
+  "figureHundredTurnsCompact": "100回巻",
+  "figureHundredTurns": "100 巻き",
+  "figureCurrentI": "電流 I",
+  "figureOneYear": "1 年",
+  "unitCount": "個",
+  "unitYear": "年",
   "hintUnavailableEn": "英語のヒントはまだありません。"
 }

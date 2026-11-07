@@ -99,7 +99,6 @@ class _HeatDropPainter extends CustomPainter {
         line,
       );
     }
-    _label(canvas, water, Offset(inner.center.dx, waterY + 16));
     _label(canvas, insulated, Offset(outer.center.dx, outer.bottom + 12));
 
     const bracketX = 164.0;
@@ -113,6 +112,8 @@ class _HeatDropPainter extends CustomPainter {
       tick: const Offset(16, 0),
     );
     _label(canvas, '0.50 kg', const Offset(32, startTop + objectSize / 2));
+    // 水ラベルは寸法矢印の右へ（容器ハッチと被らない）。
+    _label(canvas, water, const Offset(bracketX + 40, waterY + 10));
 
     canvas.drawRect(Rect.fromLTWH(objectX, top, objectSize, objectSize), line);
   }

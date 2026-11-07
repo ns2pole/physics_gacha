@@ -428,18 +428,18 @@ const sampleProblems = <PhysicsProblem>[
     domains: {PhysicsDomain.electromagnetism},
     figure: ProblemFigure.bridgeVoltageDrop,
     statement: '図のように、点Aと点Bの間の電圧降下の大きさを答えよ。',
-    answerValue: 2,
+    answerValue: 2.4,
     answerUnit: 'V',
-    answerDisplay: '2.0',
+    answerDisplay: '2.4',
     unitChoices: ['V', 'A', 'W', 'C'],
-    hint: '点Aと点Bは、左上の抵抗の両端にある。左上と左下は一本の通り道で、その両端は電池である。',
+    hint: '点Aと点Bは、左上の抵抗の両端にある。電池の両極をつなぐ上側の通り道を見る。',
     approach: 'オームの法則 V = RI を使う。',
-    firstStep: '左の通り道では 6.0 = (4.0 + 8.0) I である。',
+    firstStep: '上側の通り道では 6.0 = (4.0 + 6.0) I である。',
     explanation:
         'オームの法則は V = RI である。'
-        '左上の 4.0 Ω と左下の 8.0 Ω は直列で、両端の電圧は電池の 6.0 V なので、'
-        '6.0 = (4.0 + 8.0) I。'
-        'I = 6.0 / 12 = 0.50 A。点Aと点Bの間の電圧降下は V = 4.0 × 0.50 = 2.0 V。',
+        '左上の 4.0 Ω と右上の 6.0 Ω は直列で、両端の電圧は電池の 6.0 V なので、'
+        '6.0 = (4.0 + 6.0) I。'
+        'I = 6.0 / 10 = 0.60 A。点Aと点Bの間の電圧降下は V = 4.0 × 0.60 = 2.4 V。',
   ),
   PhysicsProblem(
     id: '059e9128-3c09-4e75-9a6b-8c401a807e7c',
@@ -636,16 +636,16 @@ const sampleProblems = <PhysicsProblem>[
     theme: 'ケプラー第3法則',
     title: '太陽から遠い天体の公転周期',
     domains: {PhysicsDomain.mechanics},
-    figure: ProblemFigure.keplerOrbits,
     statement:
-        '図のように太陽のまわりをまわる二つの天体がある。'
-        '太陽からの距離が 4.0×10⁸ km の天体の公転周期を答えよ。',
+        '太陽のまわりをまわる二つの天体がある。'
+        '太陽からの距離が 1.0×10⁸ km の天体の公転周期は 1 年である。'
+        '太陽からの距離が 4.0×10⁸ km の天体の公転周期を年で答えよ。',
     answerValue: 8,
     answerUnit: '年',
     answerDisplay: '8',
     unitChoices: [],
     unitObvious: true,
-    hint: '二つの軌道の、太陽からの距離と、一方の周期が出ている。',
+    hint: '近い方の距離と周期、遠い方の距離が出ている。周期の比は距離の比で決まる。',
     approach: 'ケプラー第3法則 T² ∝ a³ を使う。',
     firstStep: '(T / 1)² = (4.0×10⁸ / 1.0×10⁸)³ である。',
     explanation:
