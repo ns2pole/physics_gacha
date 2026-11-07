@@ -57,6 +57,8 @@ enum ProblemFigure {
   blockEndLift,
   diskHoleCenter,
   cutSheetCenter,
+  /// 切り抜いた下敷きの解説用。左半分と右下を斜線で示す。
+  cutSheetExplain,
   slideTipHeight,
   floatingWood,
   kineticFrictionSlide,
@@ -118,6 +120,7 @@ class PhysicsProblem {
     required this.firstStep,
     required this.explanation,
     this.figure,
+    this.explanationFigure,
     this.hintReveal = HintReveal.message,
     this.symbolChoices = const [],
     this.symbolOrder = '',
@@ -135,6 +138,9 @@ class PhysicsProblem {
   final Set<PhysicsDomain> domains;
   final String statement;
   final ProblemFigure? figure;
+
+  /// 答え・解説のときに出す図。斜線で領域を示すなど。
+  final ProblemFigure? explanationFigure;
 
   /// 採点に使う数値。
   final double answerValue;
@@ -181,6 +187,8 @@ class PhysicsProblem {
 
   String get answerUnitLabel {
     if (isSymbolOrder) return '';
+    // 採点キーの '1' は無次元と同じだが、答えに出すと数値に見えるので出さない。
+    if (answerUnit.trim() == '1') return '';
     return isDimensionless ? '無次元' : answerUnit;
   }
 }

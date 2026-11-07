@@ -64,6 +64,8 @@ Widget noteArticleFigure(ProblemFigure figure) {
     ProblemFigure.blockEndLift => const _Fig(_Kind.endLift, height: 210),
     ProblemFigure.diskHoleCenter => const _Fig(_Kind.disk, height: 210),
     ProblemFigure.cutSheetCenter => const _Fig(_Kind.sheet, width: 260),
+    ProblemFigure.cutSheetExplain =>
+        const _Fig(_Kind.sheetExplain, width: 260, height: 320),
     ProblemFigure.slideTipHeight => const _Fig(_Kind.slide, height: 220),
     ProblemFigure.floatingWood => const _Fig(_Kind.wood),
     ProblemFigure.kineticFrictionSlide => const _Fig(
@@ -148,6 +150,7 @@ enum _Kind {
   swing,
   disk,
   sheet,
+  sheetExplain,
   slide,
   endLift,
   wood,
@@ -251,6 +254,8 @@ class _Paint extends NotePainter {
         _disk(canvas, size);
       case _Kind.sheet:
         _sheet(canvas, size);
+      case _Kind.sheetExplain:
+        _sheetExplain(canvas, size);
       case _Kind.slide:
         _slide(canvas, size);
       case _Kind.endLift:
@@ -959,6 +964,69 @@ class _Paint extends NotePainter {
     );
   }
 
+  /// 残った板を左半分と右下に分け、斜線で示す（解説用）。
+  void _sheetExplain(Canvas canvas, Size size) {
+    const dx = 40.0;
+    const left = 28.0;
+    const mid = 108.0;
+    const right = 188.0;
+    const top = 32.0;
+    const midY = 92.0;
+    const bottom = 152.0;
+    final outline = Path()
+      ..moveTo(left + dx, top)
+      ..lineTo(right + dx, top)
+      ..lineTo(right + dx, midY)
+      ..lineTo(mid + dx, midY)
+      ..lineTo(mid + dx, bottom)
+      ..lineTo(left + dx, bottom)
+      ..close();
+    final leftHalf = Path()
+      ..addRect(Rect.fromLTRB(left + dx, top, mid + dx, bottom));
+    final lowerRight = Path()
+      ..addRect(Rect.fromLTRB(mid + dx, midY, right + dx, bottom));
+
+    // 上段: 左半分
+    canvas.save();
+    canvas.translate(0, -8);
+    canvas.drawPath(outline, noteSolid(const Color(0xFFFFFFFF)));
+    _hatch(canvas, leftHalf);
+    canvas.drawPath(outline, noteStroke());
+    canvas.drawCircle(Offset((left + mid) / 2 + dx, (top + bottom) / 2), 3, noteSolid(noteAccent));
+    noteText(canvas, labels.leftHalf, Offset((left + mid) / 2 + dx, top - 14));
+    noteText(canvas, 'x = 6', Offset((left + mid) / 2 + dx, bottom + 14));
+    noteText(canvas, '2/3', Offset((left + mid) / 2 + dx, (top + bottom) / 2 + 16));
+    canvas.restore();
+
+    // 下段: 右下
+    canvas.save();
+    canvas.translate(0, 132);
+    canvas.drawPath(outline, noteSolid(const Color(0xFFFFFFFF)));
+    _hatch(canvas, lowerRight);
+    canvas.drawPath(outline, noteStroke());
+    canvas.drawCircle(Offset((mid + right) / 2 + dx, (midY + bottom) / 2), 3, noteSolid(noteAccent));
+    noteText(canvas, labels.lowerRight, Offset((mid + right) / 2 + dx, top - 14));
+    noteText(canvas, 'x = 18', Offset((mid + right) / 2 + dx, bottom + 14));
+    noteText(canvas, '1/3', Offset((mid + right) / 2 + dx, (midY + bottom) / 2 + 16));
+    canvas.restore();
+  }
+
+  void _hatch(Canvas canvas, Path region) {
+    canvas.save();
+    canvas.clipPath(region);
+    final bounds = region.getBounds().inflate(8);
+    final paint = noteStroke(noteSoft, 1.1);
+    for (var x = bounds.left - bounds.height; x < bounds.right + bounds.height; x += 7) {
+      canvas.drawLine(
+        Offset(x, bounds.top),
+        Offset(x + bounds.height, bounds.bottom),
+        paint,
+      );
+    }
+    canvas.restore();
+    canvas.drawPath(region, noteStroke(noteSoft, 1.2));
+  }
+
   void _slide(Canvas canvas, Size size) {
     // 幅 6.0 cm、μ = 0.20。境の高さは答えなので寸法値は置かず、押す高さを矢印だけ示す。
     const left = 88.0;
@@ -1140,15 +1208,42 @@ class _Paint extends NotePainter {
   void _turn(Canvas canvas, Size size) {
     final angle = progress * math.pi * 2;
     final center = const Offset(115, 100);
-    canvas.drawCircle(center, 48, noteStroke());
+    const radius = 48.0;
+    // 台に放射状の模様を付け、回転が分かるようにする。
+    canvas.drawCircle(center, radius, noteSolid(noteFill));
+    const sectors = 8;
+    for (var i = 0; i < sectors; i += 2) {
+      final start = angle + i * math.pi * 2 / sectors;
+      final path = Path()
+        ..moveTo(center.dx, center.dy)
+        ..arcTo(
+          Rect.fromCircle(center: center, radius: radius),
+          start,
+          math.pi * 2 / sectors,
+          false,
+        )
+        ..close();
+      canvas.drawPath(path, noteSolid(const Color(0xFFCFD8DC)));
+    }
+    for (var i = 0; i < sectors; i++) {
+      final a = angle + i * math.pi * 2 / sectors;
+      noteLine(
+        canvas,
+        center,
+        center + Offset(math.cos(a) * radius, math.sin(a) * radius),
+        noteStroke(noteSoft, 1.1),
+      );
+    }
+    canvas.drawCircle(center, radius * 0.55, noteStroke(noteSoft, 1.1));
+    canvas.drawCircle(center, radius, noteStroke());
     canvas.drawCircle(center, 4, noteSolid(noteInk));
-    final bob = center + Offset(math.cos(angle) * 48, math.sin(angle) * 48);
+    final bob = center + Offset(math.cos(angle) * radius, math.sin(angle) * radius);
     noteSpring(canvas, center, bob, coils: 14, amplitude: 2.8);
     noteMass(canvas, bob, radius: 8);
     _span(
       canvas,
       center + const Offset(56, 0),
-      center + const Offset(56, -48),
+      center + Offset(56, -radius),
       '0.20 m',
       tick: const Offset(12, 0),
     );
@@ -1233,7 +1328,7 @@ class _Paint extends NotePainter {
   }
 
   void _dip(Canvas canvas, Size size) {
-    // 100 g・40 cm³ のおもりを食塩水へ。ばねはかりは天井から。
+    // 100 g・40 cm³ のおもりを飽和食塩水へ。ばねはかりは天井から。
     // サイクル前1/3で沈め、残り約3 sは沈めたまま。
     const tank = Rect.fromLTWH(78, 88, 100, 100);
     final dip = playPauseProgress(progress, motion: 1 / 3);
@@ -1253,7 +1348,7 @@ class _Paint extends NotePainter {
     noteMass(canvas, Offset(118, y), radius: 11);
     noteText(canvas, '100 g', const Offset(48, 64));
     noteText(canvas, '40 cm³', const Offset(48, 86));
-    noteText(canvas, '1.25 g/cm^3', const Offset(186, 140));
+    noteText(canvas, '1.20 g/cm³', const Offset(186, 140));
   }
 
   void _tension(Canvas canvas, Size size) {
@@ -1493,7 +1588,7 @@ class _Paint extends NotePainter {
     );
     paintPressureGauge(canvas, gauge, radius: 12);
     noteLine(canvas, const Offset(22, surface), const Offset(left, surface), noteStroke(noteSoft));
-    _span(canvas, const Offset(22, surface), const Offset(22, depthY), '30 cm', tick: const Offset(8, 0));
+    _span(canvas, const Offset(22, surface), const Offset(22, depthY), '50 cm', tick: const Offset(8, 0));
     noteText(canvas, '1013 hPa', const Offset(137, 36));
   }
 
@@ -1525,17 +1620,32 @@ class _Paint extends NotePainter {
     canvas.drawPath(basin, noteStroke());
     noteLine(canvas, const Offset(basinLeft - 8, openY), const Offset(basinLeft, openY));
     noteLine(canvas, const Offset(basinRight, openY), const Offset(basinRight + 8, openY));
+    // 上辺の角は下の容器と同じく丸くする。
+    const corner = 10.0;
+    final tubeFill = Path()
+      ..moveTo(tubeLeft, mouthY)
+      ..lineTo(tubeLeft, tubeTop + corner)
+      ..quadraticBezierTo(tubeLeft, tubeTop, tubeLeft + corner, tubeTop)
+      ..lineTo(tubeRight - corner, tubeTop)
+      ..quadraticBezierTo(tubeRight, tubeTop, tubeRight, tubeTop + corner)
+      ..lineTo(tubeRight, mouthY)
+      ..close();
+    final tubeStroke = Path()
+      ..moveTo(tubeLeft, mouthY)
+      ..lineTo(tubeLeft, tubeTop + corner)
+      ..quadraticBezierTo(tubeLeft, tubeTop, tubeLeft + corner, tubeTop)
+      ..lineTo(tubeRight - corner, tubeTop)
+      ..quadraticBezierTo(tubeRight, tubeTop, tubeRight, tubeTop + corner)
+      ..lineTo(tubeRight, mouthY);
+    canvas.drawPath(tubeFill, noteSolid(const Color(0xFFFFFFFF)));
+    canvas.save();
+    canvas.clipPath(tubeFill);
     canvas.drawRect(
-      const Rect.fromLTRB(tubeLeft + 1, tubeTop, tubeRight - 1, mouthY),
-      noteSolid(const Color(0xFFFFFFFF)),
-    );
-    canvas.drawRect(
-      const Rect.fromLTRB(tubeLeft + 1, innerY, tubeRight - 1, mouthY),
+      const Rect.fromLTRB(tubeLeft, innerY, tubeRight, mouthY),
       noteSolid(water),
     );
-    noteLine(canvas, const Offset(tubeLeft, tubeTop), const Offset(tubeRight, tubeTop));
-    noteLine(canvas, const Offset(tubeLeft, tubeTop), const Offset(tubeLeft, mouthY));
-    noteLine(canvas, const Offset(tubeRight, tubeTop), const Offset(tubeRight, mouthY));
+    canvas.restore();
+    canvas.drawPath(tubeStroke, noteStroke());
     noteLine(
       canvas,
       const Offset(tubeLeft, innerY),
@@ -1586,7 +1696,7 @@ class _Paint extends NotePainter {
     noteLine(canvas, const Offset(24, surface), const Offset(left, surface), noteStroke(noteSoft));
     noteLine(canvas, const Offset(24, 156), const Offset(146, 156), noteStroke(noteSoft));
     _span(canvas, const Offset(24, surface), const Offset(24, 156), '50 cm', tick: const Offset(8, 0));
-    noteText(canvas, '1.20 g/cm^3', const Offset(146, 16));
+    noteText(canvas, '1.20 g/cm³', const Offset(146, 16));
     noteText(canvas, '1013 hPa', const Offset(146, 52));
   }
 

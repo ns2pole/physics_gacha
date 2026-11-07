@@ -77,7 +77,7 @@ Paint noteSolid(Color color) => Paint()..color = color;
 void noteText(Canvas canvas, String text, Offset center, {double size = 15}) {
   final painter = TextPainter(
     text: TextSpan(
-      text: text,
+      text: noteLabelSuperscripts(text),
       style: figureLabelStyle(
         color: noteInk,
         fontSize: size,
@@ -87,6 +87,28 @@ void noteText(Canvas canvas, String text, Offset center, {double size = 15}) {
     textDirection: TextDirection.ltr,
   )..layout();
   painter.paint(canvas, center - Offset(painter.width / 2, painter.height / 2));
+}
+
+/// `cm^3` / `m/s^2` の `^` 表記を、右肩の指数文字に直す。
+String noteLabelSuperscripts(String text) {
+  const digits = {
+    '0': '⁰',
+    '1': '¹',
+    '2': '²',
+    '3': '³',
+    '4': '⁴',
+    '5': '⁵',
+    '6': '⁶',
+    '7': '⁷',
+    '8': '⁸',
+    '9': '⁹',
+  };
+  return text.replaceAllMapped(RegExp(r'\^(-?\d+)'), (match) {
+    return match.group(1)!.split('').map((c) {
+      if (c == '-') return '⁻';
+      return digits[c]!;
+    }).join();
+  });
 }
 
 void noteLine(Canvas canvas, Offset a, Offset b, [Paint? paint]) {

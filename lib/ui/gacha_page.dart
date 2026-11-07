@@ -567,7 +567,9 @@ class _GachaPageState extends State<GachaPage> with TickerProviderStateMixin {
       );
       final submittedUnit = switch (problem.unitInputKind) {
         UnitInputKind.omitted => problem.getLocalizedAnswerUnitLabel(context),
-        UnitInputKind.choices => _choice ?? '',
+        // 候補の '1' / 無次元は数値に見えるので、送った解答には付けない。
+        UnitInputKind.choices =>
+          _isDimensionlessChoice(_choice, l10n) ? '' : (_choice ?? ''),
         UnitInputKind.base => _unitText,
       };
       submitted = _formatSubmitted(_expression.text, submittedUnit);
@@ -1235,6 +1237,10 @@ class _AnswerCard extends StatelessWidget {
               problem.getLocalizedExplanation(context),
               style: const TextStyle(fontSize: 16, height: 1.5),
             ),
+            if (problem.explanationFigure != null) ...[
+              const SizedBox(height: 12),
+              Center(child: problemFigureView(problem.explanationFigure!)),
+            ],
           ],
         ),
       ),

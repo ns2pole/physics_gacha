@@ -986,6 +986,18 @@ abstract class AppLocalizations {
   /// **'1 年'**
   String get figureOneYear;
 
+  /// No description provided for @figureLeftHalf.
+  ///
+  /// In ja, this message translates to:
+  /// **'左半分'**
+  String get figureLeftHalf;
+
+  /// No description provided for @figureLowerRight.
+  ///
+  /// In ja, this message translates to:
+  /// **'右下'**
+  String get figureLowerRight;
+
   /// No description provided for @unitCount.
   ///
   /// In ja, this message translates to:

@@ -492,6 +492,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get figureOneYear => '1 yr';
 
   @override
+  String get figureLeftHalf => 'Left half';
+
+  @override
+  String get figureLowerRight => 'Lower right';
+
+  @override
   String get unitCount => 'count';
 
   @override

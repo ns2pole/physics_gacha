@@ -288,18 +288,22 @@ const noteArticleTranslationsEn = <String, ProblemTranslation>{
         'the original center. How many cm toward the side opposite the hole '
         'does the center of mass of the remainder shift?',
     hint:
-        'Treat the original disk and the hole as two disks, one with positive '
-        'mass and one with negative mass.',
+        'See the original disk as the remainder plus the disk that was cut out.',
     approach:
-        'Use the definition of the center of mass, subtracting the hole from the original disk.',
-    firstStep: 'x = (0 − (1/4) × (R / 2)) / (1 − 1/4).',
+        'Use the definition of the center of mass for the original disk, the '
+        'remainder, and the cut-out disk.',
+    firstStep: '3x/4 + (−5.1) × (1/4) = 0.',
     explanation:
         'The center of mass is the mass-weighted average position. '
-        'The hole has 1/4 of the area, so its mass is M / 4. '
-        'Its center is R / 2 toward the hole from the original center. '
-        'The remaining mass is 3M / 4. '
-        'x = (M × 0 − (M / 4) × (R / 2)) / (3M / 4) = −R / 6. '
-        'The shift away from the hole is R / 6 = 10.2 / 6 = 1.7 cm.',
+        'The original disk is the remainder plus the cut-out disk, so its '
+        'center of mass is at the original center. '
+        'Take that center as the origin and the direction opposite the hole '
+        '(leftward) as positive. Then the hole center is at −5.1 cm. '
+        'The hole has 1/4 of the area, so the mass ratio is remainder : hole '
+        '= 3 : 1. '
+        'Let x be the center of mass of the remainder. Then '
+        '3x/4 + (−5.1) × (1/4) = 0. '
+        '3x/4 = 5.1/4. x = 5.1/3 = 1.7 cm.',
   ),
   'e5bc3b07-2a24-49d0-9cf3-f6e03c9b6c8f': ProblemTranslation(
     theme: 'Center of mass of a cut sheet',
@@ -309,18 +313,17 @@ const noteArticleTranslationsEn = <String, ProblemTranslation>{
         'of a uniform 24 cm by 16 cm rectangle. Find the distance from the '
         'left edge to the center of mass of the remainder, in cm.',
     hint:
-        'Subtract the center of the removed rectangle from the center of the '
-        'original rectangle, weighted by area.',
+        'Split the remainder into the left half and the lower-right rectangle.',
     approach:
-        'Use the definition of the center of mass, subtracting the removed part.',
-    firstStep: 'x = (12 − (1/4) × 18) / (3/4).',
+        'Use the definition of the center of mass with the areas of the two regions.',
+    firstStep: '(2/3) × 6 + (1/3) × 18 = 10.',
     explanation:
-        'The original center is 12 cm from the left edge. '
-        'The removed part has 1/4 of the area, and its center is 18 cm '
-        'from the left edge. The remaining area is 3/4. '
-        'x = (12 − 0.25 × 18) / 0.75. '
-        '0.25 × 18 = 4.5. '
-        'x = (12 − 4.5) / 0.75 = 7.5 / 0.75 = 10 cm.',
+        'Take the left edge as x = 0. The remainder splits into the left half '
+        '(12 cm by 16 cm) and the lower right (12 cm by 8.0 cm). '
+        'The area ratio is 192 : 96 = 2 : 1, so the weights are 2/3 and 1/3. '
+        'The left-half center is at x = 12/2 = 6 cm. '
+        'The lower-right center is at x = 12 + 12/2 = 18 cm. '
+        'The remainder center is (2/3) × 6 + (1/3) × 18 = 4 + 6 = 10 cm.',
   ),
   'fccf9e77-372c-4c34-b17d-9cafc2d339b5': ProblemTranslation(
     theme: 'Boundary between sliding and tipping',
@@ -479,24 +482,24 @@ const noteArticleTranslationsEn = <String, ProblemTranslation>{
   ),
   '264dc236-782b-4ba0-9d39-13c94f7ea889': ProblemTranslation(
     theme: 'Tension decrease in water',
-    title: 'How much a spring scale drops in salt water',
+    title: 'How much a spring scale drops in saturated salt water',
     statement:
         'As shown, an object of mass 100 g and volume 40 cm³ hangs from a '
-        'spring scale and is lowered into salt water. By how many grams does '
-        'the reading drop compared with air?\n'
-        '※Take the density of the salt water to be 1.25 g/cm³. The object is '
-        'fully under the liquid. Ignore buoyancy in air.',
+        'spring scale and is lowered into saturated salt water. By how many '
+        'grams does the reading drop compared with air?\n'
+        '※Take the density of saturated salt water to be 1.20 g/cm³. The '
+        'object is fully under the liquid. Ignore buoyancy in air.',
     hint:
         'In the liquid, an upward force equal to the weight of the displaced '
-        'salt water is added.',
+        'saturated salt water is added.',
     approach:
-        'Buoyancy equals the weight of the displaced salt water, and the scale '
-        'reading drops by that amount.',
-    firstStep: 'Δm = 1.25 × 40.',
+        'Buoyancy equals the weight of the displaced saturated salt water, and '
+        'the scale reading drops by that amount.',
+    firstStep: 'Δm = 1.20 × 40.',
     explanation:
-        'Buoyancy equals the weight of the displaced salt water. '
-        'The mass of displaced salt water is 1.25 × 40 = 50 g. '
-        'The scale reading drops by the corresponding 50 g.',
+        'Buoyancy equals the weight of the displaced saturated salt water. '
+        'The mass of displaced saturated salt water is 1.20 × 40 = 48 g. '
+        'The scale reading drops by the corresponding 48 g.',
   ),
   'fb52940c-6b53-4c80-a4a3-639e2aa650ef': ProblemTranslation(
     theme: 'Tension of a pendulum at the bottom',
@@ -575,20 +578,20 @@ const noteArticleTranslationsEn = <String, ProblemTranslation>{
   ),
   'b2264701-1475-4352-a05d-e5271f77caff': ProblemTranslation(
     theme: 'Pressure under an open water surface',
-    title: 'Pressure at a depth of 30 cm',
+    title: 'Pressure at a depth of 50 cm',
     statement:
-        'As shown, find the pressure 30 cm below a water surface open to the '
+        'As shown, find the pressure 50 cm below a water surface open to the '
         'atmosphere, in hPa.\n'
         '※Take the surface pressure to be 1013 hPa, the density of water to be '
         '1000 kg/m³, and g = 9.8 m/s².',
     hint:
         'Below an open surface, the pressure of the atmosphere is added to the pressure from the weight of the water.',
     approach: 'The pressure under an open surface is p = p₀ + ρ g h.',
-    firstStep: 'p = 1013 + 1000 × 9.8 × 0.30 / 100.',
+    firstStep: 'p = 1013 + 1000 × 9.8 × 0.50 / 100.',
     explanation:
         'The pressure under an open surface is p = p₀ + ρ g h. '
-        'ρ g h = 1000 × 9.8 × 0.30 = 2940 Pa = 29.4 hPa. '
-        'p = 1013 + 29.4 = 1042.4 hPa.',
+        'ρ g h = 1000 × 9.8 × 0.50 = 4900 Pa = 49 hPa. '
+        'p = 1013 + 49 = 1062 hPa.',
   ),
   'cc8cd992-df30-4283-b758-2c7bba07336a': ProblemTranslation(
     theme: 'Pressure at the top of a closed water column',

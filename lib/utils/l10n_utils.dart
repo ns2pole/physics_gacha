@@ -68,6 +68,8 @@ extension PhysicsProblemLocalization on PhysicsProblem {
 
   String getLocalizedAnswerUnitLabel(BuildContext context) {
     if (isSymbolOrder) return '';
+    // 採点キーの '1' は無次元と同じだが、答えに出すと数値に見えるので出さない。
+    if (answerUnit.trim() == '1') return '';
     final l10n = AppLocalizations.of(context)!;
     if (isDimensionless) {
       return l10n.dimensionless;

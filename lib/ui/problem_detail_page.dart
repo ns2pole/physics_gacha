@@ -184,6 +184,9 @@ class _ProblemDetailPageState extends State<ProblemDetailPage> {
               _Section(
                 title: l10n.explanation,
                 body: problem.getLocalizedExplanation(context),
+                figure: problem.explanationFigure == null
+                    ? null
+                    : _figure(problem.explanationFigure!),
               ),
             ],
           ),

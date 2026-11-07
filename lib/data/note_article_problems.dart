@@ -350,16 +350,18 @@ const noteArticleProblems = <PhysicsProblem>[
     answerDisplay: '1.7',
     unitChoices: [],
     unitObvious: true,
-    hint: 'くり抜く前の円と、穴の形の円を、質量が正と負の二つの円として重ねる。',
-    approach: '重心の定義を、もとの円から穴の円を引いて使う。',
-    firstStep: 'x = (0 − (1/4) × (R / 2)) / (1 − 1/4) である。',
+    hint: 'もとの円盤は、残った板とくり抜いた円を合わせたものだと見る。',
+    approach: '重心の定義を、もとの円盤・残った板・くり抜いた円で使う。',
+    firstStep: '3x/4 + (−5.1) × (1/4) = 0 である。',
     explanation:
         '重心は、質量で重みをつけた位置の平均である。'
-        '穴の面積はもとの 1/4 なので、穴の質量はもとの質量 M の 1/4 である。'
-        '穴の中心は、もとの中心から R / 2 だけ穴側にある。'
-        '残った質量は 3M / 4。'
-        'x = (M × 0 − (M / 4) × (R / 2)) / (3M / 4) = −R / 6。'
-        '穴と反対側へのずれは R / 6 = 10.2 / 6 = 1.7 cm。',
+        'もとの円盤は、残った板とくり抜いた円を合わせたものなので、'
+        'その重心はもとの中心にある。'
+        'もとの中心を原点、穴と反対向き（左向き）を正とすると、'
+        '穴の中心は −5.1 cm である。'
+        '穴の面積はもとの 1/4 なので、質量の比は残った板 : 穴 = 3 : 1。'
+        '残った板の重心を x とすると、3x/4 + (−5.1) × (1/4) = 0。'
+        '3x/4 = 5.1/4。x = 5.1/3 = 1.7 cm。',
   ),
   PhysicsProblem(
     id: 'e5bc3b07-2a24-49d0-9cf3-f6e03c9b6c8f',
@@ -367,6 +369,7 @@ const noteArticleProblems = <PhysicsProblem>[
     title: '切り抜いた下敷きの横位置',
     domains: {PhysicsDomain.mechanics},
     figure: ProblemFigure.cutSheetCenter,
+    explanationFigure: ProblemFigure.cutSheetExplain,
     statement:
         '図のように、横 24 cm、縦 16 cm の一様な長方形から、'
         '右上の横 12 cm、縦 8.0 cm を切り抜いた。'
@@ -376,16 +379,16 @@ const noteArticleProblems = <PhysicsProblem>[
     answerDisplay: '10',
     unitChoices: [],
     unitObvious: true,
-    hint: '切る前の長方形と、切り抜いた長方形の重心を、面積の重みで引く。',
-    approach: '重心の定義を、もとの板から切り抜いた部分を引いて使う。',
-    firstStep: 'x = (12 − (1/4) × 18) / (3/4) である。',
+    hint: '残った板を、左半分と右下の二つの長方形に分ける。',
+    approach: '重心の定義を、分けた二つの領域の面積の重みで使う。',
+    firstStep: '(2/3) × 6 + (1/3) × 18 = 10 である。',
     explanation:
-        'もとの重心は左端から 12 cm にある。'
-        '切り抜いた部分の面積は全体の 1/4 で、その重心は左端から 18 cm にある。'
-        '残った面積は 3/4。'
-        'x = (12 − 0.25 × 18) / 0.75。'
-        '0.25 × 18 = 4.5。'
-        'x = (12 − 4.5) / 0.75 = 7.5 / 0.75 = 10 cm。',
+        '左端を x = 0 とする。残った板は、左半分（横 12 cm・縦 16 cm）と、'
+        '右下（横 12 cm・縦 8.0 cm）に分けられる。'
+        '面積の比は 192 : 96 = 2 : 1 なので、重みは 2/3 と 1/3 である。'
+        '左半分の重心は x = 12/2 = 6 cm。'
+        '右下の重心は x = 12 + 12/2 = 18 cm。'
+        '残った板の重心は (2/3) × 6 + (1/3) × 18 = 4 + 6 = 10 cm。',
   ),
   PhysicsProblem(
     id: 'fccf9e77-372c-4c34-b17d-9cafc2d339b5',
@@ -582,25 +585,25 @@ const noteArticleProblems = <PhysicsProblem>[
   PhysicsProblem(
     id: '264dc236-782b-4ba0-9d39-13c94f7ea889',
     theme: '水中で減る張力',
-    title: '食塩水中で減るばねはかりの読み',
+    title: '飽和食塩水中で減るばねはかりの読み',
     domains: {PhysicsDomain.mechanics},
     figure: ProblemFigure.underwaterScale,
     statement:
-        '図のように、質量 100 g、体積 40 cm³ の物体をばねはかりにつるし、食塩水へ沈めた。'
+        '図のように、質量 100 g、体積 40 cm³ の物体をばねはかりにつるし、飽和食塩水へ沈めた。'
         'ばねはかりの読みは、空気中より何 g 減るか。\n'
-        '※食塩水の密度を 1.25 g/cm³ とする。物体はすべて液中にあり、空気の浮力は無視する。',
-    answerValue: 50,
+        '※飽和食塩水の密度を 1.20 g/cm³ とする。物体はすべて液中にあり、空気の浮力は無視する。',
+    answerValue: 48,
     answerUnit: 'g',
-    answerDisplay: '50',
+    answerDisplay: '48',
     unitChoices: [],
     unitObvious: true,
-    hint: '液中では、物体が押しのけた食塩水の重さだけ上向きの力が加わる。',
-    approach: '浮力は押しのけた食塩水の重さに等しく、ばねの読みはその分だけ減る。',
-    firstStep: 'Δm = 1.25 × 40 である。',
+    hint: '液中では、物体が押しのけた飽和食塩水の重さだけ上向きの力が加わる。',
+    approach: '浮力は押しのけた飽和食塩水の重さに等しく、ばねの読みはその分だけ減る。',
+    firstStep: 'Δm = 1.20 × 40 である。',
     explanation:
-        '浮力は、押しのけた食塩水の重さに等しい。'
-        '押しのけた食塩水の質量は 1.25 × 40 = 50 g。'
-        'ばねの読みの減りは、この質量に相当する 50 g である。',
+        '浮力は、押しのけた飽和食塩水の重さに等しい。'
+        '押しのけた飽和食塩水の質量は 1.20 × 40 = 48 g。'
+        'ばねの読みの減りは、この質量に相当する 48 g である。',
   ),
   PhysicsProblem(
     id: 'fb52940c-6b53-4c80-a4a3-639e2aa650ef',
@@ -702,25 +705,25 @@ const noteArticleProblems = <PhysicsProblem>[
   PhysicsProblem(
     id: 'b2264701-1475-4352-a05d-e5271f77caff',
     theme: '開いた水面下の圧力',
-    title: '水深 30 cm の圧力',
+    title: '水深 50 cm の圧力',
     domains: {PhysicsDomain.mechanics},
     figure: ProblemFigure.waterDepthPressure,
     statement:
-        '図のように、大気に開いた水面から 30 cm の深さの圧力を hPa で答えよ。\n'
+        '図のように、大気に開いた水面から 50 cm の深さの圧力を hPa で答えよ。\n'
         '※水面の気圧を 1013 hPa、水の密度を 1000 kg/m³、'
         '重力加速度の大きさを 9.8 m/s² とする。',
-    answerValue: 1042.4,
+    answerValue: 1062,
     answerUnit: 'hPa',
-    answerDisplay: '1042.4',
+    answerDisplay: '1062',
     unitChoices: [],
     unitObvious: true,
     hint: '開いた水面の下では、大気の圧力に、その深さの水の重さによる圧力が加わる。',
     approach: '開いた水面下の圧力は p = p₀ + ρ g h である。',
-    firstStep: 'p = 1013 + 1000 × 9.8 × 0.30 / 100 である。',
+    firstStep: 'p = 1013 + 1000 × 9.8 × 0.50 / 100 である。',
     explanation:
         '開いた水面下の圧力は p = p₀ + ρ g h である。'
-        'ρ g h = 1000 × 9.8 × 0.30 = 2940 Pa = 29.4 hPa。'
-        'p = 1013 + 29.4 = 1042.4 hPa。',
+        'ρ g h = 1000 × 9.8 × 0.50 = 4900 Pa = 49 hPa。'
+        'p = 1013 + 49 = 1062 hPa。',
   ),
   PhysicsProblem(
     id: 'cc8cd992-df30-4283-b758-2c7bba07336a',

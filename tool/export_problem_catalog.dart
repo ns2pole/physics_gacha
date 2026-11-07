@@ -824,7 +824,8 @@ String _answer(PhysicsProblem problem) {
   if (problem.isSymbolOrder) return problem.symbolOrder;
   if (problem.isDimensionless) return '${problem.answerDisplay}（無次元）';
   final unit = problem.answerUnit.trim();
-  if (unit.isEmpty) return problem.answerDisplay;
+  // '1' は無次元キーだが、答えに付けると数値に見えるので出さない。
+  if (unit.isEmpty || unit == '1') return problem.answerDisplay;
   return '${problem.answerDisplay} $unit';
 }
 

@@ -483,6 +483,12 @@ class AppLocalizationsJa extends AppLocalizations {
   String get figureOneYear => '1 年';
 
   @override
+  String get figureLeftHalf => '左半分';
+
+  @override
+  String get figureLowerRight => '右下';
+
+  @override
   String get unitCount => '個';
 
   @override
