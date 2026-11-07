@@ -87,11 +87,13 @@ class _ProblemDetailPageState extends State<ProblemDetailPage> {
         elevation: 0,
         scrolledUnderElevation: 0,
         foregroundColor: const Color(0xFF1565C0),
-        title: Text('No. ${widget.number}'),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 12),
-            child: ElevatedButton(
+        centerTitle: false,
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text('No. ${widget.number}'),
+            const SizedBox(width: 10),
+            ElevatedButton(
               onPressed: () {
                 PhysicsAiChatLauncher.open(
                   context: context,
@@ -116,8 +118,8 @@ class _ProblemDetailPageState extends State<ProblemDetailPage> {
               ),
               child: Text(l10n.askAi),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
       body: Stack(
         children: [

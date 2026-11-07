@@ -495,7 +495,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get figureLeftHalf => 'Left half';
 
   @override
-  String get figureLowerRight => 'Lower right';
+  String get figureUpperRight => 'Upper right';
 
   @override
   String get unitCount => 'count';

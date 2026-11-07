@@ -17,7 +17,8 @@ Widget noteArticleFigure(ProblemFigure figure) {
       width: 260,
     ),
     ProblemFigure.singleSlit => const _Fig(_Kind.slit, width: 260, height: 220),
-    ProblemFigure.diffractionGrating => const _Fig(_Kind.grating),
+    ProblemFigure.diffractionGrating =>
+        const _Fig(_Kind.grating, width: 260, height: 220),
     ProblemFigure.toothbrushString => const _Fig(
       _Kind.brush,
       animate: true,
@@ -397,6 +398,7 @@ class _Paint extends NotePainter {
     const slitTop = 94.0;
     const slitBottom = 130.0;
     const darkY = 76.0;
+    _incomingRays(canvas, toX: slitX, ys: const [axisY]);
     noteLine(canvas, const Offset(slitX, 28), const Offset(slitX, slitTop));
     noteLine(canvas, const Offset(slitX, slitBottom), const Offset(slitX, 176));
     noteLine(canvas, const Offset(screenX, 24), const Offset(screenX, 180));
@@ -425,17 +427,18 @@ class _Paint extends NotePainter {
     noteText(
       canvas,
       'θ',
-      Offset(slitX + 44, axisY + (darkY - axisY) * 0.28),
+      Offset(slitX + 52, axisY + (darkY - axisY) * 0.16),
     );
-    // 0.10 mm は寸法線の左（光線帯に入れない）。
+    // 0.10 mm は寸法矢印の上方（入射光の帯から外す）。
     _span(
       canvas,
       const Offset(78, slitTop),
       const Offset(78, slitBottom),
-      '0.10 mm',
+      '',
       tick: const Offset(-10, 0),
       guide: 10,
     );
+    noteText(canvas, '0.10 mm', const Offset(54, slitTop - 14));
     _span(
       canvas,
       const Offset(slitX, 204),
@@ -445,16 +448,98 @@ class _Paint extends NotePainter {
   }
 
   void _grating(Canvas canvas, Size size) {
-    for (var i = 0; i < 5; i++) {
-      final y = 46.0 + i * 22;
-      noteLine(canvas, Offset(24, y), Offset(24, y + 12));
+    // 格子定数 1.0×10⁻⁶ m、スクリーンまで 1.0 m。明線位置は答えなので寸法値は置かない。
+    // 構図は単スリット（No.48）と同じ。上下は実線、中央のすき間だけ極細の点線。
+    const gratingX = 96.0;
+    const screenX = 236.0;
+    const axisY = 112.0;
+    const gapTop = 94.0;
+    const gapBottom = 130.0;
+    const brightY = 64.0;
+    _incomingRays(canvas, toX: gratingX, ys: const [axisY]);
+    noteLine(canvas, const Offset(gratingX, 28), const Offset(gratingX, gapTop));
+    _fineDots(
+      canvas,
+      const Offset(gratingX, gapTop),
+      const Offset(gratingX, gapBottom),
+    );
+    noteLine(
+      canvas,
+      const Offset(gratingX, gapBottom),
+      const Offset(gratingX, 176),
+    );
+    noteLine(canvas, const Offset(screenX, 24), const Offset(screenX, 180));
+    noteLine(
+      canvas,
+      const Offset(gratingX, axisY),
+      const Offset(screenX, axisY),
+      noteStroke(noteSoft),
+    );
+    noteLine(
+      canvas,
+      const Offset(gratingX, axisY),
+      const Offset(screenX, brightY),
+      noteStroke(noteAccent),
+    );
+    canvas.drawCircle(const Offset(screenX, brightY), 4, noteSolid(noteInk));
+    final theta = math.atan2(brightY - axisY, screenX - gratingX);
+    canvas.drawArc(
+      Rect.fromCircle(center: const Offset(gratingX, axisY), radius: 34),
+      theta,
+      -theta,
+      false,
+      noteStroke(noteSoft, 1.2),
+    );
+    noteText(
+      canvas,
+      'θ',
+      Offset(gratingX + 52, axisY + (brightY - axisY) * 0.16),
+    );
+    // 1.0×10⁻⁶ m は寸法矢印の上方。
+    _span(
+      canvas,
+      const Offset(78, gapTop),
+      const Offset(78, gapBottom),
+      '',
+      tick: const Offset(-10, 0),
+      guide: 10,
+    );
+    noteText(canvas, '1.0×10⁻⁶ m', const Offset(46, gapTop - 14));
+    _span(
+      canvas,
+      const Offset(gratingX, 204),
+      const Offset(screenX, 204),
+      '1.0 m',
+    );
+  }
+
+  /// スリット／格子の左側へ、右向きの入射光。
+  void _incomingRays(
+    Canvas canvas, {
+    required double toX,
+    required List<double> ys,
+  }) {
+    const fromX = 18.0;
+    for (final y in ys) {
+      noteArrow(canvas, Offset(fromX, y), Offset(toX - 3, y));
     }
-    noteLine(canvas, const Offset(196, 24), const Offset(196, 164));
-    noteLine(canvas, const Offset(32, 90), const Offset(196, 90), noteStroke(noteSoft));
-    noteLine(canvas, const Offset(32, 90), const Offset(196, 48), noteStroke(noteAccent));
-    canvas.drawCircle(const Offset(196, 48), 4, noteSolid(noteInk));
-    _span(canvas, const Offset(24, 176), const Offset(196, 176), '1.0 m');
-    noteText(canvas, '600 nm', const Offset(70, 28));
+  }
+
+  /// すき間を示す極細の点線。
+  void _fineDots(Canvas canvas, Offset from, Offset to) {
+    final paint = noteStroke(noteInk, 0.9)..strokeCap = StrokeCap.round;
+    final delta = to - from;
+    final length = delta.distance;
+    if (length < 0.5) return;
+    final step = delta / length;
+    const dash = 0.55;
+    const gap = 1.35;
+    var drawn = 0.0;
+    while (drawn < length) {
+      final end = math.min(drawn + dash, length);
+      canvas.drawLine(from + step * drawn, from + step * end, paint);
+      drawn += dash + gap;
+    }
   }
 
   void _brush(Canvas canvas, Size size) {
@@ -694,14 +779,23 @@ class _Paint extends NotePainter {
       const top = 36.0;
       const bottom = 176.0;
       const w = 36.0;
+      const corner = 8.0;
       final waterY = top + waterFromTop;
-      noteLine(canvas, Offset(x, top), Offset(x, bottom));
-      noteLine(canvas, Offset(x + w, top), Offset(x + w, bottom));
-      noteLine(canvas, Offset(x, bottom), Offset(x + w, bottom));
+      final wall = Path()
+        ..moveTo(x, top)
+        ..lineTo(x, bottom - corner)
+        ..quadraticBezierTo(x, bottom, x + corner, bottom)
+        ..lineTo(x + w - corner, bottom)
+        ..quadraticBezierTo(x + w, bottom, x + w, bottom - corner)
+        ..lineTo(x + w, top);
+      canvas.save();
+      canvas.clipPath(wall);
       canvas.drawRect(
-        Rect.fromLTRB(x + 1, waterY, x + w - 1, bottom),
+        Rect.fromLTRB(x, waterY, x + w, bottom),
         noteSolid(water),
       );
+      canvas.restore();
+      canvas.drawPath(wall, noteStroke());
       noteLine(
         canvas,
         Offset(x - 6, top),
@@ -964,7 +1058,7 @@ class _Paint extends NotePainter {
     );
   }
 
-  /// 残った板を左半分と右下に分け、斜線で示す（解説用）。
+  /// 残った板を左半分と右上に分け、斜線で示す（解説用）。
   void _sheetExplain(Canvas canvas, Size size) {
     const dx = 40.0;
     const left = 28.0;
@@ -983,8 +1077,8 @@ class _Paint extends NotePainter {
       ..close();
     final leftHalf = Path()
       ..addRect(Rect.fromLTRB(left + dx, top, mid + dx, bottom));
-    final lowerRight = Path()
-      ..addRect(Rect.fromLTRB(mid + dx, midY, right + dx, bottom));
+    final upperRight = Path()
+      ..addRect(Rect.fromLTRB(mid + dx, top, right + dx, midY));
 
     // 上段: 左半分
     canvas.save();
@@ -998,16 +1092,16 @@ class _Paint extends NotePainter {
     noteText(canvas, '2/3', Offset((left + mid) / 2 + dx, (top + bottom) / 2 + 16));
     canvas.restore();
 
-    // 下段: 右下
+    // 下段: 右上
     canvas.save();
     canvas.translate(0, 132);
     canvas.drawPath(outline, noteSolid(const Color(0xFFFFFFFF)));
-    _hatch(canvas, lowerRight);
+    _hatch(canvas, upperRight);
     canvas.drawPath(outline, noteStroke());
-    canvas.drawCircle(Offset((mid + right) / 2 + dx, (midY + bottom) / 2), 3, noteSolid(noteAccent));
-    noteText(canvas, labels.lowerRight, Offset((mid + right) / 2 + dx, top - 14));
+    canvas.drawCircle(Offset((mid + right) / 2 + dx, (top + midY) / 2), 3, noteSolid(noteAccent));
+    noteText(canvas, labels.upperRight, Offset((mid + right) / 2 + dx, top - 14));
     noteText(canvas, 'x = 18', Offset((mid + right) / 2 + dx, bottom + 14));
-    noteText(canvas, '1/3', Offset((mid + right) / 2 + dx, (midY + bottom) / 2 + 16));
+    noteText(canvas, '1/3', Offset((mid + right) / 2 + dx, (top + midY) / 2 + 16));
     canvas.restore();
   }
 
@@ -1332,7 +1426,7 @@ class _Paint extends NotePainter {
     // サイクル前1/3で沈め、残り約3 sは沈めたまま。
     const tank = Rect.fromLTWH(78, 88, 100, 100);
     final dip = playPauseProgress(progress, motion: 1 / 3);
-    final y = 64 + dip * 70;
+    final y = 64 + dip * 92;
     canvas.drawRRect(
       RRect.fromRectAndRadius(tank, const Radius.circular(4)),
       noteStroke(),
@@ -1580,14 +1674,19 @@ class _Paint extends NotePainter {
       noteStroke(const Color(0xFF4FC3F7), 1.4),
     );
     const gauge = Offset(148, depthY);
-    noteLine(
-      canvas,
-      const Offset(22, depthY),
-      Offset(gauge.dx - 14, depthY),
-      noteStroke(noteSoft),
+    paintDashedGuide(
+      canvas: canvas,
+      from: const Offset(22, depthY),
+      to: Offset(gauge.dx - 14, depthY),
+      color: noteInk,
     );
     paintPressureGauge(canvas, gauge, radius: 12);
-    noteLine(canvas, const Offset(22, surface), const Offset(left, surface), noteStroke(noteSoft));
+    paintDashedGuide(
+      canvas: canvas,
+      from: const Offset(22, surface),
+      to: const Offset(left, surface),
+      color: noteInk,
+    );
     _span(canvas, const Offset(22, surface), const Offset(22, depthY), '50 cm', tick: const Offset(8, 0));
     noteText(canvas, '1013 hPa', const Offset(137, 36));
   }
@@ -1691,10 +1790,19 @@ class _Paint extends NotePainter {
       noteStroke(const Color(0xFF4FC3F7), 1.4),
     );
     const gauge = Offset(168, 156);
-    noteLine(canvas, const Offset(146, 156), Offset(gauge.dx - 13, gauge.dy), noteStroke(noteSoft));
+    paintDashedGuide(
+      canvas: canvas,
+      from: const Offset(24, 156),
+      to: Offset(gauge.dx - 13, gauge.dy),
+      color: noteInk,
+    );
     paintPressureGauge(canvas, gauge, radius: 12);
-    noteLine(canvas, const Offset(24, surface), const Offset(left, surface), noteStroke(noteSoft));
-    noteLine(canvas, const Offset(24, 156), const Offset(146, 156), noteStroke(noteSoft));
+    paintDashedGuide(
+      canvas: canvas,
+      from: const Offset(24, surface),
+      to: const Offset(left, surface),
+      color: noteInk,
+    );
     _span(canvas, const Offset(24, surface), const Offset(24, 156), '50 cm', tick: const Offset(8, 0));
     noteText(canvas, '1.20 g/cm³', const Offset(146, 16));
     noteText(canvas, '1013 hPa', const Offset(146, 52));
@@ -1815,14 +1923,14 @@ class _Paint extends NotePainter {
       );
     }
     final front = start + step * (turns - 1);
-    // 各巻きの右端に上向き。同じ向きの電流がどの導線にも流れている。
-    for (var i = 0; i < turns; i++) {
+    // 右端に上向き。巻きは密でも、矢印は間を空けて重ならないようにする。
+    for (var i = 1; i < turns; i += 4) {
       final c = start + step * i.toDouble();
       final at = c + const Offset(width / 2, 0);
       final head = Path()
-        ..moveTo(at.dx, at.dy - 5)
-        ..lineTo(at.dx - 3.5, at.dy + 3)
-        ..lineTo(at.dx + 3.5, at.dy + 3)
+        ..moveTo(at.dx, at.dy - 6)
+        ..lineTo(at.dx - 4, at.dy + 4)
+        ..lineTo(at.dx + 4, at.dy + 4)
         ..close();
       canvas.drawPath(head, noteSolid(noteInk));
     }
@@ -2044,7 +2152,7 @@ class _Paint extends NotePainter {
       field + const Offset(3.6, -3.6),
       noteStroke(noteInk, 1.5),
     );
-    noteText(canvas, '0.20 T', const Offset(222, 58));
+    noteText(canvas, '0.20 T', const Offset(230, 58));
 
     noteLine(canvas, const Offset(28, top), const Offset(left, top), noteStroke(noteSoft));
     noteLine(canvas, const Offset(28, bottom), const Offset(left, bottom), noteStroke(noteSoft));

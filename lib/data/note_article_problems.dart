@@ -372,22 +372,22 @@ const noteArticleProblems = <PhysicsProblem>[
     explanationFigure: ProblemFigure.cutSheetExplain,
     statement:
         '図のように、横 24 cm、縦 16 cm の一様な長方形から、'
-        '右上の横 12 cm、縦 8.0 cm を切り抜いた。'
+        '右下の横 12 cm、縦 8.0 cm を切り抜いた。'
         '残った板の重心の、左端からの距離を cm で答えよ。',
     answerValue: 10,
     answerUnit: 'cm',
     answerDisplay: '10',
     unitChoices: [],
     unitObvious: true,
-    hint: '残った板を、左半分と右下の二つの長方形に分ける。',
+    hint: '残った板を、左半分と右上の二つの長方形に分ける。',
     approach: '重心の定義を、分けた二つの領域の面積の重みで使う。',
     firstStep: '(2/3) × 6 + (1/3) × 18 = 10 である。',
     explanation:
         '左端を x = 0 とする。残った板は、左半分（横 12 cm・縦 16 cm）と、'
-        '右下（横 12 cm・縦 8.0 cm）に分けられる。'
+        '右上（横 12 cm・縦 8.0 cm）に分けられる。'
         '面積の比は 192 : 96 = 2 : 1 なので、重みは 2/3 と 1/3 である。'
         '左半分の重心は x = 12/2 = 6 cm。'
-        '右下の重心は x = 12 + 12/2 = 18 cm。'
+        '右上の重心は x = 12 + 12/2 = 18 cm。'
         '残った板の重心は (2/3) × 6 + (1/3) × 18 = 4 + 6 = 10 cm。',
   ),
   PhysicsProblem(
@@ -405,12 +405,16 @@ const noteArticleProblems = <PhysicsProblem>[
     answerDisplay: '15',
     unitChoices: [],
     unitObvious: true,
-    hint: '滑り出す直前は、床の摩擦力が最大静止摩擦に等しい。下の端を軸にすると傾き始める。',
-    approach: '滑る条件は最大静止摩擦、傾く条件は下端のまわりのモーメントのつり合いである。',
-    firstStep: 'h = 6.0 / (2 × 0.20) である。',
+    hint: '滑り出す直前は、床の摩擦力が最大静止摩擦に等しい。押す向きの先の下端を軸にすると傾き始める。',
+    approach: '滑る条件は最大静止摩擦、傾く条件は押す向きの先の下端のまわりのモーメントのつり合いである。',
+    firstStep: 'F h = m g (b / 2) である。',
     explanation:
-        '滑り出す力は F = μ m g。'
-        '下端のまわりで、この力のモーメント F h が、重力のモーメント m g (b / 2) とつり合う高さが境である。'
+        '傾き始めるとき、ブロックは押す向きの先の下端を床に残して回る。'
+        'モーメントの中心は、その下端である。'
+        '床からの垂直抗力と摩擦力は、この点を通るのでモーメントは 0 である。'
+        '滑り出す直前の力は F = μ m g である。'
+        'この下端のまわりで、押す力のモーメント F h と重力のモーメント m g (b / 2) がつり合う。'
+        'F h = m g (b / 2)。'
         'μ m g h = m g (b / 2)。'
         'h = b / (2μ) = 6.0 / (2 × 0.20) = 6.0 / 0.40 = 15 cm。',
   ),
@@ -726,6 +730,30 @@ const noteArticleProblems = <PhysicsProblem>[
         'p = 1013 + 49 = 1062 hPa。',
   ),
   PhysicsProblem(
+    id: 'ebf0977f-94f9-4e30-8415-95fe3b05b3c2',
+    theme: '食塩水中の圧力',
+    title: '食塩水 50 cm の圧力',
+    domains: {PhysicsDomain.mechanics},
+    figure: ProblemFigure.saltWaterPressure,
+    statement:
+        '図のように、大気に開いた食塩水の水面から 50 cm の深さの圧力を hPa で答えよ。\n'
+        '※水面の気圧を 1013 hPa、食塩水の密度を 1.20 g/cm³、'
+        '重力加速度の大きさを 9.8 m/s² とする。',
+    answerValue: 1071.8,
+    answerUnit: 'hPa',
+    answerDisplay: '1071.8',
+    unitChoices: [],
+    unitObvious: true,
+    hint: '食塩水は水より密度が大きい。深さの圧力は、その密度で水の重さを見る。',
+    approach: '開いた液面の下の圧力は p = p₀ + ρ g h である。',
+    firstStep: 'p = 1013 + 1200 × 9.8 × 0.50 / 100 である。',
+    explanation:
+        '開いた液面の下の圧力は p = p₀ + ρ g h である。'
+        '密度は 1.20 g/cm³ = 1200 kg/m³。'
+        'ρ g h = 1200 × 9.8 × 0.50 = 5880 Pa = 58.8 hPa。'
+        'p = 1013 + 58.8 = 1071.8 hPa。',
+  ),
+  PhysicsProblem(
     id: 'cc8cd992-df30-4283-b758-2c7bba07336a',
     theme: '閉じた水柱の上端の圧力',
     title: '逆さ容器の上端の圧力',
@@ -749,30 +777,6 @@ const noteArticleProblems = <PhysicsProblem>[
         '圧力は p = p₀ − ρ g h である。'
         'ρ g h = 1000 × 9.8 × 0.25 = 2450 Pa = 24.5 hPa。'
         'p = 1013 − 24.5 = 988.5 hPa。',
-  ),
-  PhysicsProblem(
-    id: 'ebf0977f-94f9-4e30-8415-95fe3b05b3c2',
-    theme: '食塩水中の圧力',
-    title: '食塩水 50 cm の圧力',
-    domains: {PhysicsDomain.mechanics},
-    figure: ProblemFigure.saltWaterPressure,
-    statement:
-        '図のように、大気に開いた食塩水の水面から 50 cm の深さの圧力を hPa で答えよ。\n'
-        '※水面の気圧を 1013 hPa、食塩水の密度を 1.20 g/cm³、'
-        '重力加速度の大きさを 9.8 m/s² とする。',
-    answerValue: 1071.8,
-    answerUnit: 'hPa',
-    answerDisplay: '1071.8',
-    unitChoices: [],
-    unitObvious: true,
-    hint: '食塩水は水より密度が大きい。深さの圧力は、その密度で水の重さを見る。',
-    approach: '開いた液面の下の圧力は p = p₀ + ρ g h である。',
-    firstStep: 'p = 1013 + 1200 × 9.8 × 0.50 / 100 である。',
-    explanation:
-        '開いた液面の下の圧力は p = p₀ + ρ g h である。'
-        '密度は 1.20 g/cm³ = 1200 kg/m³。'
-        'ρ g h = 1200 × 9.8 × 0.50 = 5880 Pa = 58.8 hPa。'
-        'p = 1013 + 58.8 = 1071.8 hPa。',
   ),
   PhysicsProblem(
     id: '185ad466-4a2a-474a-97d8-e2635c9da116',

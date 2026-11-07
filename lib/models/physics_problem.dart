@@ -57,7 +57,7 @@ enum ProblemFigure {
   blockEndLift,
   diskHoleCenter,
   cutSheetCenter,
-  /// 切り抜いた下敷きの解説用。左半分と右下を斜線で示す。
+  /// 切り抜いた下敷きの解説用。左半分と右上を斜線で示す。
   cutSheetExplain,
   slideTipHeight,
   floatingWood,

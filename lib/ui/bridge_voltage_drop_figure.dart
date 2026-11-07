@@ -98,7 +98,7 @@ class _BridgeVoltageDropPainter extends CustomPainter {
     final outward = (mid - hub).dx * perp.dx + (mid - hub).dy * perp.dy >= 0
         ? perp
         : Offset(-perp.dx, -perp.dy);
-    _label(canvas, text, mid + outward * 20, ink);
+    _label(canvas, text, mid + outward * 24, ink);
   }
 
   void _branch(Canvas canvas, Offset a, Offset b, Paint wire) {

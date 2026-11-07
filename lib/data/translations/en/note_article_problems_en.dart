@@ -309,20 +309,20 @@ const noteArticleTranslationsEn = <String, ProblemTranslation>{
     theme: 'Center of mass of a cut sheet',
     title: 'Horizontal position of a cut sheet',
     statement:
-        'As shown, a 12 cm by 8.0 cm rectangle is cut from the upper right '
+        'As shown, a 12 cm by 8.0 cm rectangle is cut from the lower right '
         'of a uniform 24 cm by 16 cm rectangle. Find the distance from the '
         'left edge to the center of mass of the remainder, in cm.',
     hint:
-        'Split the remainder into the left half and the lower-right rectangle.',
+        'Split the remainder into the left half and the upper-right rectangle.',
     approach:
         'Use the definition of the center of mass with the areas of the two regions.',
     firstStep: '(2/3) × 6 + (1/3) × 18 = 10.',
     explanation:
         'Take the left edge as x = 0. The remainder splits into the left half '
-        '(12 cm by 16 cm) and the lower right (12 cm by 8.0 cm). '
+        '(12 cm by 16 cm) and the upper right (12 cm by 8.0 cm). '
         'The area ratio is 192 : 96 = 2 : 1, so the weights are 2/3 and 1/3. '
         'The left-half center is at x = 12/2 = 6 cm. '
-        'The lower-right center is at x = 12 + 12/2 = 18 cm. '
+        'The upper-right center is at x = 12 + 12/2 = 18 cm. '
         'The remainder center is (2/3) × 6 + (1/3) × 18 = 4 + 6 = 10 cm.',
   ),
   'fccf9e77-372c-4c34-b17d-9cafc2d339b5': ProblemTranslation(
@@ -336,15 +336,22 @@ const noteArticleTranslationsEn = <String, ProblemTranslation>{
         'Find the boundary height in cm.',
     hint:
         'Just as sliding starts, the friction from the floor equals the maximum '
-        'static friction. About the lower edge, that is when tipping starts.',
+        'static friction. Tipping starts about the lower edge on the side '
+        'toward which the block is pushed.',
     approach:
         'Sliding uses the maximum static friction. Tipping uses the balance of '
-        'moments about the lower edge.',
-    firstStep: 'h = 6.0 / (2 × 0.20).',
+        'moments about the lower edge on the far side of the push.',
+    firstStep: 'F h = m g (b / 2).',
     explanation:
-        'The force that starts sliding is F = μ m g. About the lower edge, '
-        'the height where the moment F h balances the moment of the weight '
-        'm g (b / 2) is the boundary. μ m g h = m g (b / 2). '
+        'When tipping starts, the block turns while the lower edge on the '
+        'far side of the push stays on the floor. That lower edge is the '
+        'center of moments. The normal force and friction from the floor '
+        'pass through this point, so their moments are 0. '
+        'The force just as sliding starts is F = μ m g. '
+        'About this lower edge, the moment of the push F h balances the '
+        'moment of the weight m g (b / 2). '
+        'F h = m g (b / 2). '
+        'μ m g h = m g (b / 2). '
         'h = b / (2μ) = 6.0 / (2 × 0.20) = 6.0 / 0.40 = 15 cm.',
   ),
   'b7c1e735-bbda-461c-a72e-eff2609a5ab1': ProblemTranslation(

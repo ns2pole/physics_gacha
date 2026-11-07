@@ -51,5 +51,5 @@ class FigureLabels {
   String get currentI => _l10n.figureCurrentI;
   String get oneYear => _l10n.figureOneYear;
   String get leftHalf => _l10n.figureLeftHalf;
-  String get lowerRight => _l10n.figureLowerRight;
+  String get upperRight => _l10n.figureUpperRight;
 }

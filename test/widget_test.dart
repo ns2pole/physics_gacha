@@ -102,7 +102,7 @@ void main() {
 
     expect(find.text('フィルタ設定'), findsOneWidget);
     expect(find.text('ならガチャから外す'), findsOneWidget);
-    expect(find.text('(残 76問/76問)'), findsOneWidget);
+    expect(find.text('(残 75問/75問)'), findsOneWidget);
 
     await tester.tap(find.text('フィルタ設定'));
     await tester.pumpAndSettle();
@@ -110,7 +110,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('ならガチャから外す'), findsNothing);
-    expect(find.text('除外なし 全76問'), findsOneWidget);
+    expect(find.text('除外なし 全75問'), findsOneWidget);
   });
 
   testWidgets('詳細で問題と答えと解説が見える', (tester) async {
@@ -118,7 +118,7 @@ void main() {
 
     expect(find.text('No. 1(力学)'), findsOneWidget);
     expect(find.text('なら一覧から外す'), findsOneWidget);
-    expect(find.text('(残 76問/76問)'), findsOneWidget);
+    expect(find.text('(残 75問/75問)'), findsOneWidget);
     expect(find.text('出題'), findsNothing);
     expect(find.text('力学'), findsOneWidget);
     expect(find.widgetWithText(ElevatedButton, '詳細'), findsWidgets);
@@ -173,13 +173,13 @@ void main() {
 
     expect(find.text('No. 1(力学)'), findsNothing);
     expect(find.text('No. 2(電磁気学)'), findsOneWidget);
-    expect(find.text('(残 75問/76問)'), findsOneWidget);
+    expect(find.text('(残 74問/75問)'), findsOneWidget);
 
     await tester.tap(find.byTooltip('戻る'));
     await tester.pumpAndSettle();
     expect(find.text('ならガチャから外す'), findsOneWidget);
-    expect(find.text('除外なし 全76問'), findsNothing);
-    expect(find.text('(残 75問/76問)'), findsOneWidget);
+    expect(find.text('除外なし 全75問'), findsNothing);
+    expect(find.text('(残 74問/75問)'), findsOneWidget);
   });
 
   testWidgets('左が空の枠は進まず、単元オフなら一覧も絞る', (tester) async {
@@ -192,10 +192,10 @@ void main() {
     await tester.tap(find.text('問題一覧'));
     await tester.pumpAndSettle();
 
-    expect(find.text('(残 74問/74問)'), findsOneWidget);
+    expect(find.text('(残 73問/73問)'), findsOneWidget);
     await tester.tap(find.text('波動'));
     await tester.pumpAndSettle();
-    expect(find.text('(残 62問/62問)'), findsOneWidget);
+    expect(find.text('(残 61問/61問)'), findsOneWidget);
     final second = find.byKey(const ValueKey('history-sample-mechanics-1'));
     await tester.tap(second);
     await tester.pumpAndSettle();

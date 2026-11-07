@@ -992,11 +992,11 @@ abstract class AppLocalizations {
   /// **'左半分'**
   String get figureLeftHalf;
 
-  /// No description provided for @figureLowerRight.
+  /// No description provided for @figureUpperRight.
   ///
   /// In ja, this message translates to:
-  /// **'右下'**
-  String get figureLowerRight;
+  /// **'右上'**
+  String get figureUpperRight;
 
   /// No description provided for @unitCount.
   ///

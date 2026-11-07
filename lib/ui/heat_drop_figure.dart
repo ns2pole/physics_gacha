@@ -85,8 +85,8 @@ class _HeatDropPainter extends CustomPainter {
 
     const outer = Rect.fromLTWH(52, 110, 92, 58);
     final inner = outer.deflate(5);
-    canvas.drawRect(outer, line);
-    canvas.drawRect(inner, line);
+    _openRoundBottom(canvas, outer, line, corner: 10);
+    _openRoundBottom(canvas, inner, line, corner: 7);
     canvas.drawLine(
       Offset(inner.left, waterY),
       Offset(inner.right, waterY),
@@ -116,6 +116,32 @@ class _HeatDropPainter extends CustomPainter {
     _label(canvas, water, const Offset(bracketX + 40, waterY + 10));
 
     canvas.drawRect(Rect.fromLTWH(objectX, top, objectSize, objectSize), line);
+  }
+
+  void _openRoundBottom(
+    Canvas canvas,
+    Rect rect,
+    Paint paint, {
+    required double corner,
+  }) {
+    final path = Path()
+      ..moveTo(rect.left, rect.top)
+      ..lineTo(rect.left, rect.bottom - corner)
+      ..quadraticBezierTo(
+        rect.left,
+        rect.bottom,
+        rect.left + corner,
+        rect.bottom,
+      )
+      ..lineTo(rect.right - corner, rect.bottom)
+      ..quadraticBezierTo(
+        rect.right,
+        rect.bottom,
+        rect.right,
+        rect.bottom - corner,
+      )
+      ..lineTo(rect.right, rect.top);
+    canvas.drawPath(path, paint);
   }
 
   void _label(Canvas canvas, String text, Offset center) {

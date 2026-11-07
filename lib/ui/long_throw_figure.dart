@@ -98,7 +98,7 @@ class _LongThrowPainter extends CustomPainter {
       line,
     );
     // 発射角の二等分線上、弧のすぐ外。
-    _label(canvas, '45°', const Offset(52, 114));
+    _label(canvas, '45°', const Offset(52, 90));
 
     paintSpanMarker(
       canvas: canvas,

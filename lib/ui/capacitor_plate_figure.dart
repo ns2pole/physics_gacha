@@ -62,7 +62,7 @@ class _CapacitorPlatePainter extends CustomPainter {
     if (paper) {
       _label(
         canvas,
-        'ε_r = 2.0',
+        'εᵣ = 2.0',
         space.center,
         backdrop: const Color(0xFFFFE0B2),
       );

@@ -592,10 +592,10 @@ const sampleProblemsTranslationsEn = <String, ProblemTranslation>{
         'The two springs are connected so that their extensions are the same. '
         'The weight is shared by the two springs.',
     approach: 'Use the parallel spring constant, k = k1 + k2.',
-    firstStep: 'k = 49 + 147.',
+    firstStep: 'k = 98 + 98.',
     explanation:
         'For springs in parallel, k = k1 + k2. '
-        'k = 49 + 147 = 196 N/m. '
+        'k = 98 + 98 = 196 N/m. '
         'The mass is at rest, so mg = kx. '
         '2.0 × 9.8 = 196 x. x = 19.6 / 196 = 0.10 m.',
   ),
@@ -768,12 +768,12 @@ const sampleProblemsTranslationsEn = <String, ProblemTranslation>{
         'The area of the plates and the thickness of the paper are also given.',
     approach:
         'From the relation between permittivity and relative permittivity, '
-        'use C = ε_r ε₀ S / d.',
+        'use C = εᵣ ε₀ S / d.',
     firstStep: 'C = 2.0 × 8.85×10⁻¹² × (0.10)² / 1.0×10⁻⁴.',
     explanation:
         'The relation between permittivity and relative permittivity is '
-        'ε = ε_r ε₀. When paper fills the space between the plates, the '
-        'capacitance is C = ε S / d = ε_r ε₀ S / d. Each plate is a square '
+        'ε = εᵣ ε₀. When paper fills the space between the plates, the '
+        'capacitance is C = ε S / d = εᵣ ε₀ S / d. Each plate is a square '
         'of side 10 cm = 0.10 m, so S = 0.10 × 0.10 = 1.0×10⁻² m². The '
         'paper is 0.1 mm = 1.0×10⁻⁴ m thick, and that thickness is the '
         'separation d. '

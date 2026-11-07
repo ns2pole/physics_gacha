@@ -3,6 +3,8 @@
 const gachaSuspendedProblemIds = <String>{
   // No.33 1 m³の空気の質量（997.2 hPa）
   '6970d4b5-abcd-4825-a0fd-fc210892bc2f',
+  // No.41 並列につないだコンデンサーの電気容量
+  'ee55e3b5-6de2-4c75-8536-e772727beff3',
   // No.43 地球から月までの距離（3.84×10^8・立方根の※）
   '4dc4c30e-cd7d-4453-abc4-4f653c9076f3',
   // No.45 太陽の質量（365.6 日）

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../utils/figure_label_style.dart';
 
-/// 天井から 49 N/m と 147 N/m のばねを並列につるし、下の棒に 2.0 kg のおもりを静止させる。
+/// 天井から 98 N/m のばねを二つ並列につるし、下の棒に 2.0 kg のおもりを静止させる。
 class ParallelSpringsFigure extends StatelessWidget {
   const ParallelSpringsFigure({super.key});
 

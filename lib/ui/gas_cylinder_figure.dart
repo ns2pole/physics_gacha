@@ -194,12 +194,15 @@ class _GasCylinderPainter extends CustomPainter {
     const wallTop = 35.0;
     final half = width / 2;
     final pistonY = baseY - gasHeight;
-    final left = Offset(cx - half, baseY);
-    final right = Offset(cx + half, baseY);
-
-    canvas.drawLine(left, right, wire);
-    canvas.drawLine(Offset(cx - half, wallTop), left, wire);
-    canvas.drawLine(Offset(cx + half, wallTop), right, wire);
+    const corner = 10.0;
+    final wall = Path()
+      ..moveTo(cx - half, wallTop)
+      ..lineTo(cx - half, baseY - corner)
+      ..quadraticBezierTo(cx - half, baseY, cx - half + corner, baseY)
+      ..lineTo(cx + half - corner, baseY)
+      ..quadraticBezierTo(cx + half, baseY, cx + half, baseY - corner)
+      ..lineTo(cx + half, wallTop);
+    canvas.drawPath(wall, wire);
     canvas.drawLine(
       Offset(cx - half - 4, pistonY),
       Offset(cx + half + 4, pistonY),

@@ -486,7 +486,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get figureLeftHalf => '左半分';
 
   @override
-  String get figureLowerRight => '右下';
+  String get figureUpperRight => '右上';
 
   @override
   String get unitCount => '個';
